@@ -2,13 +2,19 @@
 
 export class Create {
 	element = null
+	path = null
 	constructor(element){
-		this.element = document.createElement(element.element)
+		if(element.element === "svg" || element.element === "path"){
+			this.element = document.createElementNS("http://www.w3.org/2000/svg", element.element)
+		}else{
+			this.element = document.createElement(element.element)
+		}
 
 		element.classes && this.setClasses(element.classes)
 		element.id && this.setId(element.id)
 		element.text && this.setText(element.text)
 		element.attrs && this.setAttrs(element.attrs)
+		element.attrsNS && this.setAttrsNS(element.attrsNS)
 		element.actions && this.setActions(element.actions)
 		element.child && this.setAppendChild(element.child)
 	}
@@ -34,6 +40,16 @@ export class Create {
 				return
 			}else{
 				this.element.setAttribute(attr, attrs[attr])
+			}
+		})
+	}
+	setAttrsNS(attrsNS){
+		const keys = Object.keys(attrsNS)
+		keys.map((attr) => {
+			if(attr === "checked" && attrsNS[attr] === false){
+				return
+			}else{
+				this.element.setAttributeNS(null, attr, attrsNS[attr])
 			}
 		})
 	}

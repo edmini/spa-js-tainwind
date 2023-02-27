@@ -1,13 +1,13 @@
 
-import home from './Home.js'
+import header from './Header.js'
 import views from './Views.js'
 
 
 const app = document.querySelector("#app")
 const bodySection = document.createElement("div")
 bodySection.setAttribute("id", "bodySection")
-const header = home()
-app.appendChild(header.element)
+const nav = header()
+app.appendChild(nav.element)
 app.appendChild(bodySection)
 
 
