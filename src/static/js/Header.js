@@ -1,14 +1,14 @@
 import {makeTag} from "./core/Creators.js"
 
 const header = () => {
-	const productBtnClick = (e) => {
+	const productBtnClick = () => {
 		header.productDiv0.element.classList.toggle("hidden")
 	}
 
 	const headerElTree = {
 		headerEl : {
 			element : "header",
-			classes : ["bg-white"]
+			classes : ["sticky", "top-0", "shadow-md", "backdrop-blur-sm", "bg-white/60"]
 		},
 		navEl : {
 			element : "nav",
@@ -83,7 +83,7 @@ const header = () => {
 		},
 		productBtnEl : {
 			element : "button",
-			classes : ["flex", "items-center", "gap-x-1", "text-sm", "font-semibold", "leading-6", "text-gray-900"],
+			classes : ["flex", "items-center", "gap-x-1", "text-sm", "font-semibold", "leading-6", "text-gray-900", "hover:text-indigo-500"],
 			text : "Product",
 			attrs : {
 				"aria-expanded" : false,
@@ -111,7 +111,7 @@ const header = () => {
 		},
 		productDiv0El : {
 			element : "div",
-			classes : ["hidden", "absolute", "-left-8", "top-full", "z-10", "mt-3", "w-screen", "max-w-md", "overflow-hidden", "rounded-3xl", "bg-white", "shadow-lg", "ring=1", "ring-gray-900/5"]
+			classes : ["hidden", "absolute", "-left-8", "top-full", "z-10", "mt-8", "w-screen", "max-w-md", "overflow-hidden", "rounded-3xl", "bg-white", "shadow-lg", "ring=1", "ring-gray-900/5"]
 		},
 		productDiv1El : {
 			element : "div",
@@ -170,37 +170,13 @@ const header = () => {
 			classes : ["mt-1", "text-gary-600"],
 			text : "Get a better understanding of your traffic"
 		},
-		featuresAEl : {
-			element : "a",
-			classes : ["text-sm", "font-semibold", "leading-6", "text-gray-900", "spa-link"],
-			text : "Features",
-			attrs : {
-				href : "/features"
-			}
-		},
-		marketAEl : {
-			element : "a",
-			classes : ["text-sm", "font-semibold", "leading-6", "text-gray-900", "spa-link"],
-			text : "Marketplace",
-			attrs : {
-				href : "/marketplace"
-			}
-		},
-		companyAEl : {
-			element : "a",
-			classes : ["text-sm", "font-semibold", "leading-6", "text-gray-900", "spa-link"],
-			text : "Company",
-			attrs : {
-				href : "/company"
-			}
-		},
 		loginDivEl : {
 			element : "div",
 			classes : ["hidden", "lg:flex", "lg:flex-1", "lg:justify-end"]
 		},
 		loginAEl : {
 			element : "a",
-			classes : ["text-sm", "font-semibold", "leading-6", "text-gray-90", "spa-link"],
+			classes : ["text-sm", "font-semibold", "leading-6", "text-gray-90", "hover:text-indigo-500", "spa-link"],
 			text : "Log in",
 			attrs : {
 				href : "/login"
@@ -213,8 +189,6 @@ const header = () => {
 				"aria-hidden" : true,
 			}
 		}
-
-
 	}
 
 	const productListElTree = {
@@ -265,7 +239,6 @@ const header = () => {
 		},
 	}
 
-
 	const productList = [
 		{
 			path : "M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59",
@@ -290,9 +263,26 @@ const header = () => {
 
 	]
 
+	const spaLinkElTree = {
+		spaLinkEl : {
+			element : "a",
+			classes : ["text-sm", "font-semibold", "leading-6", "text-gray-900", "hover:text-indigo-500", "spa-link"],
+			text : "",
+			attrs : {
+				href : ""
+			}
+		},
+	}
+
+	const linkList = [
+		{text : "Features", href : "/features"},
+		{text : "Marketplace", href : "/marketplace"},
+		{text : "Company", href : "/company"},
+	]
 
 	const header = makeTag(headerElTree)
 
+	
 	let products = []
 	productList.map((item, i) => {
 		products[i] = makeTag(productListElTree)
@@ -310,9 +300,6 @@ const header = () => {
 		products[i].div31.element
 			.appendChild(products[i].p.element)
 	})
-
-
-
 
 	header.header.element
 		.appendChild(header.nav.element)
@@ -340,25 +327,32 @@ const header = () => {
 		.appendChild(header.productDivSvg.element)
 		.appendChild(header.productPath1.element)
 		.after(header.productPath2.element)
+
 	products.map((product) => {
 		header.productDiv1.element.appendChild(product.div2.element)
 	})
+
 	header.productDiv2.element
 		.appendChild(header.analyDiv.element)
 		.appendChild(header.analyA.element)
 		.appendChild(header.analySapn.element)
 	header.analyDiv.element
 		.appendChild(header.analyP.element)
-	header.menusDiv.element.appendChild(header.featuresA.element)
-	header.menusDiv.element.appendChild(header.marketA.element)
-	header.menusDiv.element.appendChild(header.companyA.element)
+
+	let link = []
+	linkList.map((a, i) => {
+		link[i] = makeTag(spaLinkElTree)
+		link[i].spaLink.element.innerText = a.text
+		link[i].spaLink.element.setAttribute("href", a.href)
+		header.menusDiv.element.appendChild(link[i].spaLink.element)
+	})
 	header.nav.element
 		.appendChild(header.loginDiv.element)
 		.appendChild(header.loginA.element)
 		.appendChild(header.loginSpan.element)
 
 
-	return header.header
+	return header
 
 }
 

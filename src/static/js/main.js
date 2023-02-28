@@ -2,15 +2,13 @@
 import header from './Header.js'
 import views from './Views.js'
 
-
-const app = document.querySelector("#app")
-const bodySection = document.createElement("div")
-bodySection.setAttribute("id", "bodySection")
 const nav = header()
-app.appendChild(nav.element)
-app.appendChild(bodySection)
-
-
+const body = document.querySelector("body")
+const app = document.querySelector("#app")
+body.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100")
+body.style.height = "100vh"
+app.before(nav.header.element)
+//https://hypercolor.dev/
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$")
 
 const getParams = (match) => {
@@ -42,7 +40,7 @@ const render = async () => {
 	}
 	const view = await match.route.view(getParams(match))
 
-	bodySection.replaceChildren(view.element)
+	app.replaceChildren(view.element)
 }
 
 
