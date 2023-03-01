@@ -1,4 +1,4 @@
-import {makeTag} from "./core/Creators.js"
+import {makeTag} from "../core/Creators.js"
 
 const header = () => {
 	const productBtnClick = () => {

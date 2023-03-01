@@ -1,5 +1,5 @@
 
-import header from './Header.js'
+import header from './page/Header.js'
 import views from './Views.js'
 
 const nav = header()

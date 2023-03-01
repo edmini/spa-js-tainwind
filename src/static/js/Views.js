@@ -9,7 +9,7 @@ const views = {
 //		const {default : notFound } = await import("./NotFound.js")
 //		const nf = notFound()
 //		return nf.main
-		const {default : Home} = await import("./Home.js")
+		const {default : Home} = await import("./page/home/Home.js")
 		const home = Home()
 		console.log(home.element)
 		return home.home
