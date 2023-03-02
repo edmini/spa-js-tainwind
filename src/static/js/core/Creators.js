@@ -156,5 +156,62 @@ export const makeTable = (tableElTree, datas) => {
 	return {table : TableTree, headers : tableDataBody.headerKeys, bodys : tableDataBody.dataTDs}
 }
 
+export class SetPage {
+	page = {}
+	constructor(elTree){
+		this.page.main = makeTag(elTree)
+	}
+	
+	listElement(key, length, elTree){
+		this.page[key] = []
+		for(let i = 0 ; i < length ; i++){
+			this.page[key][i] = makeTag(elTree)
+		}
+		return this
+	}
+
+	append(parent, child){
+		if(typeof(parent) === "string" && typeof(child) === "string"){
+			const p = parent.split(".")
+			const c = child.split(".")
+			this.page[p[0]][p[1]].element.appendChild(this.page[c[0]][c[1]].element)
+		}else{
+			parent.appendChild(child)
+		}
+		return this
+
+	}
+
+	after(parent, child){
+		if(typeof(parent) === "string" && typeof(child) === "string"){
+			const p = parent.split(".")
+			const c = child.split(".")
+			this.page[p[0]][p[1]].element.after(this.page[c[0]][c[1]].element)
+		}else{
+			parent.appendChild(child)
+		}
+		return this
+	}
+
+	before(parent, child){
+		if(typeof(parent) === "string" && typeof(child) === "string"){
+			const p = parent.split(".")
+			const c = child.split(".")
+			this.page[p[0]][p[1]].element.before(this.page[c[0]][c[1]].element)
+		}else{
+			parent.appendChild(child)
+		}
+		return this
+	}
+
+	setAttr(element, attr, data){
+		element.setAttribute(attr, data)
+		return this
+	}
+	setText(element, text){
+		element.innerText = text
+		return this
+	}
+}
 
 

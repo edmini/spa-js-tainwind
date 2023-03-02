@@ -159,7 +159,7 @@ const headerTree = {
             text : "Analytics",
             classes : ["block", "font-semibold", "text-gray-900"]
         },
-        analySapnEl : {
+        analySpanEl : {
             element : "span",
             classes : ["absolute", "inset-0"]
         },

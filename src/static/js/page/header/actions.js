@@ -1,8 +1,8 @@
-import headers from "./Header.js"
+import Header from "./Header.js"
 
 
 export const productBtnClick = () => {
-    headers.productDiv0.element.classList.toggle("hidden")
+    Header.page.main.productDiv0.element.classList.toggle("hidden")
 }
 
 

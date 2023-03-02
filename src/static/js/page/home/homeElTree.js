@@ -270,7 +270,7 @@ const homeTree = {
         }
     },
     
-    contentdlElTree : {
+    contentDlElTree : {
         divEl : {
             element : "div",
             classes : ["relative", "pl-16"]

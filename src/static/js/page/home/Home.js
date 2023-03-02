@@ -1,11 +1,58 @@
 
-import { makeTag } from "../../core/Creators.js";
+import { makeTag, SetPage } from "../../core/Creators.js";
 import homeTree from "./homeElTree.js"
 
+export const Home = new SetPage(homeTree.homeElTree)
+Home.append("main.home", "main.main")
+	.append("main.main", "main.outer")
+	.append("main.outer", "main.top")
+	.append("main.top", "main.readmore")
+	.append("main.readmore", "main.readmoreA")
+	.append("main.readmoreA", "main.readmoreSpan")
+	.append("main.outer", "main.titleDiv")
+	.append("main.outer", "main.titleH1")
+	.append("main.outer", "main.titleP")
+	.append("main.outer", "main.linkGroupDiv")
+	.append("main.linkGroupDiv", "main.startA")
+	.append("main.linkGroupDiv", "main.moreA")
+	.append("main.moreA", "main.moreSpan")
+Home.page.main.readmoreSpan.element.after(" Readmore →")
 
-let home = null
+const Home2 = new SetPage(homeTree.contentElTree)
+Home2.listElement("contents", homeTree.contentList.length, homeTree.contentDlElTree)
+Home2.append("main.main", "main.content")
+	.append("main.content", "main.outerDiv")
+	.append("main.outerDiv", "main.deployDiv")
+	.append("main.deployDiv", "main.deployH2")
+	.append("main.deployDiv", "main.deployP")
+	.append("main.deployDiv", "main.deployP2")
+	.append("main.outerDiv", "main.dlDiv")
+	.append("main.dlDiv", "main.dl")
 
-const Home = () => {
+Home2.page.contents.map((content, i) => {
+	content.path.element.setAttribute("d", homeTree.contentList[i].path)
+	content.dd.element.innerText = homeTree.contentList[i].dd
+	Home2.append(content.div.element, content.dt.element)
+		.append(content.dt.element, content.dtDiv.element)
+		.append(content.dtDiv.element, content.svg.element)
+		.append(content.svg.element, content.path.element)
+		.append(content.div.element, content.dd.element)
+		.append(Home2.page.main.dl.element, content.div.element)
+	content.dtDiv.element.after(homeTree.contentList[i].text)
+})
+
+
+
+Home.page.main.home.element.appendChild(Home2.page.main.main.element)
+
+
+
+console.log(Home.page.main.home.element)
+console.log(Home2)
+
+export let home = null
+
+const HomeF = () => {
 
 	home = makeTag(homeTree.homeElTree)
 	home.home.element
@@ -47,7 +94,7 @@ const Home = () => {
 
 	let conLists = []
 	homeTree.contentList.map((list, i) => {
-		conLists[i] = makeTag(homeTree.contentdlElTree)
+		conLists[i] = makeTag(homeTree.contentDlElTree)
 		conLists[i].div.element
 			.appendChild(conLists[i].dt.element)
 			.appendChild(conLists[i].dtDiv.element)
@@ -117,7 +164,7 @@ const Home = () => {
 
 }
 
-Home()
+HomeF()
 
 
 export default home
