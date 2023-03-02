@@ -9,9 +9,8 @@ const views = {
 //		const {default : notFound } = await import("./NotFound.js")
 //		const nf = notFound()
 //		return nf.main
-		const {default : Home} = await import("./page/home/Home.js")
-		const home = Home()
-		console.log(home.element)
+		const {default : home} = await import("./page/home/Home.js")
+		console.log(home)
 		return home.home
 	},
 	Todos : async () => {

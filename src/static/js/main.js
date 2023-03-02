@@ -1,12 +1,11 @@
 
-import header from './page/Header.js'
+import headers from './page/header/Header.js'
 import views from './Views.js'
 
-const nav = header()
 const body = document.querySelector("body")
 const app = document.querySelector("#app")
 body.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100")
-app.before(nav.header.element)
+app.before(headers.header.element)
 //https://hypercolor.dev/
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$")
 

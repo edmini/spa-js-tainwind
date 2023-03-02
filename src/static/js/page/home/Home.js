@@ -1,7 +1,130 @@
 
 import { makeTag } from "../../core/Creators.js";
+import homeTree from "./homeElTree.js"
+
+
+let home = null
 
 const Home = () => {
+
+	home = makeTag(homeTree.homeElTree)
+	home.home.element
+		.appendChild(home.main.element)
+		.appendChild(home.outer.element)
+		.appendChild(home.top.element)
+		.appendChild(home.readmore.element)
+		.appendChild(home.readmoreA.element)
+		.appendChild(home.readmoreSpan.element)
+		.after(" Readmore →")
+	home.outer.element
+		.appendChild(home.titleDiv.element)
+	home.outer.element
+		.appendChild(home.titleH1.element)
+	home.outer.element
+		.appendChild(home.titleP.element)
+	home.outer.element
+		.appendChild(home.linkGroupDiv.element)
+	home.linkGroupDiv.element
+		.appendChild(home.startA.element)
+	home.linkGroupDiv.element
+		.appendChild(home.moreA.element)
+		.appendChild(home.moreSpan.element)
+
+
+	const contents = makeTag(homeTree.contentElTree)
+	contents.main.element
+		.appendChild(contents.content.element)
+		.appendChild(contents.outerDiv.element)
+		.appendChild(contents.deployDiv.element)
+		.appendChild(contents.deployH2.element)
+	contents.deployDiv.element
+		.appendChild(contents.deployP.element)
+	contents.deployDiv.element
+		.appendChild(contents.deployP2.element)
+	contents.outerDiv.element
+		.appendChild(contents.dlDiv.element)
+		.appendChild(contents.dl.element)
+
+	let conLists = []
+	homeTree.contentList.map((list, i) => {
+		conLists[i] = makeTag(homeTree.contentdlElTree)
+		conLists[i].div.element
+			.appendChild(conLists[i].dt.element)
+			.appendChild(conLists[i].dtDiv.element)
+			.appendChild(conLists[i].svg.element)
+			.appendChild(conLists[i].path.element)
+		conLists[i].path.element.setAttribute("d", list.path)
+		conLists[i].dtDiv.element.after(list.text)
+		conLists[i].div.element
+			.appendChild(conLists[i].dd.element)
+		conLists[i].dd.element.innerText = list.dd
+		contents.dl.element
+			.appendChild(conLists[i].div.element)
+	})
+
+
+	home.home.element
+		.appendChild(contents.main.element)
+
+
+
+
+	const feature = makeTag(homeTree.featureElTree)
+	feature.main.element
+		.appendChild(feature.feature.element)
+		.appendChild(feature.outer.element)
+		.appendChild(feature.grid.element)
+		.appendChild(feature.inner.element)
+		.appendChild(feature.deployDiv.element)
+		.appendChild(feature.deployH2.element)
+	feature.deployDiv.element
+		.appendChild(feature.betterP.element)
+	feature.deployDiv.element
+		.appendChild(feature.contentP.element)
+	feature.deployDiv.element
+		.appendChild(feature.dl.element)
+		.appendChild(feature.pushDiv.element)
+		.appendChild(feature.pushDt.element)
+		.appendChild(feature.pushSvg.element)
+		.appendChild(feature.pushPath.element)
+	feature.pushSvg.element.after("Push to Deploy")
+	feature.pushDiv.element
+		.appendChild(feature.pushDd.element)
+	feature.dl.element
+		.appendChild(feature.sslDiv.element)
+		.appendChild(feature.sslDt.element)
+		.appendChild(feature.sslSvg.element)
+		.appendChild(feature.sslPath.element)
+	feature.sslSvg.element.after("SSL certificates")
+	feature.sslDiv.element
+		.appendChild(feature.sslDd.element)
+	feature.dl.element
+		.appendChild(feature.dbDiv.element)
+		.appendChild(feature.dbDt.element)
+		.appendChild(feature.dbSvg.element)
+		.appendChild(feature.dbPath1.element)
+	feature.dbSvg.element
+		.appendChild(feature.dbPath2.element)
+	feature.dbSvg.element.after("SSL certificates")
+	feature.dbDiv.element
+		.appendChild(feature.dbDd.element)
+	feature.grid.element
+		.appendChild(feature.img.element)
+
+	home.home.element
+		.appendChild(feature.main.element)
+
+
+}
+
+Home()
+
+
+export default home
+
+
+/*
+
 
 	const homeElTree = {
 		homeEl : {
@@ -334,121 +457,7 @@ const Home = () => {
 
 
 	]
-const home = makeTag(homeElTree)
-	home.home.element
-		.appendChild(home.main.element)
-		.appendChild(home.outer.element)
-		.appendChild(home.top.element)
-		.appendChild(home.readmore.element)
-		.appendChild(home.readmoreA.element)
-		.appendChild(home.readmoreSpan.element)
-		.after(" Readmore →")
-	home.outer.element
-		.appendChild(home.titleDiv.element)
-	home.outer.element
-		.appendChild(home.titleH1.element)
-	home.outer.element
-		.appendChild(home.titleP.element)
-	home.outer.element
-		.appendChild(home.linkGroupDiv.element)
-	home.linkGroupDiv.element
-		.appendChild(home.startA.element)
-	home.linkGroupDiv.element
-		.appendChild(home.moreA.element)
-		.appendChild(home.moreSpan.element)
 
 
-	const contents = makeTag(contentElTree)
-	contents.main.element
-		.appendChild(contents.content.element)
-		.appendChild(contents.outerDiv.element)
-		.appendChild(contents.deployDiv.element)
-		.appendChild(contents.deployH2.element)
-	contents.deployDiv.element
-		.appendChild(contents.deployP.element)
-	contents.deployDiv.element
-		.appendChild(contents.deployP2.element)
-	contents.outerDiv.element
-		.appendChild(contents.dlDiv.element)
-		.appendChild(contents.dl.element)
-
-	let conLists = []
-	contentList.map((list, i) => {
-		conLists[i] = makeTag(contentdlElTree)
-		conLists[i].div.element
-			.appendChild(conLists[i].dt.element)
-			.appendChild(conLists[i].dtDiv.element)
-			.appendChild(conLists[i].svg.element)
-			.appendChild(conLists[i].path.element)
-		conLists[i].path.element.setAttribute("d", list.path)
-		conLists[i].dtDiv.element.after(list.text)
-		conLists[i].div.element
-			.appendChild(conLists[i].dd.element)
-		conLists[i].dd.element.innerText = list.dd
-		contents.dl.element
-			.appendChild(conLists[i].div.element)
-	})
-
-
-	home.home.element
-		.appendChild(contents.main.element)
-
-
-
-
-	const feature = makeTag(featureElTree)
-	feature.main.element
-		.appendChild(feature.feature.element)
-		.appendChild(feature.outer.element)
-		.appendChild(feature.grid.element)
-		.appendChild(feature.inner.element)
-		.appendChild(feature.deployDiv.element)
-		.appendChild(feature.deployH2.element)
-	feature.deployDiv.element
-		.appendChild(feature.betterP.element)
-	feature.deployDiv.element
-		.appendChild(feature.contentP.element)
-	feature.deployDiv.element
-		.appendChild(feature.dl.element)
-		.appendChild(feature.pushDiv.element)
-		.appendChild(feature.pushDt.element)
-		.appendChild(feature.pushSvg.element)
-		.appendChild(feature.pushPath.element)
-	feature.pushSvg.element.after("Push to Deploy")
-	feature.pushDiv.element
-		.appendChild(feature.pushDd.element)
-	feature.dl.element
-		.appendChild(feature.sslDiv.element)
-		.appendChild(feature.sslDt.element)
-		.appendChild(feature.sslSvg.element)
-		.appendChild(feature.sslPath.element)
-	feature.sslSvg.element.after("SSL certificates")
-	feature.sslDiv.element
-		.appendChild(feature.sslDd.element)
-	feature.dl.element
-		.appendChild(feature.dbDiv.element)
-		.appendChild(feature.dbDt.element)
-		.appendChild(feature.dbSvg.element)
-		.appendChild(feature.dbPath1.element)
-	feature.dbSvg.element
-		.appendChild(feature.dbPath2.element)
-	feature.dbSvg.element.after("SSL certificates")
-	feature.dbDiv.element
-		.appendChild(feature.dbDd.element)
-	feature.grid.element
-		.appendChild(feature.img.element)
-
-	home.home.element
-		.appendChild(feature.main.element)
-
-
-	return home
-}
-
-
-
-export default Home
-
-
-
+*/
 
