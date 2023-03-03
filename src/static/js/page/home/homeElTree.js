@@ -1,3 +1,5 @@
+import actions from "./actions.js"
+
 
 const homeTree = {
     homeElTree : {
@@ -54,12 +56,12 @@ const homeTree = {
             element : "div",
             classes : ["mt-10", "flex", "items-center", "justify-center", "gap-x-6"]
         },
-        startAEl : {
-            element : "a",
+        startBtnEl : {
+            element : "btn",
             classes : ["rounded-md", "bg-indigo-600", "px-3.5", "py-2.5", "text-sm", "font-semibold", "text-white", "shadow-sm", "hover:bg-indigo-500", "focus-visible:outline", "focus-visible:outline-2", "focus-visible:outlin-offset-2", "focus-visible:outline-indigo-600"],
             text : "GET started",
-            attrs : {
-                href : "#"
+            actions : {
+                click : actions.showHome2Click,
             }
         },
         moreAEl : {

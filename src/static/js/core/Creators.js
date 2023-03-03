@@ -170,16 +170,31 @@ export class SetPage {
 		return this
 	}
 
-	append(parent, child){
-		if(typeof(parent) === "string" && typeof(child) === "string"){
+	append(parent, ...child){
+
+		if(typeof(parent) === "string"){
 			const p = parent.split(".")
-			const c = child.split(".")
-			this.page[p[0]][p[1]].element.appendChild(this.page[c[0]][c[1]].element)
+			let children = []
+			child.map((ch, i) => {
+				children.push(ch.split("."))
+				if(i === 0){
+					this.page[p[0]][p[1]].element.appendChild(this.page[children[i][0]][children[i][1]].element)
+				}else{
+					this.page[children[i-1][0]][children[i-1][1]].element.appendChild(this.page[children[i][0]][children[i][1]].element)
+				}
+				
+			})
 		}else{
-			parent.appendChild(child)
+			let children = []
+			for(let i = 0 ; i < child.length ; i++){
+				if(i === 0){
+					parent.appendChild(child[i])
+				}else{
+					child[i-1].appendChild(child[i])
+				}
+			}
 		}
 		return this
-
 	}
 
 	after(parent, child){

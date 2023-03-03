@@ -2,9 +2,7 @@
 const views = {
 
 	Home : async () => {
-		const {home, Home} = await import("./page/home/Home.js")
-		console.log(Home)
-		Home.page.main.home.element.appendChild(home.home.element)
+		const {default : Home} = await import("./page/home/Home.js")
 		return Home.page.main.home
 	},
 	Todos : async () => {

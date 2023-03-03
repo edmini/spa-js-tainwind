@@ -1,4 +1,4 @@
-import {productBtnClick} from "./actions.js"
+import actions from "./actions.js"
 
 
 const headerTree = {
@@ -45,7 +45,10 @@ const headerTree = {
         },
         toggleBtnEl : {
             element : "button",
-            classes : ["-m-2.5", "inline-flex", "items-center", "justify-center", "rounded-md", "P-2.5", "text-gray-700"]
+            classes : ["-m-2.5", "inline-flex", "items-center", "justify-center", "rounded-md", "P-2.5", "text-gray-700"],
+            actions : {
+                click : actions.mobildShowClick,
+            }
         },
         openSpanEl : {
             element : "span",
@@ -87,7 +90,7 @@ const headerTree = {
                 "aria-expanded" : false,
             },
             actions : {
-                click : productBtnClick,
+                click : actions.productBtnClick,
             }
         },
         productSvgEl : {
@@ -189,6 +192,160 @@ const headerTree = {
         }
     },
 
+    mobileElTree : {
+        mobileEl : {
+            element : "div",
+            classes : ["lg:hidden"],
+            attrs : {
+                role : "dialog",
+                "aria-modal" : true
+            }
+        },
+        outer1El : {
+            element : "div",
+            classes : ["fixed", "inset-0", "z-50"]
+        },
+        outer2El : {
+            element : "div",
+            classes : ["fixed", "h-screen", "inset-y-0", "right-0", "z-50", "w-full", "overflow-y-auto", "bg-white", "px-6", "py-6", "sm:max-w-sm", "sm:ring-1", "sm:ring-gray-900/10"]
+        },
+        logoDivEl : {
+            element : "div",
+            classes : ["flex", "items-center", "justify-between"]
+        },
+        logoAEl : {
+            element : "a",
+            classes : ["-m-1.5", "p-1.5"],
+            attrs : {
+                href : "/"
+            }
+        },
+        logoSpanEl : {
+            element : "span",
+            classes : ["sr-only"],
+            text : "Your Company"
+        },
+        logoImgEl : {
+            element : "img",
+            classes : ["h-8", "w-auto"],
+            attrs : {
+                src : "https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600",
+                alt : "logo"
+            }
+        },
+        closeBtnEl : {
+            element : "button",
+            classes : ["-m-2.5", "rounded-md", "p-2.5", "text-gray-700"],
+            actions : {
+                click : actions.menuCloseClick,
+            }
+        },
+        closeSpanEl : {
+            element : "span",
+            classes : ["sr-only"],
+            text : "Close menu"
+        },
+        closeSvgEl : {
+            element : "svg",
+            classes : ["h-6", "w-6"],
+            attrsNS : {
+                fill : "none",
+                viewBox : "0 0 24 24",
+                "stroke-width" : "1.5",
+                stroke : "currentColor",
+                "aria-hidden" : true
+            }
+        },
+        closePathEl : {
+            element : "path",
+            attrsNS : {
+                "stroke-linecap" : "round",
+                "stroke-linejoin" : "round",
+                d : "M6 18L18 6M6 6l12 12"
+            }
+        },
+        menusDivEl : {
+            element : "div",
+            classes : ["mt-6", "flow-root"]
+        },
+        menusInnerEl : {
+            element : "div",
+            classes : ["-my-6", "divide-y", "divide-gray-500/10"]
+        },
+        menusSpaceEl : {
+            element : "div",
+            classes : ["space-y-2", "py-6"]
+        },
+        btnDivEl : {
+            element : "div",
+            classes : ["-mx-3"]
+        },
+        productBtnEl : {
+            element : "button",
+            classes : ["flex", "w-full", "items-center", "justify-between", "rounded-lg", "py-2", "pl-3", "text-base", "font-semibold", "leading-7", "hover:bg-gray-50"],
+            text : "Product",
+            attrs : {
+                "aria-controls" : "disclosure-1",
+                "aria-expanded" : false
+            },
+
+        },
+        productSvgEl : {
+            element : "svg",
+            classes : ["h-5", "w-5", "flex-none"],
+            attrsNS : {
+                viewBox : "0 0 20 20", 
+                fill : "currentColor",
+                "aria-hidden" : true
+            }
+        },
+        productPathEl : {
+            element : "path",
+            attrsNS : {
+                "fill-rule" : "evenodd",
+                d : "M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z",
+                "clip-rule" : "evenodd"
+            }
+        },
+        productLinkDivEl : {
+            element : "div",
+            classes : ["mt-2", "space-y-2"],
+            id : "discloure-1"
+        },
+        loginDivEl : {
+            element : "div",
+            classes : ["py-6"]
+        },
+        loginAEl : {
+            element : "a",
+            classes : ["-mx-3", "block", "rounded-lg", "py-2.5", "px-3", "text-base", "font-semibold", "leading-7", "text-gray-900", "hover:gb-gray-50", "spa-link"],
+            text : "Log in",
+            attrs : {
+                href : "/login"
+            }
+        },
+    },
+    mobileProductLinkElTree : {
+        productLinkAEl : {
+            element : "a",
+            classes : ["block", "rounded-lg", "py-2", "pl-6", "pr-3", "text-sm", "font-semibold", "leading-7", "text-gray-900", "hover:bg-gray-50", "spa-link"],
+            text : "",
+            attrs : {
+                href : ""
+            }
+        },
+    },
+    mobileLinkElTree : {
+        spaLinkAEl : {
+            element : "a",
+            classes : ["-mx-3", "block", "rounded-lg", "py-2", "text-base", "font-semibold", "leading-7", "text-gray-900", "hover:bg-gray-50", "spa-link"],
+            text : "",
+            attrs : {
+                href : ""
+            }
+        },
+    },
+
     productListElTree : {
         div2El : {
             element : "div",
@@ -276,6 +433,7 @@ const headerTree = {
         {text : "Features", href : "/features"},
         {text : "Marketplace", href : "/marketplace"},
         {text : "Company", href : "/company"},
+        {text : "Todos", href : "/todos"},
     ]
 }
 
