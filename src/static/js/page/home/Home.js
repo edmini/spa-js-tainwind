@@ -5,7 +5,6 @@ import homeTree from "./homeElTree.js"
 export const Home = new SetPage(homeTree.homeElTree)
 Home.append("main.home", "main.main", "main.outer", "main.top", "main.readmore", "main.readmoreA", "main.readmoreSpan")
 	.append("main.outer", "main.titleDiv", "main.titleH1")
-	// .append("main.outer")
 	.append("main.titleDiv", "main.titleP")
 	.append("main.outer", "main.linkGroupDiv")
 	.append("main.linkGroupDiv", "main.startBtn")
@@ -45,9 +44,16 @@ Home3.page.main.pushSvg.element.after("Push to Deploy.")
 Home3.page.main.sslSvg.element.after("SSL certificates.")
 Home3.page.main.dbSvg.element.after("Database backups.")
 
-
 Home.page.main.home.element.appendChild(Home2.page.main.main.element)
-// Home.page.main.home.element.appendChild(Home3.page.main.main.element)
+
+document.addEventListener("scroll", () => {
+	let currentScroll = document.documentElement.scrollTop
+	if(currentScroll > 700){
+		Home.page.main.home.element.appendChild(Home3.page.main.main.element)
+	}
+})
+
+
 
 
 export default Home

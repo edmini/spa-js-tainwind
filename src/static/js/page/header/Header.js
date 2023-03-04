@@ -2,7 +2,24 @@
 import { SetPage } from "../../core/Creators.js"
 import headerTree from "./headerElTree.js"
 
+let currentScroll = null
+
 const Header = new SetPage(headerTree.headerElTree)
+
+
+document.addEventListener("scroll", () =>{
+
+	currentScroll = document.documentElement.scrollTop
+	if(currentScroll > 100){
+		Header.page.main.header.element.classList.remove("bg-white")
+		Header.page.main.header.element.classList.add("backdrop-blur-sm", "bg-white/60")
+	}
+	if(currentScroll < 100){
+		Header.page.main.header.element.classList.remove("backdrop-blur-sm", "bg-white/60")
+		Header.page.main.header.element.classList.add("bg-white")
+	}
+})
+
 Header.listElement("products", headerTree.productList.length, headerTree.productListElTree)
 Header.listElement("link", headerTree.linkList.length, headerTree.spaLinkElTree)
 Header

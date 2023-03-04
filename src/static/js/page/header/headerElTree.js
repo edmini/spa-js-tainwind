@@ -6,7 +6,7 @@ const headerTree = {
     headerElTree : {
         headerEl : {
             element : "header",
-            classes : ["sticky", "top-0", "z-40", "shadow-md", "backdrop-blur-sm", "bg-white/60"]
+            classes : ["sticky", "top-0", "z-40", "shadow-md"]//, "backdrop-blur-sm", "bg-white/60"]
         },
         navEl : {
             element : "nav",
