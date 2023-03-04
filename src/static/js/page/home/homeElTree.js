@@ -44,7 +44,7 @@ const homeTree = {
         },
         titleH1El : {
             element : "h1",
-            classes : ["text-4xl", "font-bold", "tracking-tight", "text-gray-900", "sm:text-6xl"],
+            classes : ["text-4xl", "font-black", "tracking-tight", "text-gray-900", "sm:text-6xl"],
             text : "Data to enrich your online business"
         },
         titlePEl : {
@@ -58,7 +58,7 @@ const homeTree = {
         },
         startBtnEl : {
             element : "btn",
-            classes : ["rounded-md", "bg-indigo-600", "px-3.5", "py-2.5", "text-sm", "font-semibold", "text-white", "shadow-sm", "hover:bg-indigo-500", "focus-visible:outline", "focus-visible:outline-2", "focus-visible:outlin-offset-2", "focus-visible:outline-indigo-600"],
+            classes : ["rounded-md", "bg-indigo-600", "cursor-pointer", "px-3.5", "py-2.5", "text-sm", "font-semibold", "text-white", "shadow-sm", "hover:bg-indigo-500", "focus-visible:outline", "focus-visible:outline-2", "focus-visible:outlin-offset-2", "focus-visible:outline-indigo-600"],
             text : "GET started",
             actions : {
                 click : actions.showHome2Click,
@@ -66,14 +66,16 @@ const homeTree = {
         },
         moreAEl : {
             element : "a",
-            classes : ["text-sm", "font-semibold", "leading-6", "text-gray-900"],
-            text : "Learn more",
+            classes : ["text-indigo-900", "rounded-md", "outline", "outline-1", "outline-indigo-600", "cursor-pointer", "px-3.5", "py-2.5", "text-sm", "font-semibold", "hover:text-indigo-600"],
+            text : "Learn More",
             attrs : {
                 href : "#"
             }
         },
         moreSpanEl : {
             element : "span",
+            classes : ["text-indigo-900"],
+            text : " →",
             attrs : {
                 "aria-hidden" : true
             }
