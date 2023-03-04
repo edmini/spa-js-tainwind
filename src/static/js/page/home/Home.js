@@ -4,9 +4,9 @@ import homeTree from "./homeElTree.js"
 
 export const Home = new SetPage(homeTree.homeElTree)
 Home.append("main.home", "main.main", "main.outer", "main.top", "main.readmore", "main.readmoreA", "main.readmoreSpan")
-	.append("main.outer", "main.titleDiv")
-	.append("main.outer", "main.titleH1")
-	.append("main.outer", "main.titleP")
+	.append("main.outer", "main.titleDiv", "main.titleH1")
+	// .append("main.outer")
+	.append("main.titleDiv", "main.titleP")
 	.append("main.outer", "main.linkGroupDiv")
 	.append("main.linkGroupDiv", "main.startBtn")
 	.append("main.linkGroupDiv", "main.moreA", "main.moreSpan")
