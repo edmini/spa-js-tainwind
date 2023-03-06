@@ -4,9 +4,10 @@ import views from './Views.js'
 
 const body = document.querySelector("body")
 const app = document.querySelector("#app")
-body.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100")
+body.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100")//https://hypercolor.dev/
 app.before(Header.page.main.header.element)
-//https://hypercolor.dev/
+
+
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$")
 
 const getParams = (match) => {
