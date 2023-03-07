@@ -1,11 +1,14 @@
 
 import Header from './page/header/Header.js'
+import Header2 from './page/header/Header2.js'
 import views from './Views.js'
+
 
 const body = document.querySelector("body")
 const app = document.querySelector("#app")
 body.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100")//https://hypercolor.dev/
 app.before(Header.page.main.header.element)
+// app.before(Header2.page.main.nav.element)
 
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$")
@@ -66,5 +69,13 @@ document.addEventListener("DOMContentLoaded", ()=>{
 	render()
 })
 
-
+//show/hide 
+document.addEventListener("click", (e) => {
+	if(!Header2.page.main.profileSubDiv.element.contains(e.target)){
+		Header2.page.main.profileSubDiv.element.classList.add("hidden")
+	}
+	if(!Header.page.main.productDiv0.element.classList.contains(e.target)){
+		Header.page.main.productDiv0.element.classList.add("hidden")
+	}
+})
 

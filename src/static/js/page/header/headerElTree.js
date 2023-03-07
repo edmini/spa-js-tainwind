@@ -1,4 +1,4 @@
-import actions from "./actions.js"
+import actionsGroup from "./actions.js"
 
 
 const headerTree = {
@@ -47,7 +47,7 @@ const headerTree = {
             element : "button",
             classes : ["-m-2.5", "inline-flex", "items-center", "justify-center", "rounded-md", "P-2.5", "text-gray-700"],
             actions : {
-                click : actions.mobildShowClick,
+                click : actionsGroup.mobildShowClick,
             }
         },
         openSpanEl : {
@@ -90,7 +90,7 @@ const headerTree = {
                 "aria-expanded" : false,
             },
             actions : {
-                click : actions.productBtnClick,
+                click : actionsGroup.productBtnClick,
             }
         },
         productSvgEl : {
@@ -237,7 +237,7 @@ const headerTree = {
             element : "button",
             classes : ["-m-2.5", "rounded-md", "p-2.5", "text-gray-700"],
             actions : {
-                click : actions.menuCloseClick,
+                click : actionsGroup.menuCloseClick,
             }
         },
         closeSpanEl : {
