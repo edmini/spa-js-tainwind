@@ -11,7 +11,6 @@ Header2.append("main.nav", "main.outerDiv", "main.innerDiv", "main.toggleDiv", "
 Header2.append("main.toggleBtn", "main.closeSvg", "main.closePath")
 Header2.append("main.toggleBtn", "main.openSvg", "main.openPath")
 Header2.append("main.innerDiv", "main.logoOuterDiv", "main.logoDiv", "main.logoA", "main.logoImg")
-// Header2.append("main.logoDiv", "main.hiddenImg")
 Header2.append("main.logoOuterDiv", "main.linkOuterDiv", "main.linkInnerDiv")
 Header2.append("main.innerDiv", "main.bellDiv", "main.bellBtn", "main.bellSpan")
 Header2.append("main.bellBtn", "main.bellSvg", "main.bellPath")

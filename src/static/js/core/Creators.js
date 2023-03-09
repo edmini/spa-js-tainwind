@@ -2,7 +2,7 @@
 
 export class Create {
 	element = null
-	path = null
+
 	constructor(element){
 		if(element.element === "svg" || element.element === "path"){
 			this.element = document.createElementNS("http://www.w3.org/2000/svg", element.element)
@@ -11,6 +11,7 @@ export class Create {
 		}
 
 		element.classes && this.setClasses(element.classes)
+		element.class && this.setClass(element.class)
 		element.id && this.setId(element.id)
 		element.text && this.setText(element.text)
 		element.attrs && this.setAttrs(element.attrs)
@@ -23,9 +24,8 @@ export class Create {
 		const tagClass = classes.join(" ")
 		this.element.setAttribute("class", tagClass)
 	}
-	setClass(...tagClass){
-		const classList = tagClass.join(tagClass)
-		this.element.setAttribute("class", classList)
+	setClass(tagClass){
+		this.element.setAttribute("class", tagClass)
 	}
 	setId(tagId){
 		this.element.setAttribute("id", tagId)
