@@ -26,6 +26,7 @@ const actionsGroup = {
         Header2.page.main.mobileDiv.element.classList.toggle("hidden")
         Header2.page.main.closeSvg.element.classList.toggle("hidden")
         Header2.page.main.openSvg.element.classList.toggle("hidden")
+
     }
 }
 

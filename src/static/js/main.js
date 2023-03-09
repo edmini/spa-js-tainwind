@@ -7,8 +7,8 @@ import views from './Views.js'
 const body = document.querySelector("body")
 const app = document.querySelector("#app")
 body.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100")//https://hypercolor.dev/
-app.before(Header.page.main.header.element)
-// app.before(Header2.page.main.nav.element)
+// app.before(Header.page.main.header.element)
+app.before(Header2.page.main.nav.element)
 
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$")
@@ -76,6 +76,11 @@ document.addEventListener("click", (e) => {
 	}
 	if(!Header.page.main.productDiv0.element.classList.contains(e.target)){
 		Header.page.main.productDiv0.element.classList.add("hidden")
+	}
+	if(!Header2.page.main.mobileDiv.element.classList.contains(e.target)){
+		Header2.page.main.mobileDiv.element.classList.add("hidden")
+		Header2.page.main.closeSvg.element.classList.remove("hidden")
+		Header2.page.main.openSvg.element.classList.add("hidden")
 	}
 })
 

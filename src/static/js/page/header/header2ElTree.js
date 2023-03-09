@@ -37,7 +37,7 @@ const headerTree = {
         },
         closeSvgEl : {
             element : "svg",
-            classes : ["h-6", "w-6"],
+            classes : ["hidden", "h-6", "w-6"],
             attrsNS : {
                 fill : "noen",
                 viewBox : "0 0 24 24",
@@ -56,7 +56,7 @@ const headerTree = {
         },
         openSvgEl : {
             element : "svg",
-            classes : ["hidden", "h-6", "w-6"],
+            classes : ["h-6", "w-6"],
             attrsNS : {
                 fill : "none",
                 viewBox : "0 0 24 24",
