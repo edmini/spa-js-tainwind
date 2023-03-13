@@ -5,7 +5,6 @@ const actionsGroup = {
         Header.page.main.productDiv0.element.classList.toggle("hidden")
     },
     menuCloseClick : async () => {
-        console.log(Header.page.main.header.element.lastChild)
         const {default : Header} = await import("./Header.js")
         Header.page.main.header.element.lastChild.classList.add("hidden")
     },
@@ -15,6 +14,7 @@ const actionsGroup = {
     },
     showHome2Click : async () => {
         const {default : Home} = await import("../home/Home.js")
+        const {Home3} = await import("../home/Home.js")
         Home.page.main.home.element.appendChild(Home3.page.main.main.element)
     },
     showProfileClick : async () => {

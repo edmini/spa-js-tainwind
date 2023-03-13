@@ -10,7 +10,6 @@ body.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yel
 app.before(Header.page.main.header.element)
 // app.before(Header2.page.main.nav.element)
 
-
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$")
 
 const getParams = (match) => {
@@ -25,6 +24,7 @@ const render = async () => {
 	const routes = [
 		{path : "/", view : views.Home},
 		{path : "/todos", view : views.Todos},
+		{path : "/calendar", view : views.Calendar},
 	]
 
 	const potentialMatchs = routes.map((route) => {
@@ -76,6 +76,9 @@ document.addEventListener("click", (e) => {
 	}
 	if(!Header.page.main.productDiv0.element.classList.contains(e.target)){
 		Header.page.main.productDiv0.element.classList.add("hidden")
+	}
+	if(!Header.page.main.header.element.lastChild.classList.contains(e.target)){
+		Header.page.main.header.element.lastChild.classList.add("hidden")
 	}
 	if(!Header2.page.main.mobileDiv.element.classList.contains(e.target)){
 		Header2.page.main.mobileDiv.element.classList.add("hidden")

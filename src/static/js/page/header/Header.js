@@ -48,7 +48,7 @@ Header.page.link.map((link, i) => {
 	Header.append(Header.page.main.menusDiv.element, link.spaLink.element)
 })
 
-const MobileHeader = new SetPage(headerTree.mobileElTree)
+export const MobileHeader = new SetPage(headerTree.mobileElTree)
 MobileHeader.listElement("link", headerTree.linkList.length, headerTree.mobileLinkElTree)
 MobileHeader.listElement("products", headerTree.productList.length, headerTree.mobileProductLinkElTree)
 MobileHeader
