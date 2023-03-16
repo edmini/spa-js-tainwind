@@ -23,16 +23,28 @@ const calendarElTree = {
             classes : ["pt-5", "text-gray-500", "text-3xl"],
             text : "Calendar"
         },
+        weekDivEl : {
+            element : "div",
+            classes : ["grid", "flex-grow", "w-full", "grid-cold-7", "gap-px", "pt-px", "bg-white"]
+        },
         monGridDivEl : {
             element : "div",
-            classes : ["grid", "flex-grow", "w-full", "h-auto", "grid-cols-7", "grid-rows-5", "gap-px", "pt-px", "mt-1", "bg-gray-300"]
+            classes : ["grid", "flex-grow", "w-full", "h-auto", "grid-cols-7", "grid-rows-5", "gap-px", "pt-px", "mt-1", "bg-gray-300", "rounded-sm"]
         },
     
+    },
+    calWeekTitleElTree : {
+        weekTitleDivEl : {
+            element : "div",
+        },
+        weekTitleEl : {
+            element : "h3",
+        }
     },
     calMonCellElTree : {
         monCellDivEl : {
             element : "div",
-            classes : ["relative", "flex", "flex-col", "bg-white", "group","text-gray-800"]
+            classes : ["relative", "flex", "flex-col", "bg-white", "group","text-gray-800", "rounded-sm"]
         },
         monCellTitleEl : {
             element : "h1",
