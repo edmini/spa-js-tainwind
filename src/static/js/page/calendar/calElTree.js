@@ -8,7 +8,7 @@ const calendarElTree = {
         },
         monOuterDivEl : {
             element : "div",
-            classes : ["flex", "flex-grow", "w-full", "h-[calc(100vh-80px)]","overflow-auto"]
+            classes : ["flex", "flex-grow", "w-full", "h-[calc(100vh-80px)]","overflow-auto", "pb-10"]
         },
         monInnerDivEl : {
             element : "div",
@@ -16,42 +16,47 @@ const calendarElTree = {
         },
         titleDivEl : {
             element : "div",
-            classes : ["h-20", "bg-white", "text-center"]
+            classes : ["h-20", "text-center"]
         },
         titleEl : {
             element : "h1",
-            classes : ["pt-5", "text-gray-500", "text-3xl"],
-            text : "Calendar"
+            classes : ["pt-3", "pb-3", "text-gray-600", "text-4xl", "bg-white"],
+            text : ""
         },
-        weekDivEl : {
+        weekNameDivEl : {
             element : "div",
-            classes : ["grid", "flex-grow", "w-full", "grid-cold-7", "gap-px", "pt-px", "bg-white"]
+            classes : ["grid", "w-full", "h-10", "grid-cols-7", "gap-px", "pt-px", "bg-gray-300"]
         },
         monGridDivEl : {
             element : "div",
-            classes : ["grid", "flex-grow", "w-full", "h-auto", "grid-cols-7", "grid-rows-5", "gap-px", "pt-px", "mt-1", "bg-gray-300", "rounded-sm"]
+            classes : ["grid", "flex-grow", "w-full", "h-auto", "grid-cols-7", "grid-rows-6", "gap-px", "pt-px", "mt-1", "bg-gray-300", "rounded-sm"]
         },
     
     },
     calWeekTitleElTree : {
         weekTitleDivEl : {
             element : "div",
+            classes : ["relative", "flex", "flex-col", "group", "bg-white", "xl:pl-3", "pt-2"]
         },
         weekTitleEl : {
-            element : "h3",
+            element : "p",
+            classes : ["text-sm"],
+            text : ""
         }
     },
     calMonCellElTree : {
         monCellDivEl : {
             element : "div",
-            classes : ["relative", "flex", "flex-col", "bg-white", "group","text-gray-800", "rounded-sm"]
+            classes : ["relative", "flex", "flex-col", "bg-white", "group", "text-gray-800", "rounded-sm"]
         },
         monCellTitleEl : {
             element : "h1",
             classes : ["m-1.5", "p-1.5", "rounded-full", "w-7", "text-xs", "font-bold"],
             text : ""
         }
-    }
+    },
+
+    weekName : ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
     
 }
 
