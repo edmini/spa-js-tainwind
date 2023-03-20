@@ -1,7 +1,11 @@
 
 const actions = {
-    test : (e) => {
-        console.log(e.target.value)
+    newSchedule : (e) => {
+        console.log(e.target)
+    },
+    editSchedule : (e) => {
+        console.log(e.target)
+        //event bubbling issue!!
     }
 }
 

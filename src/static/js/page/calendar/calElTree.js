@@ -48,6 +48,9 @@ const calendarElTree = {
         monCellDivEl : {
             element : "div",
             classes : ["relative", "flex", "flex-col", "bg-white", "group", "text-gray-800", "rounded-sm", "drag-zone"],
+            actions : {
+                dblclick : actions.newSchedule,
+            }
         },
         monCellTitleEl : {
             element : "h1",
@@ -62,6 +65,9 @@ const calendarElTree = {
             attrs : {
                 draggable : true,
             },
+            actions : {
+                dblclick : actions.editSchedule,
+            }
         },
         itemPEl : {
             element : "p",
