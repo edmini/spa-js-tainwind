@@ -60,8 +60,9 @@ document.addEventListener("DOMContentLoaded", ()=>{
 		if(e.target.tagName === "INPUT"|| e.target.tagName !== "A"){
 			return
 		}
-		const classNames = e.target.getAttribute("class").split(" ")
-		if( classNames.find((res)=>res==='spa-link') === "spa-link" ){
+		// const classNames = e.target.getAttribute("class").split(" ")
+		// if( classNames.find((res)=>res==='spa-link') === "spa-link" ){ // e.target.classList.contains("spa-link")
+		if(e.target.classList.contains("spa-link")){
 			e.preventDefault()
 			navigateTo(e.target.href)
 		}

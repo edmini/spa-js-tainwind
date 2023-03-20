@@ -1,4 +1,4 @@
-
+import actions from "./actions.js"
 
 const calendarElTree = {
     calMonthElTree : {
@@ -47,13 +47,31 @@ const calendarElTree = {
     calMonCellElTree : {
         monCellDivEl : {
             element : "div",
-            classes : ["relative", "flex", "flex-col", "bg-white", "group", "text-gray-800", "rounded-sm"]
+            classes : ["relative", "flex", "flex-col", "bg-white", "group", "text-gray-800", "rounded-sm", "drag-zone"],
         },
         monCellTitleEl : {
             element : "h1",
             classes : ["m-1.5", "p-1.5", "rounded-full", "w-7", "text-xs", "font-bold"],
             text : ""
         }
+    },
+    calItemElTree : {
+        itemDivEl : {
+            element : "div",
+            classes : ["flex", "justify-between", "text-white", "text-xs", "-mt-2", "mb-3", "mx-1", "px-2", "bg-blue-500", "rounded-md"],
+            attrs : {
+                draggable : true,
+            },
+        },
+        itemPEl : {
+            element : "p",
+            classes : ["truncate", "w-20"],
+            text : ""
+        },
+        itemSpanEl : {
+            element : "span",
+            text : ""
+        },
     },
 
     weekName : ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]

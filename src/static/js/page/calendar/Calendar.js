@@ -1,5 +1,6 @@
 import calendarElTree from "./calElTree.js"
 import { SetPage } from "../../core/Creators.js"
+import calDatas from "./calData.js"
 
 const date = new Date()
 const TODAY = date.getDate()
@@ -9,6 +10,8 @@ const LASTWEEK = new Date(YEAR, MONTH, 0).getDate()
 const STARTWEEK = new Date(YEAR, MONTH, 1).getDay()
 const THISALLDAY = new Date(YEAR, MONTH+1, 0).getDate()
 
+let dragged = null
+
 
 const Calendar = new SetPage(calendarElTree.calMonthElTree)
 
@@ -16,8 +19,9 @@ Calendar.listElement("days", 31, calendarElTree.calMonCellElTree)
 Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
 Calendar.listElement("lastDay", STARTWEEK, calendarElTree.calMonCellElTree)
 Calendar.listElement("nextDay", 42-(STARTWEEK+THISALLDAY), calendarElTree.calMonCellElTree)
+Calendar.listElement("items", calDatas.length, calendarElTree.calItemElTree)
 
-Calendar.page.main.title.element.innerText = `${YEAR}년 ${MONTH}월`
+Calendar.page.main.title.element.innerText = `${YEAR}년 ${MONTH+1}월`
 
 Calendar
     .append("main.main", "main.monOuterDiv", "main.monInnerDiv", "main.titleDiv", "main.title")
@@ -46,6 +50,7 @@ Calendar.page.lastDay.map((last, i) => {
         .append(Calendar.page.main.monGridDiv.element, last.monCellDiv.element)
 })
 
+
 Calendar.page.days.map((day, i) => {
     ((i+STARTWEEK)/7 === 1 || (i+STARTWEEK)/14 === 1 || (i+STARTWEEK)/21 === 1 || (i+STARTWEEK)/28 === 1 || (i+STARTWEEK)/35 === 1)
         && day.monCellTitle.element.classList.add("text-red-500");
@@ -58,6 +63,16 @@ Calendar.page.days.map((day, i) => {
     if( (i+1) === TODAY ){
         day.monCellTitle.element.classList.add("bg-blue-500", "text-white")
     }
+    day.monCellDiv.element.addEventListener("dragover", (e) => {
+        e.preventDefault()
+    })
+    day.monCellDiv.element.addEventListener("drop", (e) => {
+        e.preventDefault()
+        if(e.target.classList.contains("drag-zone")){
+            e.target.appendChild(dragged)
+        }
+
+    })
     Calendar
         .append(day.monCellDiv.element, day.monCellTitle.element)
         .append(Calendar.page.main.monGridDiv.element, day.monCellDiv.element)
@@ -78,7 +93,28 @@ Calendar.page.nextDay.map((nextday, i)=>{
         .append(nextday.monCellDiv.element, nextday.monCellTitle.element)
         .append(Calendar.page.main.monGridDiv.element, nextday.monCellDiv.element)
 })
+
+Calendar.page.items.map((item, i) => {
+    const startDate = new Date(calDatas[i].start)
+    const today = startDate.getDate()
+
+    item.itemDiv.element.addEventListener("dragstart", (e) => {
+        dragged = e.target
+    })
+
+    item.itemP.element.innerText = calDatas[i].title
+    item.itemSpan.element.innerText = `${startDate.getHours()} : ${startDate.getMinutes()}`
+
+    Calendar
+        .append(item.itemDiv.element, item.itemP.element)
+        .append(item.itemDiv.element, item.itemSpan.element)
+        .append(Calendar.page.days[today].monCellDiv.element, item.itemDiv.element)
+        
+})
+
 // console.log(Calendar)
+
+
 
 
 export default Calendar
