@@ -61,13 +61,17 @@ const calendarElTree = {
     calItemElTree : {
         itemDivEl : {
             element : "div",
-            classes : ["flex", "justify-between", "text-white", "text-xs", "-mt-2", "mb-3", "mx-1", "px-2", "bg-blue-500", "rounded-md"],
+            classes : ["flex", "justify-between", "text-xs", "-mt-2", "mb-3", "mx-1", "px-2"],
             attrs : {
                 draggable : true,
             },
             actions : {
-                dblclick : actions.editSchedule,
+                click : actions.editSchedule,
             }
+        },
+        itemCircleEl : {
+            element : "span",
+            classes : ["w-3", "h-3", "rounded-full", "bg-blue-300"]
         },
         itemPEl : {
             element : "p",

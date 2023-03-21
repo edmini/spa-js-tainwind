@@ -4,30 +4,30 @@ import calDatas from "./calData.js"
 
 const date = new Date()
 const TODAY = date.getDate()
-const MONTH = date.getMonth()
+const MONTH = date.getMonth() + 1
 const YEAR = date.getFullYear()
-const LASTWEEK = new Date(YEAR, MONTH, 0).getDate()
-const STARTWEEK = new Date(YEAR, MONTH, 1).getDay()
-const THISALLDAY = new Date(YEAR, MONTH+1, 0).getDate()
+const STARTWEEK = new Date(YEAR, MONTH-1, 1).getDay()
+const NEXTMONWEEK = new Date(YEAR, MONTH, 1).getDay()
+const LASTALLDAY = new Date(YEAR, MONTH-1, 0).getDate()
+const THISALLDAY = new Date(YEAR, MONTH, 0).getDate()
 
-let dragged = null
-
+let dragged = null //drag item
 
 const Calendar = new SetPage(calendarElTree.calMonthElTree)
 
-Calendar.listElement("days", 31, calendarElTree.calMonCellElTree)
-Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
-Calendar.listElement("lastDay", STARTWEEK, calendarElTree.calMonCellElTree)
-Calendar.listElement("nextDay", 42-(STARTWEEK+THISALLDAY), calendarElTree.calMonCellElTree)
-Calendar.listElement("items", calDatas.length, calendarElTree.calItemElTree)
-
-Calendar.page.main.title.element.innerText = `${YEAR}년 ${MONTH+1}월`
-
+Calendar.page.main.title.element.innerText = `${YEAR}년 ${MONTH}월`
 Calendar
     .append("main.main", "main.monOuterDiv", "main.monInnerDiv", "main.titleDiv", "main.title")
     .append("main.monInnerDiv", "main.weekNameDiv")
     .append("main.monInnerDiv", "main.monGridDiv")
 
+Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
+Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
+Calendar.listElement("lastDay", STARTWEEK, calendarElTree.calMonCellElTree)
+Calendar.listElement("nextDay", 42-(STARTWEEK+THISALLDAY), calendarElTree.calMonCellElTree)
+Calendar.listElement("items", calDatas.length, calendarElTree.calItemElTree)
+
+// Week Name List
 Calendar.page.weekName.map((week, i) => {
     i === 0 && week.weekTitle.element.classList.add("text-red-500");
     i === 6 && week.weekTitle.element.classList.add("text-blue-600");
@@ -37,7 +37,8 @@ Calendar.page.weekName.map((week, i) => {
         .append(Calendar.page.main.weekNameDiv.element, week.weekTitleDiv.element)
 })
 
-let lastday = LASTWEEK - STARTWEEK + 1
+// Last Month
+let lastday = LASTALLDAY - STARTWEEK + 1
 Calendar.page.lastDay.map((last, i) => {
     i === 0 && last.monCellTitle.element.classList.add("text-red-400")
     i === 6 && last.monCellTitle.element.classList.add("text-blue-400")
@@ -52,17 +53,15 @@ Calendar.page.lastDay.map((last, i) => {
 
 
 Calendar.page.days.map((day, i) => {
-    ((i+STARTWEEK)/7 === 1 || (i+STARTWEEK)/14 === 1 || (i+STARTWEEK)/21 === 1 || (i+STARTWEEK)/28 === 1 || (i+STARTWEEK)/35 === 1)
-        && day.monCellTitle.element.classList.add("text-red-500");
-    ((i+STARTWEEK) === 6 || (i+STARTWEEK) === 13 || (i+STARTWEEK) === 20 || (i+STARTWEEK) === 27 || (i+STARTWEEK) === 34)
-        && day.monCellTitle.element.classList.add("text-blue-600");
+    (STARTWEEK + i + 1) % 7 === 1 && day.monCellTitle.element.classList.add("text-red-500");
+    (STARTWEEK + i + 1) % 7 === 0 && day.monCellTitle.element.classList.add("text-blue-600");
     
+    (i+1) === TODAY && day.monCellTitle.element.classList.add("bg-blue-500", "text-white")
     let dayNum = 0
     i < 9 ? dayNum = "0"+(i+1) : dayNum = i+1
     day.monCellTitle.element.innerText = dayNum
-    if( (i+1) === TODAY ){
-        day.monCellTitle.element.classList.add("bg-blue-500", "text-white")
-    }
+
+    //Drag
     day.monCellDiv.element.addEventListener("dragover", (e) => {
         e.preventDefault()
     })
@@ -71,7 +70,6 @@ Calendar.page.days.map((day, i) => {
         if(e.target.classList.contains("drag-zone")){
             e.target.appendChild(dragged)
         }
-
     })
     Calendar
         .append(day.monCellDiv.element, day.monCellTitle.element)
@@ -79,10 +77,8 @@ Calendar.page.days.map((day, i) => {
 })
 
 Calendar.page.nextDay.map((nextday, i)=>{
-    ((i+LASTWEEK)/29 === 1 || (i+LASTWEEK)/36 === 1 )
-        && nextday.monCellTitle.element.classList.add("text-red-400");
-    ((i+LASTWEEK) === 28 || (i+LASTWEEK) === 35)
-        && nextday.monCellTitle.element.classList.add("text-blue-400");
+    (NEXTMONWEEK + i + 1) % 7 === 1 && nextday.monCellTitle.element.classList.add("text-red-400");
+    (NEXTMONWEEK + i + 1) % 7 === 0 && nextday.monCellTitle.element.classList.add("text-blue-400");
     
     nextday.monCellDiv.element.classList.remove("bg-white", "text-gray-800")
     nextday.monCellDiv.element.classList.add("bg-gray-100", "text-gray-500")
@@ -96,25 +92,40 @@ Calendar.page.nextDay.map((nextday, i)=>{
 
 Calendar.page.items.map((item, i) => {
     const startDate = new Date(calDatas[i].start)
-    const today = startDate.getDate()
+    const eventMonth = startDate.getMonth() + 1
+    const eventDay = startDate.getDate() - 1
 
     item.itemDiv.element.addEventListener("dragstart", (e) => {
         dragged = e.target
     })
-
     item.itemP.element.innerText = calDatas[i].title
     item.itemSpan.element.innerText = `${startDate.getHours()} : ${startDate.getMinutes()}`
-
-    Calendar
-        .append(item.itemDiv.element, item.itemP.element)
-        .append(item.itemDiv.element, item.itemSpan.element)
-        .append(Calendar.page.days[today].monCellDiv.element, item.itemDiv.element)
-        
+    if(eventMonth === MONTH){
+        Calendar
+            .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
+            .append(item.itemDiv.element, item.itemP.element)
+            .append(item.itemDiv.element, item.itemSpan.element)
+            .append(Calendar.page.days[eventDay].monCellDiv.element, item.itemDiv.element)
+    }else if(eventMonth === MONTH - 1){
+        const thisEventDay = (eventDay - LASTALLDAY) + STARTWEEK // lastMonth
+        if(thisEventDay >= 0){
+            Calendar
+                .append(item.itemDiv.element, item.itemCircle.element)
+                .append(item.itemDiv.element, item.itemP.element)
+                .append(item.itemDiv.element, item.itemSpan.element)
+                .append(Calendar.page.lastDay[thisEventDay].monCellDiv.element, item.itemDiv.element)
+        }
+    }else if(eventMonth === MONTH + 1){
+        if(eventDay < Calendar.page.nextDay.length){
+            Calendar
+                .append(item.itemDiv.element, item.itemCircle.element)
+                .append(item.itemDiv.element, item.itemP.element)
+                .append(item.itemDiv.element, item.itemSpan.element)
+                .append(Calendar.page.nextDay[eventDay].monCellDiv.element, item.itemDiv.element)
+        }
+    }
 })
 
 // console.log(Calendar)
-
-
-
 
 export default Calendar
