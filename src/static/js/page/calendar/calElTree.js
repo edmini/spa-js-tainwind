@@ -71,7 +71,7 @@ const calendarElTree = {
         },
         itemCircleEl : {
             element : "span",
-            classes : ["w-3", "h-3", "rounded-full", "bg-blue-300"]
+            classes : ["w-3", "h-3", "rounded-full"]
         },
         itemPEl : {
             element : "p",
@@ -80,6 +80,7 @@ const calendarElTree = {
         },
         itemSpanEl : {
             element : "span",
+            classes : ["hidden", "lg:block"],
             text : ""
         },
     },

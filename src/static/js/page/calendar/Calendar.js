@@ -1,6 +1,6 @@
 import calendarElTree from "./calElTree.js"
 import { SetPage } from "../../core/Creators.js"
-import calDatas from "./calData.js"
+import {calDatas, catColor} from "./calData.js"
 
 const date = new Date()
 const TODAY = date.getDate()
@@ -68,7 +68,10 @@ Calendar.page.days.map((day, i) => {
     day.monCellDiv.element.addEventListener("drop", (e) => {
         e.preventDefault()
         if(e.target.classList.contains("drag-zone")){
-            e.target.appendChild(dragged)
+            console.log(i)
+            console.log(dragged[0])
+            console.log("calData[dragged[1]].id : ", dragged[1])
+            e.target.appendChild(dragged[0])
         }
     })
     Calendar
@@ -90,16 +93,24 @@ Calendar.page.nextDay.map((nextday, i)=>{
         .append(Calendar.page.main.monGridDiv.element, nextday.monCellDiv.element)
 })
 
+const getFullTimeNum = (time) => {
+    if(time < 10){
+        return "0"+time
+    }
+    return time
+}
+
 Calendar.page.items.map((item, i) => {
     const startDate = new Date(calDatas[i].start)
     const eventMonth = startDate.getMonth() + 1
     const eventDay = startDate.getDate() - 1
 
     item.itemDiv.element.addEventListener("dragstart", (e) => {
-        dragged = e.target
+        dragged = [e.target, calDatas[i].id]
     })
     item.itemP.element.innerText = calDatas[i].title
-    item.itemSpan.element.innerText = `${startDate.getHours()} : ${startDate.getMinutes()}`
+    item.itemCircle.element.classList.add(catColor[calDatas[i].category])
+    item.itemSpan.element.innerText = `${getFullTimeNum(startDate.getHours())} : ${getFullTimeNum(startDate.getMinutes())}`
     if(eventMonth === MONTH){
         Calendar
             .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
