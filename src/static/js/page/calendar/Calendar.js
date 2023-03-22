@@ -1,22 +1,22 @@
 import calendarElTree from "./calElTree.js"
 import { SetPage } from "../../core/Creators.js"
 import {calDatas, catColor} from "./calData.js"
-import {date, TODAY, MONTH, YEAR, STARTWEEK, NEXTMONWEEK, LASTALLDAY, THISALLDAY} from './actions.js'
+// import {date, TODAY, MONTH, YEAR, STARTWEEK, NEXTMONWEEK, LASTALLDAY, THISALLDAY} from './actions.js'
 
-// let date = new Date()
-// const TODAY = date.getDate()
-// const MONTH = date.getMonth() + 1
-// const YEAR = date.getFullYear()
-// const STARTWEEK = new Date(YEAR, MONTH-1, 1).getDay()
-// const NEXTMONWEEK = new Date(YEAR, MONTH, 1).getDay()
-// const LASTALLDAY = new Date(YEAR, MONTH-1, 0).getDate()
-// const THISALLDAY = new Date(YEAR, MONTH, 0).getDate()
+let date = new Date()
+const TODAY = date.getDate()
+const MONTH = date.getMonth() + 1
+const YEAR = date.getFullYear()
+const STARTWEEK = new Date(YEAR, MONTH-1, 1).getDay()
+const NEXTMONWEEK = new Date(YEAR, MONTH, 1).getDay()
+const LASTALLDAY = new Date(YEAR, MONTH-1, 0).getDate()
+const THISALLDAY = new Date(YEAR, MONTH, 0).getDate()
 
 let dragged = null //drag item
 
 const Calendar = new SetPage(calendarElTree.calMonthElTree)
 
-Calendar.page.main.title.element.innerText = `${YEAR}년 ${MONTH}월`
+Calendar.page.main.title.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
 Calendar
     .append("main.main", "main.monOuterDiv", "main.monInnerDiv", "main.titleDiv", "main.title")
     .append("main.monInnerDiv", "main.weekNameDiv")
