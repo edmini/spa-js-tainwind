@@ -1,9 +1,27 @@
 import calendarElTree from "./calElTree.js"
 import { SetPage } from "../../core/Creators.js"
 import {calDatas, catColor} from "./calData.js"
-// import {date, TODAY, MONTH, YEAR, STARTWEEK, NEXTMONWEEK, LASTALLDAY, THISALLDAY} from './actions.js'
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const year = urlParams.get('year')
+const month = urlParams.get('month')
+const day = urlParams.get('day')
+console.log(day);
+
+const cal = await fetch("/apis")
+const res = await cal.json()
+console.log(res.title)
+// console.log(cal)
 
 let date = new Date()
+if(year || month || day){
+    let y, m, d = null
+    year ? y = year : y = date.getFullYear()
+    month ? m = month : m = date.getMonth()+1
+    day ? d = day : d = date.getDate()
+    date = new Date(`${y}-${m}-${d}`)
+}
 const TODAY = date.getDate()
 const MONTH = date.getMonth() + 1
 const YEAR = date.getFullYear()
@@ -139,7 +157,7 @@ Calendar.page.items.map((item, i) => {
 })
 
 
-const CalMobile = new SetPage(calendarElTree.calMobileElTree)
+export const CalMobile = new SetPage(calendarElTree.calMobileElTree)
 
 Calendar.page.main.main.element.appendChild(CalMobile.page.main.mobileMain.element)
 
@@ -153,9 +171,9 @@ CalMobile
     .append("main.mobileMain", "main.outerDiv", "main.innerCalDiv", "main.calOuterDiv", "main.titleSpan")
     .append("main.calOuterDiv", "main.prevNextBtnDiv")
     .append("main.prevNextBtnDiv", "main.prevBtn", "main.prevSvg", "main.prevPath")
-    .append("main.prevSvg", "main.prevPolyline")
+    // .append("main.prevSvg", "main.prevPolyline")
     .append("main.prevNextBtnDiv", "main.nextBtn", "main.nextSvg", "main.nextPath")
-    .append("main.nextSvg", "main.nextPolyline")
+    // .append("main.nextSvg", "main.nextPolyline")
     .append("main.outerDiv", "main.calTableDiv", "main.calTable", "main.calThead", "main.calTheadTr")
     .append("main.calTable", "main.calTbody")
     .append("main.calTbody", "main.calTbodyTr1")
@@ -192,7 +210,7 @@ CalMobile.page.td.map((day, i) =>{
     if(i < 7-STARTWEEK){
         if(i+1 === TODAY){
             CalMobile
-                .append(day.calTd.element, Calendar.page.main.calTodayTdDiv.element, Calendar.page.main.calTodayDiv.element, Calendar.page.main.calTodayA.element)
+                .append(day.calTd.element, CalMobile.page.main.calTodayTdDiv.element, CalMobile.page.main.calTodayDiv.element, CalMobile.page.main.calTodayA.element)
         }else{
             CalMobile
                 .append(day.calTd.element, day.calTdDiv.element, day.calTdP.element)
@@ -202,7 +220,7 @@ CalMobile.page.td.map((day, i) =>{
     }else if(i < 14-STARTWEEK){
         if(i+1 === TODAY){
             CalMobile
-                .append(day.calTd.element, Calendar.page.main.calTodayTdDiv.element, Calendar.page.main.calTodayDiv.element, Calendar.page.main.calTodayA.element)
+                .append(day.calTd.element, CalMobile.page.main.calTodayTdDiv.element, CalMobile.page.main.calTodayDiv.element, CalMobile.page.main.calTodayA.element)
         }else{
             CalMobile
                 .append(day.calTd.element, day.calTdDiv.element, day.calTdP.element)

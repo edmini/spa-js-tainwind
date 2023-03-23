@@ -25,6 +25,7 @@ const render = async () => {
 		{path : "/", view : views.Home},
 		{path : "/todos", view : views.Todos},
 		{path : "/calendar", view : views.Calendar},
+		{path : "/calendar:type", view : views.Calendar},
 	]
 
 	const potentialMatchs = routes.map((route) => {

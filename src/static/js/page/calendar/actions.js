@@ -1,3 +1,5 @@
+import {CalMobile} from "./Calendar.js"
+
 
 export let date = new Date()
 
@@ -13,6 +15,11 @@ const actions = {
         // console.log(e.target)
         date = new Date("2023-07-01")
         console.log(date)
+    },
+    selDay : (e) => {
+        console.log(e.target.innerText)
+        const num = e.target.innerText - 1
+        console.log(CalMobile.page.td[num])
     }
 }
 

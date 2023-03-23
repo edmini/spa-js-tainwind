@@ -97,7 +97,7 @@ const calendarElTree = {
         },
         innerCalDivEl : {
             element : "div",
-            classes : ["md:p-8", "p-5", "dark:bg-gray-800", "bg-white", "rounded-t"]
+            classes : ["md:p-8", "p-5", "dark:bg-gray-800", "bg-gray-50", "rounded-t"]
         },
         calOuterDivEl : {
             element : "div",
@@ -139,9 +139,8 @@ const calendarElTree = {
         prevPathEl : {
             element : "path",
             attrsNS : {
-                stroke : "none", 
                 fill : "none",
-                d : "M0 0h24v24H0z"
+                d : "M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"
             }
         },
         prevPolylineEl : {
@@ -177,9 +176,8 @@ const calendarElTree = {
         nextPathEl : {
             element : "path",
             attrsNS : {
-                stroke : "none",
-                d : "M0 0h24v24H0z",
                 fill : "none",
+                d : "M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
             }
         },
         nextPolylineEl : {
@@ -190,7 +188,7 @@ const calendarElTree = {
         },
         calTableDivEl : {
             element : "div",
-            classes : ["flex", "items-center", "justify-between", "pt-12", "overflow-x-auto"]
+            classes : ["flex", "bg-white", "items-center", "justify-between", "pt-12", "overflow-x-auto"]
         },
         calTableEl : {
             element : "table",
@@ -241,7 +239,7 @@ const calendarElTree = {
         },
         calListDivEl : {
             element : "div",
-            classes : ["md:py-8", "py-5", "md:px-16", "px-5", "dark:bg-gray-700", "bg-gray-50", "rounded-b"]
+            classes : ["md:py-8", "py-5", "md:px-16", "px-5", "dark:bg-gray-700", "bg-white", "rounded-b"]
         },
         calListInnerDivEl : {
             element : "div",
@@ -275,7 +273,10 @@ const calendarElTree = {
         calTdPEl : {
             element : "p",
             classes : ["text-base", "text-gray-500", "dark:text-gray-100", "font-medium"],
-            text : ""
+            text : "",
+            actions : {
+                click : actions.selDay
+            }
         }
     },
     calContentDivElTree : {

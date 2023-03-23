@@ -10,10 +10,9 @@ const views = {
 		title.element.innerText = "Hello World Todo"
 		return title
 	},
-	Calendar : async () => {
+	Calendar : async (params) => {
+		console.log(params) // mon, week, day, year views
 		const {default : Calendar} = await import("./page/calendar/Calendar.js")
-		const title = { element : document.createElement("h1") }
-		title.element.innerText = "Calendar"
 		return Calendar.page.main.main
 	}
 
