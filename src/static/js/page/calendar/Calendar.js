@@ -11,7 +11,7 @@ console.log(day);
 
 const cal = await fetch("/apis")
 const res = await cal.json()
-console.log(res.title)
+console.log(res.auth.data.values)
 // console.log(cal)
 
 let date = new Date()

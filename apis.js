@@ -31,9 +31,11 @@ module.exports = function handler () {
 
         // console.log(googleSheets.spreadsheets)
 
+        let result = null
+
         const getData = async () => {
             try {
-                const result = await googleSheets.spreadsheets.values.get({
+                result = await googleSheets.spreadsheets.values.get({
                     spreadsheetId : spreadsheetId,
                     range : range,
                 });
@@ -42,11 +44,12 @@ module.exports = function handler () {
             } catch (error) {
                 console.log(error)
             }
+            res.json({"auth" : result});
 
         }
         getData()
 
-        res.json({"auth" : "hello world"});
+        
     });
 
 //   router.post('/api', (req, res) => {
