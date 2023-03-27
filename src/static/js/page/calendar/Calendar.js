@@ -2,17 +2,46 @@ import calendarElTree from "./calElTree.js"
 import { SetPage } from "../../core/Creators.js"
 import {calDatas, catColor} from "./calData.js"
 
+const cal = await fetch("/apis")
+const res = await cal.json()
+console.log(res.auth.data.values)
+
+const makeObj = {
+	String  : (item) => false || item,
+	Number  : (item) => false || parseInt(item),
+	Date	: (item) => false || new Date(item),
+	Boolean : (item) => false || JSON.parse(item.toLowerCase()),
+}
+
+const makeJson = (menus, types, arrData) => {
+	let tempData = {}
+	arrData.map((item, i) => {
+		tempData[menus[i]] = makeObj[types[i]](item)
+	})
+	return tempData
+}
+
+const menu = res.auth.data.values[0]
+res.auth.data.values.shift()
+const type = res.auth.data.values[0]
+res.auth.data.values.shift()
+
+console.log("Menus : ", menu)
+console.log("Types : ", type)
+
+console.log(res.auth.data.values)
+let temps = []
+res.auth.data.values.map((value) => {
+	temps.push(makeJson(menu, type, value))
+})
+console.log(temps)
+
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const year = urlParams.get('year')
 const month = urlParams.get('month')
 const day = urlParams.get('day')
 console.log(day);
-
-const cal = await fetch("/apis")
-const res = await cal.json()
-console.log(res.auth.data.values)
-// console.log(cal)
 
 let date = new Date()
 if(year || month || day){
