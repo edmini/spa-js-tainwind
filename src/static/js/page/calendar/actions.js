@@ -15,7 +15,7 @@ const actions = {
     selDay : (e) => {
         console.log(e.target.innerText)
         const num = e.target.innerText - 1
-        console.log(CalMobile.page.td[num])
+        // console.log(CalMobile.page.td[num])
     }
 }
 

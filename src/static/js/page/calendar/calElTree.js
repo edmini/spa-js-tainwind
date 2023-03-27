@@ -87,7 +87,7 @@ const calendarElTree = {
 
     //Mobile
     calMobileElTree : {
-        mobileMainEl : {
+        mainEl : {
             element : "div",
             classes : ["flex", "items-center", "justify-center", "py-8", "px-4"]
         },

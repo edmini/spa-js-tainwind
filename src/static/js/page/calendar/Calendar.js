@@ -2,17 +2,15 @@ import calendarElTree from "./calElTree.js"
 import { SetPage } from "../../core/Creators.js"
 import {calDatas, catColor} from "./calData.js"
 
-const cal = await fetch("/apis")
-const res = await cal.json()
-console.log(res.auth.data.values)
-
+const res = await fetch("/apis/")
+const result = await res.json()
+// console.log(result.auth.data.values)
 const makeObj = {
 	String  : (item) => false || item,
 	Number  : (item) => false || parseInt(item),
 	Date	: (item) => false || new Date(item),
 	Boolean : (item) => false || JSON.parse(item.toLowerCase()),
 }
-
 const makeJson = (menus, types, arrData) => {
 	let tempData = {}
 	arrData.map((item, i) => {
@@ -20,18 +18,13 @@ const makeJson = (menus, types, arrData) => {
 	})
 	return tempData
 }
+const menu = result.auth.data.values[0]
+result.auth.data.values.shift()
+const type = result.auth.data.values[0]
+result.auth.data.values.shift()
 
-const menu = res.auth.data.values[0]
-res.auth.data.values.shift()
-const type = res.auth.data.values[0]
-res.auth.data.values.shift()
-
-console.log("Menus : ", menu)
-console.log("Types : ", type)
-
-console.log(res.auth.data.values)
 let temps = []
-res.auth.data.values.map((value) => {
+result.auth.data.values.map((value) => {
 	temps.push(makeJson(menu, type, value))
 })
 console.log(temps)
@@ -41,7 +34,7 @@ const urlParams = new URLSearchParams(queryString);
 const year = urlParams.get('year')
 const month = urlParams.get('month')
 const day = urlParams.get('day')
-console.log(day);
+// console.log(day);
 
 let date = new Date()
 if(year || month || day){
@@ -61,7 +54,7 @@ const THISALLDAY = new Date(YEAR, MONTH, 0).getDate()
 
 let dragged = null //drag item
 
-const Calendar = new SetPage(calendarElTree.calMonthElTree)
+export const Calendar = new SetPage(calendarElTree.calMonthElTree)
 
 Calendar.page.main.title.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
 Calendar
@@ -187,9 +180,7 @@ Calendar.page.items.map((item, i) => {
 
 
 export const CalMobile = new SetPage(calendarElTree.calMobileElTree)
-
-Calendar.page.main.main.element.appendChild(CalMobile.page.main.mobileMain.element)
-
+// Calendar.page.main.main.element.appendChild(CalMobile.page.main.mobileMain.element)
 CalMobile.page.main.titleSpan.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
 // CalMobile.page.main.nextBtn.element.addEventListener("click", () => {
 //     date = new Date("2023-07-05")
@@ -197,7 +188,7 @@ CalMobile.page.main.titleSpan.element.innerText = `${calendarElTree.monName[MONT
 // })
 
 CalMobile
-    .append("main.mobileMain", "main.outerDiv", "main.innerCalDiv", "main.calOuterDiv", "main.titleSpan")
+    .append("main.main", "main.outerDiv", "main.innerCalDiv", "main.calOuterDiv", "main.titleSpan")
     .append("main.calOuterDiv", "main.prevNextBtnDiv")
     .append("main.prevNextBtnDiv", "main.prevBtn", "main.prevSvg", "main.prevPath")
     // .append("main.prevSvg", "main.prevPolyline")
@@ -300,8 +291,4 @@ CalMobile.page.td.map((day, i) =>{
 })
 
 
-console.log(CalMobile)
-
-// console.log(Calendar)
-
-export default Calendar
+// console.log(CalMobile)
