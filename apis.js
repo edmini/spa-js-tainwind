@@ -9,7 +9,7 @@ module.exports = function handler () {
 
     router.get('/', function(req, res) {
         const spreadsheetId = "19xNLOEZd9d9CP2qngOtO5o6WRJsNFbwtd4kn4p29IKI"
-        const range = "Users!A1:F5"
+        const range = "Calendar!A1:G"
 
         const connect = new google.auth.JWT(
             process.env.CLIENT_EMAIL,

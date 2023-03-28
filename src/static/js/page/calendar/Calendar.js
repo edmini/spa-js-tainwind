@@ -1,6 +1,6 @@
 import calendarElTree from "./calElTree.js"
 import { SetPage } from "../../core/Creators.js"
-import {calDatas, catColor} from "./calData.js"
+import {catColor} from "./calData.js"
 
 const res = await fetch("/apis/")
 const result = await res.json()
@@ -18,16 +18,16 @@ const makeJson = (menus, types, arrData) => {
 	})
 	return tempData
 }
-const menu = result.auth.data.values[0]
-result.auth.data.values.shift()
-const type = result.auth.data.values[0]
-result.auth.data.values.shift()
+const menu = result.datas.data.values[0]
+result.datas.data.values.shift()
+const type = result.datas.data.values[0]
+result.datas.data.values.shift()
 
-let temps = []
-result.auth.data.values.map((value) => {
-	temps.push(makeJson(menu, type, value))
+let calDatas = []
+result.datas.data.values.map((value) => {
+	calDatas.push(makeJson(menu, type, value))
 })
-console.log(temps)
+console.log(calDatas)
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
