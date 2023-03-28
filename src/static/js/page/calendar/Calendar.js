@@ -178,7 +178,7 @@ Calendar.page.items.map((item, i) => {
                 .append(item.itemDiv.element, item.itemCircle.element)
                 .append(item.itemDiv.element, item.itemP.element)
                 .append(item.itemDiv.element, item.itemSpan.element)
-                .append(Calendar.page.nextDay[eventDay].monCellDiv.element, item.itemDiv.element)
+                .append(Calendar.page.nextDay[eventDay-1].monCellDiv.element, item.itemDiv.element)
         }
     }
 })
