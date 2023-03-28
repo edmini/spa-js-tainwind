@@ -1,13 +1,12 @@
 import calendarElTree from "./calElTree.js"
 import { SetPage, arrToObj } from "../../core/Creators.js"
-import {catColor} from "./calData.js"
+import { catColor } from "./calData.js"
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const year = urlParams.get('year')
 const month = urlParams.get('month')
 const day = urlParams.get('day')
-// console.log(day);
 
 let date = new Date()
 if(year || month || day){
@@ -94,10 +93,13 @@ Calendar.page.days.map((day, i) => {
         e.preventDefault()
         if(e.target.classList.contains("drag-zone")){
             const moveData = events.find((d)=>d.id === dragged[1])
-            // console.log(i)
-            // console.log(dayNum, parseInt(dayNum))
+            // console.log(i, dayNum)
             // console.log(moveData.start)
-            // 이전달 다음달 처리예정
+            // console.log(moveData.start.getMonth()+1)
+            if(MONTH != moveData.start.getMonth()+1){
+                moveData.start.setMonth(MONTH-1)
+                moveData.end.setMonth(MONTH-1)
+            }
             moveData.start.setDate(parseInt(dayNum)+1)
             moveData.end.setDate(parseInt(dayNum)+1)
             e.target.appendChild(dragged[0])
@@ -185,18 +187,12 @@ Calendar.page.items.map((item, i) => {
 export const CalMobile = new SetPage(calendarElTree.calMobileElTree)
 // Calendar.page.main.main.element.appendChild(CalMobile.page.main.mobileMain.element)
 CalMobile.page.main.titleSpan.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
-// CalMobile.page.main.nextBtn.element.addEventListener("click", () => {
-//     date = new Date("2023-07-05")
-//     console.log(date)
-// })
 
 CalMobile
     .append("main.main", "main.outerDiv", "main.innerCalDiv", "main.calOuterDiv", "main.titleSpan")
     .append("main.calOuterDiv", "main.prevNextBtnDiv")
     .append("main.prevNextBtnDiv", "main.prevBtn", "main.prevSvg", "main.prevPath")
-    // .append("main.prevSvg", "main.prevPolyline")
     .append("main.prevNextBtnDiv", "main.nextBtn", "main.nextSvg", "main.nextPath")
-    // .append("main.nextSvg", "main.nextPolyline")
     .append("main.outerDiv", "main.calTableDiv", "main.calTable", "main.calThead", "main.calTheadTr")
     .append("main.calTable", "main.calTbody")
     .append("main.calTbody", "main.calTbodyTr1")
