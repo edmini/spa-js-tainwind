@@ -2,9 +2,6 @@ import calendarElTree from "./calElTree.js"
 import { SetPage } from "../../core/Creators.js"
 import {catColor} from "./calData.js"
 
-const res = await fetch("/apis/")
-const result = await res.json()
-// console.log(result.auth.data.values)
 const makeObj = {
 	String  : (item) => false || item,
 	Number  : (item) => false || parseInt(item),
@@ -18,6 +15,10 @@ const makeJson = (menus, types, arrData) => {
 	})
 	return tempData
 }
+
+const res = await fetch("/apis")
+const result = await res.json()
+
 const menu = result.datas.data.values[0]
 result.datas.data.values.shift()
 const type = result.datas.data.values[0]
@@ -27,7 +28,6 @@ let calDatas = []
 result.datas.data.values.map((value) => {
 	calDatas.push(makeJson(menu, type, value))
 })
-console.log(calDatas)
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -103,16 +103,24 @@ Calendar.page.days.map((day, i) => {
     day.monCellTitle.element.innerText = dayNum
 
     //Drag
-    day.monCellDiv.element.addEventListener("dragover", (e) => {
-        e.preventDefault()
-    })
-    day.monCellDiv.element.addEventListener("drop", (e) => {
+    day.monCellDiv.element.addEventListener("dragover", (e) => {e.preventDefault()})
+    day.monCellDiv.element.addEventListener("drop", async(e) => {
         e.preventDefault()
         if(e.target.classList.contains("drag-zone")){
+            const moveData = calDatas.find((d)=>d.id === dragged[1])
             console.log(i)
-            console.log(dragged[0])
-            console.log("calData[dragged[1]].id : ", dragged[1])
+            console.log(dayNum, parseInt(dayNum))
+            moveData.start.setDate(parseInt(dayNum))
+            console.log(moveData.start)
+            moveData.end.setDate(parseInt(dayNum))
             e.target.appendChild(dragged[0])
+            const putRes = await fetch("/apis", {
+                method : "PUT",
+                headers : {"Content-Type" : "application/json"},
+                body : JSON.stringify({ "data" : moveData })
+            })
+            const putResult = await putRes.json()
+            putResult.error && console.log(putResult.error)
         }
     })
     Calendar
@@ -142,9 +150,11 @@ const getFullTimeNum = (time) => {
 }
 
 Calendar.page.items.map((item, i) => {
-    const startDate = new Date(calDatas[i].start)
+    const startDate = calDatas[i].start
+    console.log(startDate.toISOString())
     const eventMonth = startDate.getMonth() + 1
     const eventDay = startDate.getDate() - 1
+    console.log(calDatas[i].id, startDate.getDate(), eventDay, eventMonth)
 
     item.itemDiv.element.addEventListener("dragstart", (e) => {
         dragged = [e.target, calDatas[i].id]
