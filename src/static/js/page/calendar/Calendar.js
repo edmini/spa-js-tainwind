@@ -1,33 +1,6 @@
 import calendarElTree from "./calElTree.js"
-import { SetPage } from "../../core/Creators.js"
+import { SetPage, arrToObj } from "../../core/Creators.js"
 import {catColor} from "./calData.js"
-
-const makeObj = {
-	String  : (item) => false || item,
-	Number  : (item) => false || parseInt(item),
-	Date	: (item) => false || new Date(item),
-	Boolean : (item) => false || JSON.parse(item.toLowerCase()),
-}
-const makeJson = (menus, types, arrData) => {
-	let tempData = {}
-	arrData.map((item, i) => {
-		tempData[menus[i]] = makeObj[types[i]](item)
-	})
-	return tempData
-}
-
-const res = await fetch("/apis")
-const result = await res.json()
-
-const menu = result.datas.data.values[0]
-result.datas.data.values.shift()
-const type = result.datas.data.values[0]
-result.datas.data.values.shift()
-
-let calDatas = []
-result.datas.data.values.map((value) => {
-	calDatas.push(makeJson(menu, type, value))
-})
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
@@ -44,6 +17,19 @@ if(year || month || day){
     day ? d = day : d = date.getDate()
     date = new Date(`${y}-${m}-${d}`)
 }
+
+const res = await fetch("/apis")
+const result = await res.json()
+
+let events = []
+const menu = result.datas.data.values[0]
+result.datas.data.values.shift()
+const type = result.datas.data.values[0]
+result.datas.data.values.shift()
+result.datas.data.values.map((value) => {
+	events.push(arrToObj(menu, type, value))
+})
+
 const TODAY = date.getDate()
 const MONTH = date.getMonth() + 1
 const YEAR = date.getFullYear()
@@ -66,7 +52,7 @@ Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
 Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
 Calendar.listElement("lastDay", STARTWEEK, calendarElTree.calMonCellElTree)
 Calendar.listElement("nextDay", 42-(STARTWEEK+THISALLDAY), calendarElTree.calMonCellElTree)
-Calendar.listElement("items", calDatas.length, calendarElTree.calItemElTree)
+Calendar.listElement("items", events.length, calendarElTree.calItemElTree)
 
 // Week Name List
 Calendar.page.weekName.map((week, i) => {
@@ -107,12 +93,13 @@ Calendar.page.days.map((day, i) => {
     day.monCellDiv.element.addEventListener("drop", async(e) => {
         e.preventDefault()
         if(e.target.classList.contains("drag-zone")){
-            const moveData = calDatas.find((d)=>d.id === dragged[1])
-            console.log(i)
-            console.log(dayNum, parseInt(dayNum))
-            moveData.start.setDate(parseInt(dayNum))
-            console.log(moveData.start)
-            moveData.end.setDate(parseInt(dayNum))
+            const moveData = events.find((d)=>d.id === dragged[1])
+            // console.log(i)
+            // console.log(dayNum, parseInt(dayNum))
+            // console.log(moveData.start)
+            // 이전달 다음달 처리예정
+            moveData.start.setDate(parseInt(dayNum)+1)
+            moveData.end.setDate(parseInt(dayNum)+1)
             e.target.appendChild(dragged[0])
             const putRes = await fetch("/apis", {
                 method : "PUT",
@@ -150,24 +137,30 @@ const getFullTimeNum = (time) => {
 }
 
 Calendar.page.items.map((item, i) => {
-    const startDate = calDatas[i].start
-    console.log(startDate.toISOString())
+    const startDate = events[i].start
     const eventMonth = startDate.getMonth() + 1
     const eventDay = startDate.getDate() - 1
-    console.log(calDatas[i].id, startDate.getDate(), eventDay, eventMonth)
 
     item.itemDiv.element.addEventListener("dragstart", (e) => {
-        dragged = [e.target, calDatas[i].id]
+        dragged = [e.target, events[i].id]
     })
-    item.itemP.element.innerText = calDatas[i].title
-    item.itemCircle.element.classList.add(catColor[calDatas[i].category])
+    item.itemP.element.innerText = events[i].title
+    item.itemCircle.element.classList.add(catColor[events[i].category])
     item.itemSpan.element.innerText = `${getFullTimeNum(startDate.getHours())} : ${getFullTimeNum(startDate.getMinutes())}`
     if(eventMonth === MONTH){
-        Calendar
-            .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
-            .append(item.itemDiv.element, item.itemP.element)
-            .append(item.itemDiv.element, item.itemSpan.element)
-            .append(Calendar.page.days[eventDay].monCellDiv.element, item.itemDiv.element)
+        if((eventDay) === 0){
+            Calendar
+                .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
+                .append(item.itemDiv.element, item.itemP.element)
+                .append(item.itemDiv.element, item.itemSpan.element)
+                .append(Calendar.page.lastDay[STARTWEEK-1].monCellDiv.element, item.itemDiv.element)
+        }else{
+            Calendar
+                .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
+                .append(item.itemDiv.element, item.itemP.element)
+                .append(item.itemDiv.element, item.itemSpan.element)
+                .append(Calendar.page.days[eventDay-1].monCellDiv.element, item.itemDiv.element)
+        }
     }else if(eventMonth === MONTH - 1){
         const thisEventDay = (eventDay - LASTALLDAY) + STARTWEEK // lastMonth
         if(thisEventDay >= 0){
@@ -175,7 +168,7 @@ Calendar.page.items.map((item, i) => {
                 .append(item.itemDiv.element, item.itemCircle.element)
                 .append(item.itemDiv.element, item.itemP.element)
                 .append(item.itemDiv.element, item.itemSpan.element)
-                .append(Calendar.page.lastDay[thisEventDay].monCellDiv.element, item.itemDiv.element)
+                .append(Calendar.page.lastDay[thisEventDay-1].monCellDiv.element, item.itemDiv.element)
         }
     }else if(eventMonth === MONTH + 1){
         if(eventDay < Calendar.page.nextDay.length){

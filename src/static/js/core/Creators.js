@@ -79,7 +79,6 @@ export class Create {
 	}
 }
 
-
 export const makeTag = (treeEl) => {
 	let tree = {}
 	const elKeys = Object.keys(treeEl)
@@ -89,72 +88,6 @@ export const makeTag = (treeEl) => {
 	return tree
 }
 
-
-export const tableBody = (datas) => {
-	const TableBodyElTree = {
-		trEl : {
-			element : "tr"
-		},
-		thEl : {
-			element : "th",
-		},
-		tdEl : {
-			element : "td"
-		}
-	}
-
-	let headerKeys = {}
-	let dataTDs = {}
-	let dataTRs = []
-	if(datas){
-		const dataKeys = Object.keys(datas[0])
-
-		dataKeys.map((key) => {
-			headerKeys[key] = new Create(TableBodyElTree.thEl)
-			headerKeys[key].element.innerText = key
-		})
-		datas.map((data, i) => {
-			dataTRs.push(new Create(TableBodyElTree.trEl))
-			dataTDs[i] = {}
-			dataKeys.map((key) => {
-				dataTDs[i][key] = new Create(TableBodyElTree.tdEl)
-				if(typeof(data[key]) === "object"){
-					dataTDs[i][key].element.appendChild(data[key])
-				}else{
-					dataTDs[i][key].element.innerText = data[key]
-				}
-			})
-		})
-		dataTRs.map((tr, i) => {
-			dataKeys.map((key) => {
-				tr.element.appendChild(dataTDs[i][key].element)
-			})
-		})
-	}
-	return {headerKeys, dataTRs, dataTDs}
-}
-
-
-export const makeTable = (tableElTree, datas) => {
-
-	const TableTree = makeTag(tableElTree)
-	const tableDataBody = tableBody(datas)
-
-	const header = datas && Object.keys(datas[0])
-	datas && header.map((key) => {
-		TableTree.tr.element.appendChild(tableDataBody.headerKeys[key].element)
-	})
-
-	tableDataBody.dataTRs.map((tr) => {
-		TableTree.tbody.element.appendChild(tr.element)
-	})
-
-	TableTree.table.element.appendChild(TableTree.thead.element)
-	TableTree.table.element.appendChild(TableTree.tbody.element)
-	TableTree.thead.element.appendChild(TableTree.tr.element)
-
-	return {table : TableTree, headers : tableDataBody.headerKeys, bodys : tableDataBody.dataTDs}
-}
 
 export class SetPage {
 	page = {}
@@ -227,6 +160,89 @@ export class SetPage {
 		element.innerText = text
 		return this
 	}
+}
+
+
+const dataToType = {
+	String  : (item) => false || item,
+	Number  : (item) => false || parseInt(item),
+	Date	: (item) => false || new Date(item),
+	Boolean : (item) => false || JSON.parse(item.toLowerCase()),
+}
+export const arrToObj = (menus, types, arrData) => {
+	let tempData = {}
+	arrData.map((item, i) => {
+		tempData[menus[i]] = dataToType[types[i]](item)
+	})
+	return tempData
+}
+
+
+// Table maker
+export const tableBody = (datas) => {
+	const TableBodyElTree = {
+		trEl : {
+			element : "tr"
+		},
+		thEl : {
+			element : "th",
+		},
+		tdEl : {
+			element : "td"
+		}
+	}
+
+	let headerKeys = {}
+	let dataTDs = {}
+	let dataTRs = []
+	if(datas){
+		const dataKeys = Object.keys(datas[0])
+
+		dataKeys.map((key) => {
+			headerKeys[key] = new Create(TableBodyElTree.thEl)
+			headerKeys[key].element.innerText = key
+		})
+		datas.map((data, i) => {
+			dataTRs.push(new Create(TableBodyElTree.trEl))
+			dataTDs[i] = {}
+			dataKeys.map((key) => {
+				dataTDs[i][key] = new Create(TableBodyElTree.tdEl)
+				if(typeof(data[key]) === "object"){
+					dataTDs[i][key].element.appendChild(data[key])
+				}else{
+					dataTDs[i][key].element.innerText = data[key]
+				}
+			})
+		})
+		dataTRs.map((tr, i) => {
+			dataKeys.map((key) => {
+				tr.element.appendChild(dataTDs[i][key].element)
+			})
+		})
+	}
+	return {headerKeys, dataTRs, dataTDs}
+}
+
+
+export const makeTable = (tableElTree, datas) => {
+
+	const TableTree = makeTag(tableElTree)
+	const tableDataBody = tableBody(datas)
+
+	const header = datas && Object.keys(datas[0])
+	datas && header.map((key) => {
+		TableTree.tr.element.appendChild(tableDataBody.headerKeys[key].element)
+	})
+
+	tableDataBody.dataTRs.map((tr) => {
+		TableTree.tbody.element.appendChild(tr.element)
+	})
+
+	TableTree.table.element.appendChild(TableTree.thead.element)
+	TableTree.table.element.appendChild(TableTree.tbody.element)
+	TableTree.thead.element.appendChild(TableTree.tr.element)
+
+	return {table : TableTree, headers : tableDataBody.headerKeys, bodys : tableDataBody.dataTDs}
 }
 
 
