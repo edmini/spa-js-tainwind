@@ -12,9 +12,10 @@ const views = {
 	},
 	Calendar : async (params) => {
 		// console.log(params.type) // mon, week, day, year views
-		const { Calendar, CalMobile } = await import("./page/calendar/Calendar.js")
+		const { Calendar } = await import("./page/calendar/Calendar.js")
 		let resutlEl = null
 		if(params.type === "/mobile"){
+			const { CalMobile } = await import("./page/calendar/CalMobile.js")
 			resutlEl = CalMobile
 		}else{
 			resutlEl = Calendar
