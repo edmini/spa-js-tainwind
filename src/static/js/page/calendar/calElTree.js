@@ -31,6 +31,16 @@ const calendarElTree = {
             element : "div",
             classes : ["grid", "flex-grow", "w-full", "h-auto", "grid-cols-7", "grid-rows-6", "gap-px", "pt-px", "mt-1", "bg-gray-300", "rounded-sm"]
         },
+        prevMonBtnEl : {
+            element : "btn",
+            classes : [""],
+            text : "prev"
+        },
+        nextMonBtnEl : {
+            element : "btn",
+            classes : [""],
+            text : "prev"
+        },
         eventInputModalEl : {
             element : "div",
             classes : ["hidden", "absolute", "w-2/4", "h-1/2", "bg-gray-500", "z-10"]

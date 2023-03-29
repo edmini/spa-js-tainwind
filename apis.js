@@ -1,8 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const router = express.Router();
+const bodyParser = require('body-parser');
+const { google } = require("googleapis")
 require('dotenv').config();
-const {google} = require("googleapis")
 
 module.exports = function handler () {
 
@@ -19,27 +19,22 @@ module.exports = function handler () {
     })
     const googleSheets = google.sheets({ version : "v4", auth : connect })
 
-
     router.use(bodyParser.json());
 
-    router.get('/', function(req, res) {
+    router.get('/', async (req, res) => {
         let result = null
-        const getData = async () => {
-            try {
-                result = await googleSheets.spreadsheets.values.get({
-                    spreadsheetId : spreadsheetId,
-                    range : range,
-                });
-                // console.log(result.data.values)
-            } catch (error) {
-                console.log("GET DATA ERROR : ", error)
-            }
-            res.json({"datas" : result});
+        try {
+            result = await googleSheets.spreadsheets.values.get({
+                spreadsheetId : spreadsheetId,
+                range : range,
+            })
+        } catch (err) {
+            console.log("GET DATA ERROR : ", err)
         }
-        getData()
-    });
+        res.json({"datas" : result})
+    })
 
-    router.put("/", async function(req, res){
+    router.put("/", async (req, res) =>{
         let bodyData = []
         Object.keys(req.body.data).forEach((d)=>{
             bodyData.push(req.body.data[d])
@@ -66,9 +61,51 @@ module.exports = function handler () {
         }
     })
 
-//   router.post('/api', (req, res) => {
-//     ...
-//   });
+    router.post("/", async (req, res) => {
+        let bodyData = []
+        Object.keys(req.body.data).forEach((d) => {
+            bodyData.push(req.body.data[d])
+        })
+        const postValue = [bodyData]
+        const resource = { postValue }
+        try {
+            const postRes = await googleSheets.spreadsheets.values.append({
+                spreadsheetId : spreadsheetId,
+                range : range,
+                valueInputOption : "USER_ENTERED",
+                resource : resource,
+            })
+            res.json({"result" : "success"})
+        } catch (err) {
+            res.json({"result" : err})
+        }
+    })
+
+    router.delete("/", async (req, res) => {
+        const num = parseInt(req.body.id)
+        const request = {
+            spreadsheetId : spreadsheetId,
+            resource : {
+                requests : [{
+                    deleteDimension : {
+                        range : {
+                            sheetId : 1047488640,//gid
+                            dimension : "ROWS",
+                            startIndex : num - 1,
+                            endIndex : num,
+                        }
+                    }
+                }]
+            },
+            auth : connect
+        }
+        try {
+            const res = (await googleSheets.spreadsheets.batchUpdate(request)).data
+            res.json({"result" : res})
+        } catch (err) {
+            res.json({"result" : err})
+        }
+    })
 
     return router;
 }

@@ -77,7 +77,6 @@ Calendar.page.lastDay.map((last, i) => {
         .append(Calendar.page.main.monGridDiv.element, last.monCellDiv.element)
 })
 
-
 Calendar.page.days.map((day, i) => {
     (STARTWEEK + i + 1) % 7 === 1 && day.monCellTitle.element.classList.add("text-red-500");
     (STARTWEEK + i + 1) % 7 === 0 && day.monCellTitle.element.classList.add("text-blue-600");
@@ -86,18 +85,6 @@ Calendar.page.days.map((day, i) => {
     let dayNum = 0
     i < 9 ? dayNum = "0"+(i+1) : dayNum = i+1
     day.monCellTitle.element.innerText = dayNum
-
-    // day.monCellDiv.element.addEventListener("click", (e) => {
-    //     const rect = day.monCellDiv.element.getBoundingClientRect()
-    //     //modal위치가 전체창의 반 보다 커지면 위치를 이동 X,y 모두 적용해야 함
-    //     const cellX = rect.left + (rect.width/2)
-    //     const cellY = rect.top + (rect.height/2)
-    //     // console.log(cellX, cellY)
-    //     Calendar.page.main.eventInputModal.element.style.left = `${cellX}px`
-    //     Calendar.page.main.eventInputModal.element.style.top = `${cellY}px`
-    //     Calendar.page.main.eventInputModal.element.classList.toggle("hidden")
-    //             // console.log(Calendar.page.main.eventInputModal.element)
-    // })
 
     //Drag
     day.monCellDiv.element.addEventListener("dragover", (e) => {e.preventDefault()})
@@ -108,7 +95,6 @@ Calendar.page.days.map((day, i) => {
             if(MONTH != moveData.start.getMonth()+1){
                 moveData.start.setMonth(MONTH-1)
                 moveData.end.setMonth(MONTH-1)
-                
             }
             moveData.start.setDate(parseInt(dayNum)+1)
             moveData.end.setDate(parseInt(dayNum)+1)
@@ -149,18 +135,6 @@ const getFullTimeNum = (time) => {
 }
 
 Calendar.page.items.map((item, i) => {
-
-    // item.itemDiv.element.addEventListener("dblclick", (e) => {
-    //     const rect = item.itemDiv.element.getBoundingClientRect()
-    //     //modal위치가 전체창의 반 보다 커지면 위치를 이동 X,y 모두 적용해야 함
-    //     const cellX = rect.left + (rect.width/2)
-    //     const cellY = rect.top + (rect.height/2)
-    //     // console.log(cellX, cellY)
-    //     Calendar.page.main.eventInputModal.element.style.left = `${cellX}px`
-    //     Calendar.page.main.eventInputModal.element.style.top = `${cellY}px`
-    //     Calendar.page.main.eventInputModal.element.classList.toggle("hidden")
-    //             // console.log(Calendar.page.main.eventInputModal.element)
-    // })
 
     const startDate = events[i].start
     const eventMonth = startDate.getMonth() + 1
@@ -207,4 +181,15 @@ Calendar.page.items.map((item, i) => {
 })
 
 
+    // day.monCellDiv.element.addEventListener("click", (e) => {
+    //     const rect = day.monCellDiv.element.getBoundingClientRect()
+    //     //modal위치가 전체창의 반 보다 커지면 위치를 이동 X,y 모두 적용해야 함
+    //     const cellX = rect.left + (rect.width/2)
+    //     const cellY = rect.top + (rect.height/2)
+    //     // console.log(cellX, cellY)
+    //     Calendar.page.main.eventInputModal.element.style.left = `${cellX}px`
+    //     Calendar.page.main.eventInputModal.element.style.top = `${cellY}px`
+    //     Calendar.page.main.eventInputModal.element.classList.toggle("hidden")
+    //             // console.log(Calendar.page.main.eventInputModal.element)
+    // })
 
