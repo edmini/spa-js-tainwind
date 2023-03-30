@@ -7,6 +7,11 @@ const actions = {
         console.log(e.target)
         //event bubbling issue!!
     },
+    prevMon : (e) => {
+        // console.log(e.target)
+        const date = new Date("2023-07-01")
+        console.log(date)
+    },
     nextMon : (e) => {
         // console.log(e.target)
         const date = new Date("2023-07-01")

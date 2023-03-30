@@ -4,11 +4,15 @@ const calendarElTree = {
     calMonthElTree : {
         mainEl : {
             element : "div",
-            classes : ["lg:container", "mx-auto", "lg:px-20"]
+            classes : ["lg:container", "mx-auto", "lg:px-20", "py-3"]//, "h-[calc(100vh-130px)]"
+        },
+        monMainEl : {
+            element : "div",
+            classes : ["h-[calc(100vh-110px)]", "overflow-hidden", "bg-white shadow", "sm:rounded-lg"]
         },
         monOuterDivEl : {
             element : "div",
-            classes : ["flex", "flex-grow", "w-full", "h-[calc(100vh-80px)]","overflow-auto", "pb-10"]
+            classes : ["lg:flex", "lg:items-center", "lg:justify-between", "p-5"]
         },
         monInnerDivEl : {
             element : "div",
@@ -16,12 +20,69 @@ const calendarElTree = {
         },
         titleDivEl : {
             element : "div",
-            classes : ["h-20", "text-center"]
+            classes : ["min-w-0", "flex-1"]
         },
         titleEl : {
             element : "h1",
-            classes : ["pt-3", "pb-3", "text-gray-600", "text-4xl", "bg-white"],
+            classes : ["text-2xl", "font-bold leading-7", "text-gray-800", "sm:truncate", "sm:text-3xl", "sm:tracking-tight"],
             text : ""
+        },
+        btnGroupEl : {
+            element : "div",
+            classes : ["inline-flex", "rounded-md", "shadow-sm"]
+        },
+        prevBtnEl : {
+            element : "button",
+            classes : ["px-4", "pt-2.5", "text-sm", "font-medium", "text-gray-500", "bg-white", "border", "border-gray-200", "rounded-l-lg", "hover:bg-gray-100", "hover:text-blue-700", "focus:z-10", "focus:ring-2", "focus:ring-blue-700", "focus:text-blue-700", "dark:bg-gray-700", "dark:border-gray-600", "dark:text-white", "dark:hover:text-white", "dark:hover:bg-gray-600", "dark:focus:ring-blue-500", "dark:focus:text-white"],
+        },
+        prevSvgEl : {
+            element : "svg",
+            attrsNS : {
+                width : 24,
+                height : 24,
+                viewBox : "0 0 24 24",
+                "stroke-width" : 1.5,
+                stroke : "currentColor",
+                fill : "none",
+                "stroke-linecap" : "round",
+                "stroke-linejoin" : "round",
+            }
+        },
+        prevPathEl : {
+            element : "path",
+            attrsNS : {
+                fill : "none",
+                d : "M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"
+            }
+        },
+        todayBtnEl : {
+            element : "button",
+            classes : ["px-4", "py-2", "text-sm", "font-medium", "text-gray-500", "bg-white border-t", "border-b", "border-gray-200", "hover:bg-gray-100", "hover:text-blue-700", "focus:z-10", "focus:ring-2", "focus:ring-blue-700", "focus:text-blue-700", "dark:bg-gray-700", "dark:border-gray-600", "dark:text-white", "dark:hover:text-white", "dark:hover:bg-gray-600", "dark:focus:ring-blue-500", "dark:focus:text-white"],
+            text : "TODAY"
+        },
+        nextBtnEl : {
+            element : "button",
+            classes : ["px-4", "pt-2.5", "text-sm", "font-medium", "text-gray-500", "bg-white", "border", "border-gray-200", "rounded-r-md", "hover:bg-gray-100", "hover:text-blue-700", "focus:z-10", "focus:ring-2", "focus:ring-blue-700", "focus:text-blue-700", "dark:bg-gray-700", "dark:border-gray-600", "dark:text-white", "dark:hover:text-white", "dark:hover:bg-gray-600", "dark:focus:ring-blue-500", "dark:focus:text-white"],
+        },
+        nextSvgEl : {
+            element : "svg",
+            attrsNS : {
+                width : 24,
+                height : 24,
+                viewBox : "0 0 24 24",
+                "stroke-width" : 1.5,
+                stroke : "currentColor",
+                fill : "none",
+                "stroke-linecap" : "round",
+                "stroke-linejoin" : "round"
+            }
+        },
+        nextPathEl : {
+            element : "path",
+            attrsNS : {
+                fill : "none",
+                d : "M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"
+            }
         },
         weekNameDivEl : {
             element : "div",
@@ -29,17 +90,7 @@ const calendarElTree = {
         },
         monGridDivEl : {
             element : "div",
-            classes : ["grid", "flex-grow", "w-full", "h-auto", "grid-cols-7", "grid-rows-6", "gap-px", "pt-px", "mt-1", "bg-gray-300", "rounded-sm"]
-        },
-        prevMonBtnEl : {
-            element : "btn",
-            classes : [""],
-            text : "prev"
-        },
-        nextMonBtnEl : {
-            element : "btn",
-            classes : [""],
-            text : "prev"
+            classes : ["grid","flex-grow", "w-full", "h-auto", "grid-cols-7", "grid-rows-6", "gap-px", "pt-px", "mt-1", "bg-gray-300", "rounded-sm"]
         },
         eventInputModalEl : {
             element : "div",
@@ -61,10 +112,7 @@ const calendarElTree = {
     calMonCellElTree : {
         monCellDivEl : {
             element : "div",
-            classes : ["relative", "flex", "flex-col", "bg-white", "group", "text-gray-800", "rounded-sm", "drag-zone"],
-            // actions : {
-            //     dblclick : actions.newSchedule,
-            // }
+            classes : ["relative", "overflow-y-auto", "flex", "h-[120px]", "flex-col", "bg-white", "group", "text-gray-800", "rounded-sm", "drag-zone"],
         },
         monCellTitleEl : {
             element : "h1",
@@ -75,13 +123,10 @@ const calendarElTree = {
     calItemElTree : {
         itemDivEl : {
             element : "div",
-            classes : ["flex", "justify-between", "text-xs", "-mt-2", "mb-3", "mx-1", "px-2"],
+            classes : ["flex", "justify-between", "text-xs", "-m-1", "mb-3", "mx-1", "px-2"],
             attrs : {
                 draggable : true,
             },
-            // actions : {
-            //     click : actions.editSchedule,
-            // }
         },
         itemCircleEl : {
             element : "span",

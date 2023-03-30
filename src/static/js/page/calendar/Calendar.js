@@ -43,9 +43,42 @@ export const Calendar = new SetPage(calendarElTree.calMonthElTree)
 
 Calendar.page.main.title.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
 Calendar
-    .append("main.main", "main.monOuterDiv", "main.monInnerDiv", "main.titleDiv", "main.title")
-    .append("main.monInnerDiv", "main.weekNameDiv")
-    .append("main.monInnerDiv", "main.monGridDiv", "main.eventInputModal")
+    .append("main.main", "main.monMain", "main.monOuterDiv", "main.titleDiv", "main.title")
+    .append("main.monOuterDiv", "main.btnGroup")//"main.monOuterDiv", "main.monInnerDiv", 
+    .append("main.btnGroup", "main.prevBtn", "main.prevSvg", "main.prevPath")
+    .append("main.btnGroup", "main.todayBtn")
+    .append("main.btnGroup", "main.nextBtn", "main.nextSvg", "main.nextPath")
+    .append("main.monMain", "main.weekNameDiv")
+    .append("main.monMain", "main.monGridDiv", "main.eventInputModal")
+
+Calendar.page.main.prevBtn.element.addEventListener("click", ()=>{
+    let curYear = YEAR
+    let curMon = MONTH
+    let curDay = 1
+    if(MONTH === 1){
+        curYear = curYear - 1
+        curMon = 12
+    }else{
+        curMon = curMon - 1
+    }
+    window.location.href = `/calendar?year=${curYear}&month=${curMon}&day=${curDay}`
+})
+Calendar.page.main.todayBtn.element.addEventListener("click", ()=>{
+    window.location.href = `/calendar`
+})
+Calendar.page.main.nextBtn.element.addEventListener("click", ()=>{
+    let curYear = YEAR
+    let curMon = MONTH
+    let curDay = 1
+    if(MONTH === 12){
+        curYear = curYear + 1
+        curMon = 1
+    }else{
+        curMon = curMon + 1
+    }
+    window.location.href = `/calendar?year=${curYear}&month=${curMon}&day=${curDay}`
+})
+
 
 Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
 Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
@@ -147,7 +180,7 @@ Calendar.page.items.map((item, i) => {
     item.itemCircle.element.classList.add(catColor[events[i].category])
     item.itemSpan.element.innerText = `${getFullTimeNum(startDate.getHours())} : ${getFullTimeNum(startDate.getMinutes())}`
     if(eventMonth === MONTH){
-        if((eventDay) === 0){
+        if(eventDay === 0){
             Calendar
                 .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
                 .append(item.itemDiv.element, item.itemP.element)
@@ -171,11 +204,19 @@ Calendar.page.items.map((item, i) => {
         }
     }else if(eventMonth === MONTH + 1){
         if(eventDay < Calendar.page.nextDay.length){
-            Calendar
-                .append(item.itemDiv.element, item.itemCircle.element)
-                .append(item.itemDiv.element, item.itemP.element)
-                .append(item.itemDiv.element, item.itemSpan.element)
-                .append(Calendar.page.nextDay[eventDay-1].monCellDiv.element, item.itemDiv.element)
+            if(eventDay === 0){
+                Calendar
+                    .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
+                    .append(item.itemDiv.element, item.itemP.element)
+                    .append(item.itemDiv.element, item.itemSpan.element)
+                    .append(Calendar.page.days[THISALLDAY-1].monCellDiv.element, item.itemDiv.element)
+            }else{
+                Calendar
+                    .append(item.itemDiv.element, item.itemCircle.element)
+                    .append(item.itemDiv.element, item.itemP.element)
+                    .append(item.itemDiv.element, item.itemSpan.element)
+                    .append(Calendar.page.nextDay[eventDay-1].monCellDiv.element, item.itemDiv.element)
+            }
         }
     }
 })
