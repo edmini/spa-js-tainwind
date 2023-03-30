@@ -4,11 +4,11 @@ const calendarElTree = {
     calMonthElTree : {
         mainEl : {
             element : "div",
-            classes : ["lg:container", "mx-auto", "lg:px-20", "py-3"]//, "h-[calc(100vh-130px)]"
+            classes : ["lg:container", "mx-auto", "lg:px-20", "py-3", "h-[calc(100vh-80px)]"]//, "h-[calc(100vh-130px)]"
         },
         monMainEl : {
             element : "div",
-            classes : ["h-[calc(100vh-110px)]", "overflow-hidden", "bg-white shadow", "sm:rounded-lg"]
+            classes : ["overflow-hidden", "bg-white shadow", "sm:rounded-lg"]
         },
         monOuterDivEl : {
             element : "div",
