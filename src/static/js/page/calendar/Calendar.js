@@ -2,22 +2,8 @@ import calendarElTree from "./calElTree.js"
 import { SetPage, arrToObj } from "../../core/Creators.js"
 import { catColor } from "./calData.js"
 
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const year = urlParams.get('year')
-const month = urlParams.get('month')
-const day = urlParams.get('day')
-
-let date = new Date()
-if(year || month || day){
-    let y, m, d = null
-    year ? y = year : y = date.getFullYear()
-    month ? m = month : m = date.getMonth()+1
-    day ? d = day : d = date.getDate()
-    date = new Date(`${y}-${m}-${d}`)
-}
-
-const res = await fetch("/apis")
+// apis get fetch
+const res = await fetch("/apis/Calendar")
 const result = await res.json()
 
 let events = []
@@ -29,6 +15,27 @@ result.datas.data.values.map((value) => {
 	events.push(arrToObj(menu, type, value))
 })
 
+//url calendar?year=2023&month=03&day=01
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const year = urlParams.get('year')
+const month = urlParams.get('month')
+const day = urlParams.get('day')
+
+//0~9 => 00~09
+const getFullNum = (time) => time < 10 ? `0${time}` : time
+
+//date
+let date = new Date()
+if(year || month || day){
+    let y, m, d = null
+    year ? y = year : y = date.getFullYear()
+    month ? m = month : m = date.getMonth()+1
+    day ? d = day : d = date.getDate()
+    date = new Date(`${y}-${m}-${d}`)
+}
+date.getTimezoneOffset()
+
 const TODAY = date.getDate()
 const MONTH = date.getMonth() + 1
 const YEAR = date.getFullYear()
@@ -36,6 +43,8 @@ const STARTWEEK = new Date(YEAR, MONTH-1, 1).getDay()
 const NEXTMONWEEK = new Date(YEAR, MONTH, 1).getDay()
 const LASTALLDAY = new Date(YEAR, MONTH-1, 0).getDate()
 const THISALLDAY = new Date(YEAR, MONTH, 0).getDate()
+//현재 년도 이벤트만!!
+events.find((event) => {(new Date(event.start)).getFullYear === YEAR})
 
 let dragged = null //drag item
 
@@ -51,10 +60,25 @@ Calendar
     .append("main.monMain", "main.weekNameDiv")
     .append("main.monMain", "main.monGridDiv", "main.eventInputModal")
 
-Calendar.page.main.prevBtn.element.addEventListener("click", ()=>{
-    let curYear = YEAR
-    let curMon = MONTH
-    let curDay = 1
+    Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
+    Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
+    Calendar.listElement("lastDay", STARTWEEK, calendarElTree.calMonCellElTree)
+    Calendar.listElement("nextDay", 42-(STARTWEEK+THISALLDAY), calendarElTree.calMonCellElTree)
+    Calendar.listElement("items", events.length, calendarElTree.calItemElTree)
+
+    //Loading .....
+// Calendar.page.main.monMain.element.classList.add("opacity-20")
+// Calendar
+//     .append("main.main", "main.loadingDiv", "main.loadingSvg")
+//     .append("main.loadingSvg", "main.loadingPath1")
+//     .append("main.loadingSvg", "main.loadingPath2")
+//     .append("main.loadingSvg", "main.loadingSpan")
+
+//이전, 현재, 다음 월 버튼
+let curYear = YEAR
+let curMon = MONTH
+let curDay = 1
+Calendar.page.main.prevBtn.element.addEventListener("click", () => {
     if(MONTH === 1){
         curYear = curYear - 1
         curMon = 12
@@ -63,13 +87,10 @@ Calendar.page.main.prevBtn.element.addEventListener("click", ()=>{
     }
     window.location.href = `/calendar?year=${curYear}&month=${curMon}&day=${curDay}`
 })
-Calendar.page.main.todayBtn.element.addEventListener("click", ()=>{
+Calendar.page.main.todayBtn.element.addEventListener("click", () => {
     window.location.href = `/calendar`
 })
-Calendar.page.main.nextBtn.element.addEventListener("click", ()=>{
-    let curYear = YEAR
-    let curMon = MONTH
-    let curDay = 1
+Calendar.page.main.nextBtn.element.addEventListener("click", () => {
     if(MONTH === 12){
         curYear = curYear + 1
         curMon = 1
@@ -78,13 +99,6 @@ Calendar.page.main.nextBtn.element.addEventListener("click", ()=>{
     }
     window.location.href = `/calendar?year=${curYear}&month=${curMon}&day=${curDay}`
 })
-
-
-Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
-Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
-Calendar.listElement("lastDay", STARTWEEK, calendarElTree.calMonCellElTree)
-Calendar.listElement("nextDay", 42-(STARTWEEK+THISALLDAY), calendarElTree.calMonCellElTree)
-Calendar.listElement("items", events.length, calendarElTree.calItemElTree)
 
 // Week Name List
 Calendar.page.weekName.map((week, i) => {
@@ -113,18 +127,15 @@ Calendar.page.lastDay.map((last, i) => {
 Calendar.page.days.map((day, i) => {
     (STARTWEEK + i + 1) % 7 === 1 && day.monCellTitle.element.classList.add("text-red-500");
     (STARTWEEK + i + 1) % 7 === 0 && day.monCellTitle.element.classList.add("text-blue-600");
-    
-    (i+1) === TODAY && day.monCellTitle.element.classList.add("bg-blue-500", "text-white")
-    let dayNum = 0
-    i < 9 ? dayNum = "0"+(i+1) : dayNum = i+1
+    ((new Date()).getMonth() + 1) === MONTH && (i+1) === TODAY && day.monCellTitle.element.classList.add("bg-blue-500", "text-white")
+    const dayNum = getFullNum(i+1)
     day.monCellTitle.element.innerText = dayNum
-
     //Drag
     day.monCellDiv.element.addEventListener("dragover", (e) => {e.preventDefault()})
-    day.monCellDiv.element.addEventListener("drop", async(e) => {
+    day.monCellDiv.element.addEventListener("drop", async (e) => {
         e.preventDefault()
         if(e.target.classList.contains("drag-zone")){
-            const moveData = events.find((d)=>d.id === dragged[1])
+            const moveData = events.find((d) => d.id === dragged[1])
             if(MONTH != moveData.start.getMonth()+1){
                 moveData.start.setMonth(MONTH-1)
                 moveData.end.setMonth(MONTH-1)
@@ -146,40 +157,34 @@ Calendar.page.days.map((day, i) => {
         .append(Calendar.page.main.monGridDiv.element, day.monCellDiv.element)
 })
 
-Calendar.page.nextDay.map((nextday, i)=>{
+Calendar.page.nextDay.map((nextday, i) => {
     (NEXTMONWEEK + i + 1) % 7 === 1 && nextday.monCellTitle.element.classList.add("text-red-400");
     (NEXTMONWEEK + i + 1) % 7 === 0 && nextday.monCellTitle.element.classList.add("text-blue-400");
     
     nextday.monCellDiv.element.classList.remove("bg-white", "text-gray-800")
     nextday.monCellDiv.element.classList.add("bg-gray-100", "text-gray-500")
-    let dayNum = 0
-    i < 9 ? dayNum = "0"+(i+1) : dayNum = i+1
+    const dayNum = getFullNum(i+1)
     nextday.monCellTitle.element.innerText = dayNum
     Calendar
         .append(nextday.monCellDiv.element, nextday.monCellTitle.element)
         .append(Calendar.page.main.monGridDiv.element, nextday.monCellDiv.element)
 })
 
-const getFullTimeNum = (time) => {
-    if(time < 10){
-        return "0"+time
-    }
-    return time
-}
-
 Calendar.page.items.map((item, i) => {
-
-    const startDate = events[i].start
-    const eventMonth = startDate.getMonth() + 1
-    const eventDay = startDate.getDate() - 1
 
     item.itemDiv.element.addEventListener("dragstart", (e) => {
         dragged = [e.target, events[i].id]
     })
+
+    const startDate = events[i].start
+    const eventYear = startDate.getFullYear()
+    const eventMonth = startDate.getMonth() + 1
+    const eventDay = startDate.getDate() - 1
+
     item.itemP.element.innerText = events[i].title
     item.itemCircle.element.classList.add(catColor[events[i].category])
-    item.itemSpan.element.innerText = `${getFullTimeNum(startDate.getHours())} : ${getFullTimeNum(startDate.getMinutes())}`
-    if(eventMonth === MONTH){
+    item.itemSpan.element.innerText = `${getFullNum(startDate.getHours())} : ${getFullNum(startDate.getMinutes())}`
+    if(eventYear === YEAR && eventMonth === MONTH){
         if(eventDay === 0){
             Calendar
                 .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
@@ -193,7 +198,7 @@ Calendar.page.items.map((item, i) => {
                 .append(item.itemDiv.element, item.itemSpan.element)
                 .append(Calendar.page.days[eventDay-1].monCellDiv.element, item.itemDiv.element)
         }
-    }else if(eventMonth === MONTH - 1){
+    }else if(eventYear === YEAR && eventMonth === MONTH - 1){
         const thisEventDay = (eventDay - LASTALLDAY) + STARTWEEK // lastMonth
         if(thisEventDay >= 0){
             Calendar
@@ -202,7 +207,7 @@ Calendar.page.items.map((item, i) => {
                 .append(item.itemDiv.element, item.itemSpan.element)
                 .append(Calendar.page.lastDay[thisEventDay-1].monCellDiv.element, item.itemDiv.element)
         }
-    }else if(eventMonth === MONTH + 1){
+    }else if(eventYear === YEAR && eventMonth === MONTH + 1){
         if(eventDay < Calendar.page.nextDay.length){
             if(eventDay === 0){
                 Calendar
@@ -220,6 +225,7 @@ Calendar.page.items.map((item, i) => {
         }
     }
 })
+
 
 
     // day.monCellDiv.element.addEventListener("click", (e) => {

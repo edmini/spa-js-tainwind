@@ -6,7 +6,7 @@ require('dotenv').config();
 
 module.exports = function handler () {
 
-    const spreadsheetId = "19xNLOEZd9d9CP2qngOtO5o6WRJsNFbwtd4kn4p29IKI"
+    const spreadsheetId = "1r48RUU8PlY0UdfspdZNImyOaI_z-_-ZCuxBoyJ2cQok"
     const range = "Calendar!A1:G"
     const connect = new google.auth.JWT(
         process.env.CLIENT_EMAIL,
@@ -21,7 +21,8 @@ module.exports = function handler () {
 
     router.use(bodyParser.json());
 
-    router.get('/', async (req, res) => {
+    router.get('/:sheet', async (req, res) => {
+        console.log(req.params.sheet)
         let result = null
         try {
             result = await googleSheets.spreadsheets.values.get({
@@ -89,7 +90,7 @@ module.exports = function handler () {
                 requests : [{
                     deleteDimension : {
                         range : {
-                            sheetId : 1047488640,//gid
+                            sheetId : 0,//gid
                             dimension : "ROWS",
                             startIndex : num - 1,
                             endIndex : num,
