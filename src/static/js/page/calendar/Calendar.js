@@ -77,26 +77,16 @@ Calendar
 //이전, 현재, 다음 월 버튼
 let curYear = YEAR
 let curMon = MONTH
-let curDay = 1
+let curDay = ((new Date()).getDate())
 Calendar.page.main.prevBtn.element.addEventListener("click", () => {
-    if(MONTH === 1){
-        curYear = curYear - 1
-        curMon = 12
-    }else{
-        curMon = curMon - 1
-    }
+    MONTH === 1 ? (curYear =- 1, curMon = 12) : curMon = curMon - 1
     window.location.href = `/calendar?year=${curYear}&month=${curMon}&day=${curDay}`
 })
 Calendar.page.main.todayBtn.element.addEventListener("click", () => {
     window.location.href = `/calendar`
 })
 Calendar.page.main.nextBtn.element.addEventListener("click", () => {
-    if(MONTH === 12){
-        curYear = curYear + 1
-        curMon = 1
-    }else{
-        curMon = curMon + 1
-    }
+    MONTH === 12 ? (curYear = curYear + 1, curMon = 1) : curMon = curMon + 1
     window.location.href = `/calendar?year=${curYear}&month=${curMon}&day=${curDay}`
 })
 

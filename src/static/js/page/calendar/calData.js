@@ -1,6 +1,6 @@
 export const catColor = {
-    work : "bg-blue-400",
-    home : "bg-red-400",
+    work : "bg-red-400",
+    home : "bg-blue-400",
     friend : "bg-green-400"
 }
 
