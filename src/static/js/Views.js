@@ -3,7 +3,7 @@ const views = {
 
 	Home : async () => {
 		const {default : Home} = await import("./page/home/Home.js")
-		return Home.page.main.home
+		return Home.page.main.main
 	},
 	Todos : async () => {
 		const title = { element : document.createElement("h1") }

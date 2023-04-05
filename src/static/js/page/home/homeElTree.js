@@ -3,11 +3,11 @@ import actions from "./actions.js"
 
 const homeTree = {
     homeElTree : {
-        homeEl : {
+        mainEl : {
             element : "main",
             classes : ["z-0"]
         },
-        mainEl : {
+        homeEl : {
             element : "div",
             classes : ["relative", "px-6", "lg:px-8"]
         },
@@ -84,7 +84,7 @@ const homeTree = {
     
     featureElTree : {
         mainEl : {
-            element : "main"
+            element : "main",
         },
         featureEl : {
             element : "div",
@@ -235,7 +235,7 @@ const homeTree = {
     
     contentElTree : {
         mainEl : {
-            element : "div",
+            element : "main",
         },
         contentEl : {
             element : "div",
