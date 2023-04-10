@@ -2,32 +2,32 @@ import calMobileElTree from "./calMobileElTree.js"
 import { SetPage, arrToObj } from "../../core/Creators.js"
 
 
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
-const year = urlParams.get('year')
-const month = urlParams.get('month')
-const day = urlParams.get('day')
+// const queryString = window.location.search;
+// const urlParams = new URLSearchParams(queryString);
+// const year = urlParams.get('year')
+// const month = urlParams.get('month')
+// const day = urlParams.get('day')
 
 let date = new Date()
-if(year || month || day){
-    let y, m, d = null
-    year ? y = year : y = date.getFullYear()
-    month ? m = month : m = date.getMonth()+1
-    day ? d = day : d = date.getDate()
-    date = new Date(`${y}-${m}-${d}`)
-}
+// if(year || month || day){
+//     let y, m, d = null
+//     year ? y = year : y = date.getFullYear()
+//     month ? m = month : m = date.getMonth()+1
+//     day ? d = day : d = date.getDate()
+//     date = new Date(`${y}-${m}-${d}`)
+// }
 
-const res = await fetch("/apis")
-const result = await res.json()
+// const res = await fetch("/apis")
+// const result = await res.json()
 
-let events = []
-const menu = result.datas.data.values[0]
-result.datas.data.values.shift()
-const type = result.datas.data.values[0]
-result.datas.data.values.shift()
-result.datas.data.values.map((value) => {
-	events.push(arrToObj(menu, type, value))
-})
+// let events = []
+// const menu = result.datas.data.values[0]
+// result.datas.data.values.shift()
+// const type = result.datas.data.values[0]
+// result.datas.data.values.shift()
+// result.datas.data.values.map((value) => {
+// 	events.push(arrToObj(menu, type, value))
+// })
 
 const TODAY = date.getDate()
 const MONTH = date.getMonth() + 1
@@ -60,7 +60,7 @@ CalMobile
 CalMobile.listElement("th", calMobileElTree.mobileWeekName.length, calMobileElTree.calMobileTitleElTree)
 CalMobile.listElement("prevTd", STARTWEEK, calMobileElTree.calMobileNumElTree)
 CalMobile.listElement("td", THISALLDAY, calMobileElTree.calMobileNumElTree)
-CalMobile.listElement("events", )
+// CalMobile.listElement("events", )
 
 CalMobile.page.th.map((head, i) => {
     head.calTitleP.element.innerText = calMobileElTree.mobileWeekName[i]
@@ -73,6 +73,7 @@ CalMobile.page.prevTd.map((pTd) => {
         .append(pTd.calTd.element, pTd.calTdDiv.element)
         .append(CalMobile.page.main.calTbodyTr1.element, pTd.calTd.element)
 })
+
 
 CalMobile.page.td.map((day, i) =>{
 

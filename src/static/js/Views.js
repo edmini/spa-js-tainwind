@@ -12,7 +12,7 @@ const views = {
 	},
 	Calendar : async (params) => {
 		let resutlEl = null
-		if(params.type === "/mobile"){
+		if(params.type === "mobile"){
 			const { CalMobile } = await import("./page/calendar/CalMobile.js")
 			resutlEl = CalMobile
 		}else{
