@@ -9,7 +9,6 @@ export class Create {
 		}else{
 			this.element = document.createElement(element.element)
 		}
-
 		element.classes && this.setClasses(element.classes)
 		element.class && this.setClass(element.class)
 		element.id && this.setId(element.id)
@@ -118,7 +117,7 @@ export class SetPage {
 				
 			})
 		}else{
-			let children = []
+			// let children = []
 			for(let i = 0 ; i < child.length ; i++){
 				if(i === 0){
 					parent.appendChild(child[i])
