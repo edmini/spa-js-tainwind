@@ -4,11 +4,12 @@ import Header2 from './page/header/Header2.js'
 import views from './Views.js'
 
 
-const body = document.querySelector("body")
+const main = document.createElement("div")
 const app = document.querySelector("#app")
-body.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100")//https://hypercolor.dev/
-app.before(Header.page.main.header.element)
-// app.before(Header2.page.main.nav.element)
+app.setAttribute("class", "bg-gradient-to-tr from-indigo-200 via-red-200 to-yellow-100")//https://hypercolor.dev/
+app.appendChild(Header.page.main.header.element)
+// app.appendChild(Header2.page.main.nav.element)
+app.appendChild(main)
 
 const pathToRegex = path => new RegExp("^" + path.replace(/\//g, "\\/").replace(/:\w+/g, "(.+)") + "$")
 
@@ -23,6 +24,7 @@ const getParams = (match) => {
 const render = async () => {
 	const routes = [
 		{path : "/", view : views.Home},
+		{path : "/404", view : views.NFound},
 		{path : "/todos", view : views.Todos},
 		{path : "/calendar", view : views.Calendar},
 		{path : "/calendar/:type", view : views.Calendar},
@@ -37,13 +39,12 @@ const render = async () => {
 	let match = potentialMatchs.find((potentialMatch) => potentialMatch.result !== null)
 	if(!match){
 		match = {
-			route : routes[0],
+			route : routes[1],// routes[0] -> "/", rountes[1] -> "/404"
 			result : [location.pathname]
 		}
 	}
 	const view = await match.route.view(getParams(match))
-
-	app.replaceChildren(view.element)
+	main.replaceChildren(view.element)
 }
 
 

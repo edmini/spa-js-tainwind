@@ -5,7 +5,7 @@ const notFound = () => {
 	const nfElTree = {
 		mainEl : {
 			element : "main",
-			classes : ["grid", "min-h-full", "place-items-center", "bg-white", "py-24", "px-6", "sm:py-32", "lg:px-8"]
+			classes : ["grid", "min-h-full", "place-items-center", "h-[calc(100vh-80px)]", "px-6", "sm:py-32", "lg:px-8"]
 		},
 		mainDivEl : {
 			element : "div",

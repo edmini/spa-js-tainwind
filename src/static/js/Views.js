@@ -5,6 +5,11 @@ const views = {
 		const {default : Home} = await import("./page/home/Home.js")
 		return Home.page.main.main
 	},
+	NFound : async () => {
+		const { default : notFound } = await import("./NotFound.js")
+		const nfpage = notFound()
+		return nfpage.main
+	},
 	Todos : async () => {
 		const title = { element : document.createElement("h1") }
 		title.element.innerText = "Hello World Todo"
