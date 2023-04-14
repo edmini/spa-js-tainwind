@@ -50,6 +50,8 @@ let dragged = null //drag item
 
 export const Calendar = new SetPage(calendarElTree.calMonthElTree)
 
+const CalEvent = new SetPage(calendarElTree.eventModalElTree)
+
 Calendar.page.main.title.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
 Calendar
     .append("main.main", "main.monMain", "main.monOuterDiv", "main.titleDiv", "main.title")
@@ -58,7 +60,9 @@ Calendar
     .append("main.btnGroup", "main.todayBtn")
     .append("main.btnGroup", "main.nextBtn", "main.nextSvg", "main.nextPath")
     .append("main.monMain", "main.weekNameDiv")
-    .append("main.monMain", "main.monGridDiv", "main.eventInputModal")
+    .append("main.monMain", "main.monGridDiv")
+Calendar
+    .append(Calendar.page.main.monGridDiv.element, CalEvent.page.main.eventInputModal.element)
 
     Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
     Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
@@ -160,10 +164,40 @@ Calendar.page.nextDay.map((nextday, i) => {
         .append(Calendar.page.main.monGridDiv.element, nextday.monCellDiv.element)
 })
 
+// Calendar.page.main.main.element.addEventListener("click", (e) => {
+//     // CalEvent.page.main.eventInputModal.element.
+//     if(e.target){
+//         CalEvent.page.main.eventInputModal.element.classList.add("hidden")
+//     }
+//     console.log(CalEvent.page.main.eventInputModal.element.classList.contains("hidden"))
+//     console.log(e.target)
+// })
+
+CalEvent
+    .append("main.eventInputModal", "main.eventMainModal", "main.eventContentDiv")
+    .append("main.eventContentDiv", "main.closeBtn", "main.closeSvg", "main.closePath")
+
+document.addEventListener("click", (e) => {
+    if(!CalEvent.page.main.eventInputModal.element.getAttribute("aria-hidden")){
+        if(CalEvent.page.main.eventInputModal.element.classList.contains(e.target)){
+            CalEvent.page.main.eventInputModal.element.classList.add("hidden")
+            CalEvent.page.main.eventInputModal.element.setAttribute("aria-hidden", true)
+        }
+    }
+})
+
 Calendar.page.items.map((item, i) => {
 
     item.itemDiv.element.addEventListener("dragstart", (e) => {
         dragged = [e.target, events[i].id]
+    })
+
+    item.itemDiv.element.addEventListener("click", (e)=>{
+        CalEvent.page.main.eventInputModal.element.classList.toggle("hidden")
+        if(CalEvent.page.main.eventInputModal.element.getAttribute("aria-hidden")){
+            CalEvent.page.main.eventInputModal.element.setAttribute("aria-hidden", false)
+        }
+        CalEvent.page.main.eventContentDiv.element.innerText = events[i].title
     })
 
     const startDate = events[i].start

@@ -6,7 +6,7 @@ const calMobileElTree = {
     calMobileElTree : {
         mainEl : {
             element : "div",
-            classes : ["flex", "items-center", "justify-center", "py-8", "px-4"]
+            classes : ["flex", "items-center", "justify-center", "py-8", "px-4", "h-[calc(100vh-80px)]"]
         },
         outerDivEl : {
             element : "div",

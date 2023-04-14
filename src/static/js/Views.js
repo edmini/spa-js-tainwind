@@ -12,6 +12,7 @@ const views = {
 	},
 	Todos : async () => {
 		const title = { element : document.createElement("h1") }
+		title.element.classList.add("h-[calc(100vh-80px)]", "text-2xl", "font-bold", "leading-7", "text-gray-800", "text-center", "p-10")
 		title.element.innerText = "Hello World Todo"
 		return title
 	},
@@ -22,13 +23,8 @@ const views = {
 			resutlEl = CalMobile
 		}else{
 			const { Calendar } = await import("./page/calendar/Calendar.js")
-			//Loading...
-			// Calendar.page.main.monMain.element.classList.remove("opacity-20")
-			// Calendar.page.main.loadingDiv.element.remove()
 			resutlEl = Calendar
-
 		}
-
 		return resutlEl.page.main.main
 	}
 
