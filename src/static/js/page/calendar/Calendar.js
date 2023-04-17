@@ -3,9 +3,8 @@ import { SetPage, arrToObj } from "../../core/Creators.js"
 import { catColor } from "./calData.js"
 
 // apis get fetch
-const res = await fetch("/apis/Calendar")
+const res = await fetch("/apis/Calendar/G")
 const result = await res.json()
-
 let events = []
 const menu = result.datas.data.values[0]
 result.datas.data.values.shift()
@@ -14,6 +13,19 @@ result.datas.data.values.shift()
 result.datas.data.values.map((value) => {
 	events.push(arrToObj(menu, type, value))
 })
+
+//todos
+const todores = await fetch("/apis/Todos/D")
+const todoresult = await todores.json()
+let todos = []
+const tmenu = todoresult.datas.data.values[0]
+todoresult.datas.data.values.shift()
+const ttype = todoresult.datas.data.values[0]
+todoresult.datas.data.values.shift()
+todoresult.datas.data.values.map((val) => {
+    todos.push(arrToObj(tmenu, ttype, val))
+})
+console.table(todos)
 
 //url calendar?year=2023&month=03&day=01
 const queryString = window.location.search;
@@ -62,7 +74,7 @@ Calendar
     .append("main.monMain", "main.weekNameDiv")
     .append("main.monMain", "main.monGridDiv")
 Calendar
-    .append(Calendar.page.main.monGridDiv.element, CalEvent.page.main.eventInputModal.element)
+    .append(Calendar.page.main.main.element, CalEvent.page.main.eventModalBg.element)
 
     Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
     Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
@@ -174,16 +186,38 @@ Calendar.page.nextDay.map((nextday, i) => {
 // })
 
 CalEvent
-    .append("main.eventInputModal", "main.eventMainModal", "main.eventContentDiv")
-    .append("main.eventContentDiv", "main.closeBtn", "main.closeSvg", "main.closePath")
+    .append("main.eventModalBg", "main.eventModalMain", "main.eventModalOuter", "main.eventModalLogo", "main.eventModalLogoSvg")
+    .append("main.eventModalLogoSvg", "main.eventModalLogoPath1")
+    .append("main.eventModalLogoSvg", "main.eventModalLogoPath2")
+    .append("main.eventModalLogoSvg", "main.eventModalLogoPath3")
+    .append("main.eventModalLogo", "main.eventCloseBtn")//, "main.eventCloseSvg", "main.eventClosePath")
+    // .append("main.eventCloseSvg", "main.eventCloseLine1")
+    // .append("main.eventCloseSvg", "main.eventCloseLine2")
+    // .append("main.eventInputModal", "main.eventContentDiv")
+    // .append("main.eventContentDiv", "main.closeBtn", "main.closeSvg", "main.closePath")
+    .append("main.eventModalOuter", "main.eventTitle")
+    .append("main.eventModalOuter", "main.eventTitleLabel")
+    .append("main.eventModalOuter", "main.eventTitleInput")
+    .append("main.eventModalOuter", "main.eventStartLabel")
+    .append("main.eventModalOuter", "main.eventStartInput")
+    .append("main.eventModalOuter", "main.eventEndLabel")
+    .append("main.eventModalOuter", "main.eventEndInput")
+    .append("main.eventModalOuter", "main.eventCategoryLabel")
+    .append("main.eventModalOuter", "main.eventCategoryInput")
+    .append("main.eventModalOuter", "main.eventSubmitBtn")
+    .append("main.eventModalOuter", "main.eventCancleBtn")
 
-document.addEventListener("click", (e) => {
-    if(!CalEvent.page.main.eventInputModal.element.getAttribute("aria-hidden")){
-        if(CalEvent.page.main.eventInputModal.element.classList.contains(e.target)){
-            CalEvent.page.main.eventInputModal.element.classList.add("hidden")
-            CalEvent.page.main.eventInputModal.element.setAttribute("aria-hidden", true)
-        }
-    }
+// document.addEventListener("click", (e) => {
+//     if(!CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
+//         if(CalEvent.page.main.eventModalBg.element.classList.contains(e.target)){
+//             CalEvent.page.main.eventModalBg.element.classList.add("hidden")
+//             CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
+//         }
+//     }
+// })
+CalEvent.page.main.eventCloseBtn.element.addEventListener("click", (e) => {
+    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
+    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
 })
 
 Calendar.page.items.map((item, i) => {
@@ -193,11 +227,15 @@ Calendar.page.items.map((item, i) => {
     })
 
     item.itemDiv.element.addEventListener("click", (e)=>{
-        CalEvent.page.main.eventInputModal.element.classList.toggle("hidden")
-        if(CalEvent.page.main.eventInputModal.element.getAttribute("aria-hidden")){
-            CalEvent.page.main.eventInputModal.element.setAttribute("aria-hidden", false)
+        CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
+        if(CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
+            CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", false)
         }
-        CalEvent.page.main.eventContentDiv.element.innerText = events[i].title
+        CalEvent.page.main.eventTitle.element.innerText = `${events[i].title}`
+        CalEvent.page.main.eventTitleInput.element.value = `${events[i].title}`
+        CalEvent.page.main.eventStartInput.element.value = `${events[i].start}`
+        CalEvent.page.main.eventEndInput.element.value = `${events[i].end}`
+        CalEvent.page.main.eventCategoryInput.element.value = `${events[i].category}`
     })
 
     const startDate = events[i].start

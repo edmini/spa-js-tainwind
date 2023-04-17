@@ -7,7 +7,6 @@ require('dotenv').config();
 module.exports = function handler () {
 
     const spreadsheetId = "1r48RUU8PlY0UdfspdZNImyOaI_z-_-ZCuxBoyJ2cQok"
-    const range = "Calendar!A1:G"
     const connect = new google.auth.JWT(
         process.env.CLIENT_EMAIL,
         undefined,
@@ -21,8 +20,9 @@ module.exports = function handler () {
 
     router.use(bodyParser.json());
 
-    router.get('/:sheet', async (req, res) => {
-        console.log(req.params.sheet)
+    router.get('/:sheet/:end', async (req, res) => {
+        console.log(req.params.sheet, req.params.end)
+        const range = `${req.params.sheet}!A1:${req.params.end}`
         let result = null
         try {
             result = await googleSheets.spreadsheets.values.get({
@@ -35,12 +35,12 @@ module.exports = function handler () {
         res.json({"datas" : result})
     })
 
-    router.put("/", async (req, res) =>{
+    router.put("/:sheet/:end", async (req, res) =>{
         let bodyData = []
         Object.keys(req.body.data).forEach((d)=>{
             bodyData.push(req.body.data[d])
         })
-        const putRange = `Calendar!A${bodyData[0]}:G${bodyData[0]}`
+        const putRange = `${req.params.sheet}!A${bodyData[0]}:${req.params.end}${bodyData[0]}`
         bodyData[0] = "=row()"
         const batchReq = {
             spreadsheetId : spreadsheetId,
@@ -63,6 +63,7 @@ module.exports = function handler () {
     })
 
     router.post("/", async (req, res) => {
+        const range = `${req.params.sheet}!A1:${req.params.end}`
         let bodyData = []
         Object.keys(req.body.data).forEach((d) => {
             bodyData.push(req.body.data[d])

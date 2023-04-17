@@ -129,22 +129,189 @@ const calendarElTree = {
         // }
     },
     eventModalElTree : {
-        eventInputModalEl : {
+        eventModalBgEl : {
             element : "div",
-            classes : ["hidden", "absolute", "rounded-lg", "w-1/3", "h-1/2", "-translate-x-1/2", "-translate-y-1/2", "top-2/4", "left-1/2", "bg-gray-200", "z-10"],
+            classes : ["hidden", "py-12", "bg-gray-700", "transition", "duration-150", "ease-in-out", "z-20", "absolute", "top-0", "right-0", "bottom-0", "left-0"],
             attrs : {
                 id : "eventModal",
                 tabindex : "-1",
                 "aria-hidden" : true,
             }
         },
-        eventMainModalEl : {
+        eventModalMainEl : {
             element : "div",
-            classes : ["relative", "w-full", "max-w-md", "max-h-full"],
+            classes : ["container", "mx-auto", "w-11/12", "md:w-2/3", "max-w-lg"],
+        },
+        eventModalOuterEl : {
+            element : "div",
+            classes : ["relative", "py-8", "px-5", "md:px-10", "bg-white", "shadow-md", "rounded", "border", "border-gray-400"]
+        },
+        eventModalLogoEl : {
+            element : "div",
+            classes : ["w-full", "flex", "justify-start", "text-gray-600", "mb-3"]
+        },
+        eventModalLogoSvgEl : {
+            element : "svg",
+            classes : ["icon", "icon-tabler", "icon-tabler-wallet"],
+            attrsNS : {
+                width : 52,
+                height : 52,
+                viewBox : "0 0 24 24",
+                "stroke-width" : 1,
+                stroke : "currentColor",
+                fill : "none",
+                "stroke-linecap" : "round",
+                "stroke-linejoin" : "round",
+            }
+        },
+        eventModalLogoPath1El : {
+            element : "path",
+            attrsNS : {
+                stroke : "none",
+                d : "M0 0h24v24H0z"
+            }
+        },
+        eventModalLogoPath2El : {
+            element : "path",
+            attrsNS : {
+                d : "M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12"
+            }
+        },
+        eventModalLogoPath3El : {
+            element : "path",
+            attrsNS : {
+                d : "M20 12v4h-4a2 2 0 0 1 0 -4h4"
+            }
+        },
+        eventCloseBtnEl : {
+            element : "button",
+            classes : ["cursor-pointer", "absolute", "px-2", "top-0", "right-0", "mt-4", "mr-5", "text-gray-400", "hover:text-gray-600", "transition", "duration-150", "ease-in-out", "rounded", "focus:ring-2", "focus:outline-none", "focus:ring-gray-600"],
+            text : "x",
+            attrs : {
+                "aria-label" : "close modal",
+                "role" : "button",
+            }
+        },
+        eventTitleEl : {
+            element : "h1",
+            classes : ["text-gray-800", "font-lg", "font-bold", "tracking-normal", "leading-tight", "mb-4"],
+            text : "New Item"
+        },
+        eventTitleLabelEl : {
+            element : "label",
+            classes : ["text-gray-800", "text-sm", "font-bold", "leading-tight", "tracking-normal"],
+            text : "Title",
+            attrs : {
+                for : "title"
+            }
+        },
+        eventTitleInputEl : {
+            element : "input",
+            classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
+            id : "title"
+        },
+        eventStartLabelEl : {
+            element : "label",
+            classes : ["text-gray-800", "text-sm", "font-bold", "leading-tight", "tracking-normal"],
+            text : "Start Date",
+            attrs : {
+                for : "start"
+            }
+        },
+        eventStartInputEl : {
+            element : "input",
+            classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
+            id : "start"
+        },
+        eventEndLabelEl : {
+            element : "label",
+            classes : ["text-gray-800", "text-sm", "font-bold", "leading-tight", "tracking-normal"],
+            text : "End Date",
+            attrs : {
+                for : "end"
+            }
+        },
+        eventEndInputEl : {
+            element : "input",
+            classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
+            id : "end"
+        },
+        eventCategoryLabelEl : {
+            element : "label",
+            classes : ["text-gray-800", "text-sm", "font-bold", "leading-tight", "tracking-normal"],
+            text : "Category",
+            attrs : {
+                for : "category"
+            }
+        },
+        eventCategoryInputEl : {
+            element : "input",
+            classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
+            id : "category"
+        },
+        eventBtnGroupEl : {
+            element : "div",
+            classes : ["flex", "items-center", "justify-start", "w-full"]
+        },
+        eventSubmitBtnEl : {
+            element : "button",
+            classes : ["focus:outline-none", "focus:ring-2", "focus:ring-offset-2", "focus:ring-indigo-700", "transition", "duration-150", "ease-in-out", "hover:bg-indigo-600", "bg-indigo-700", "rounded", "text-white", "px-8", "py-2", "text-sm"],
+            text : "SUBMIT"
+        },
+        eventCancleBtnEl : {
+            element : "button",
+            classes : ["focus:outline-none", "focus:ring-2", "focus:ring-offset-2", "focus:ring-gray-400", "ml-3", "bg-gray-100", "transition", "duration-150", "text-gray-600", "ease-in-out", "hover:border-gray-400", "hover:bg-gray-300", "border", "rounded", "px-8", "py-2", "text-sm"],
+            text : "CANCLE"
+        },
+        
+        
+
+        // eventCloseSvgEl : {
+        //     element : "svg",
+        //     classes : ["icon", "icon-tabler", "icon-tabler-x"],
+        //     attrsNS : {
+        //         width : 20,
+        //         height : 20,
+        //         viewBox : "0 0 24 24",
+        //         "stroke-width" : 2.5,
+        //         stroke : "currentColor",
+        //         fill : "none",
+        //         "stroke-linecap" : "round",
+        //         "stroke-linejoin" : "round",
+        //     }
+        // },
+        // eventClosePathEl : {
+        //     element : "path",
+        //     attrsNS : {
+        //         stroke : "none",
+        //         d : "M0 0h24v24H0z",
+        //     }
+        // },
+        // eventCloseLine1El : {
+        //     element : "line",
+        //     attrsNS : {
+        //         x1 : "18",
+        //         y1 : "6",
+        //         x2 : "6",
+        //         y2 : "18" 
+        //     }
+        // },
+        // eventCloseLine2El : {
+        //     element : "line",
+        //     attrsNS : {
+        //         x1 : "6",
+        //         y1 : "6",
+        //         x2 : "18",
+        //         y2 : "18" 
+        //     }
+        // },
+        eventInputModalEl : {
+            element : "div",
+            classes : ["relative", "mb-5", "mt-2"],
         },
         eventContentDivEl : {
             element : "div",
-            classes : ["relative", "bg-white", "rounded-lg", "shadow", "dark:bg-gray-700"]
+            classes : ["relative", "bg-white", "shadow", "dark:bg-gray-700"]
         },
         closeBtnEl : {
             element : "button",
