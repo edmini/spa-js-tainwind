@@ -14,18 +14,18 @@ result.datas.data.values.map((value) => {
 	events.push(arrToObj(menu, type, value))
 })
 
-//todos
-const todores = await fetch("/apis/Todos/D")
-const todoresult = await todores.json()
-let todos = []
-const tmenu = todoresult.datas.data.values[0]
-todoresult.datas.data.values.shift()
-const ttype = todoresult.datas.data.values[0]
-todoresult.datas.data.values.shift()
-todoresult.datas.data.values.map((val) => {
-    todos.push(arrToObj(tmenu, ttype, val))
-})
-console.table(todos)
+//todos test
+// const todores = await fetch("/apis/Todos/D")
+// const todoresult = await todores.json()
+// let todos = []
+// const tmenu = todoresult.datas.data.values[0]
+// todoresult.datas.data.values.shift()
+// const ttype = todoresult.datas.data.values[0]
+// todoresult.datas.data.values.shift()
+// todoresult.datas.data.values.map((val) => {
+//     todos.push(arrToObj(tmenu, ttype, val))
+// })
+// console.table(todos)
 
 //url calendar?year=2023&month=03&day=01
 const queryString = window.location.search;
@@ -246,7 +246,8 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
     const start = CalEvent.page.main.eventStartInput.element.value
     const end = CalEvent.page.main.eventEndInput.element.value
     const category = CalEvent.page.main.eventCategoryInput.element.value
-    const data = { id : "=row()", start, end, title, category}
+    // const data = { id : "=row()", start, end, title, category}
+    const data = ["=row()", start, end, title, category]
 
     const res = await fetch("/apis/Calendar/G", {
         method : "POST",

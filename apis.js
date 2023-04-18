@@ -21,7 +21,7 @@ module.exports = function handler () {
     router.use(bodyParser.json());
 
     router.get('/:sheet/:end', async (req, res) => {
-        console.log(req.params.sheet, req.params.end)
+        // console.log(req.params.sheet, req.params.end)
         const range = `${req.params.sheet}!A1:${req.params.end}`
         let result = null
         try {
@@ -64,15 +64,15 @@ module.exports = function handler () {
 
     router.post("/:sheet/:end", async (req, res) => {
         const range = `${req.params.sheet}!A1:${req.params.end}`
-        console.log(req.body.data)
-        let bodyData = []
-        Object.keys(req.body.data).forEach((d) => {
-            bodyData.push(req.body.data[d])
-        })
+        // console.log(req.body.data)
+        // let bodyData = []
+        // Object.keys(req.body.data).forEach((d) => {
+        //     bodyData.push(req.body.data[d])
+        // })
 
-        const postValue = [bodyData]
-        const resource = { postValue }
-        console.log(resource)
+        const values = [req.body.data]
+        const resource = { values, }
+        // console.log(resource)
         try {
             const postRes = await googleSheets.spreadsheets.values.append({
                 spreadsheetId : spreadsheetId,
