@@ -62,14 +62,17 @@ module.exports = function handler () {
         }
     })
 
-    router.post("/", async (req, res) => {
+    router.post("/:sheet/:end", async (req, res) => {
         const range = `${req.params.sheet}!A1:${req.params.end}`
+        console.log(req.body.data)
         let bodyData = []
         Object.keys(req.body.data).forEach((d) => {
             bodyData.push(req.body.data[d])
         })
+
         const postValue = [bodyData]
         const resource = { postValue }
+        console.log(resource)
         try {
             const postRes = await googleSheets.spreadsheets.values.append({
                 spreadsheetId : spreadsheetId,

@@ -130,12 +130,16 @@ Calendar.page.lastDay.map((last, i) => {
         .append(Calendar.page.main.monGridDiv.element, last.monCellDiv.element)
 })
 
+// Calendar day cell
 Calendar.page.days.map((day, i) => {
     (STARTWEEK + i + 1) % 7 === 1 && day.monCellTitle.element.classList.add("text-red-500");
     (STARTWEEK + i + 1) % 7 === 0 && day.monCellTitle.element.classList.add("text-blue-600");
     ((new Date()).getMonth() + 1) === MONTH && (i+1) === TODAY && day.monCellTitle.element.classList.add("bg-blue-500", "text-white")
     const dayNum = getFullNum(i+1)
     day.monCellTitle.element.innerText = dayNum
+    day.monCellTitle.element.addEventListener("click", (e) => {
+        CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
+    })
     //Drag
     day.monCellDiv.element.addEventListener("dragover", (e) => {e.preventDefault()})
     day.monCellDiv.element.addEventListener("drop", async (e) => {
@@ -149,7 +153,7 @@ Calendar.page.days.map((day, i) => {
             moveData.start.setDate(parseInt(dayNum)+1)
             moveData.end.setDate(parseInt(dayNum)+1)
             e.target.appendChild(dragged[0])
-            const putRes = await fetch("/apis", {
+            const putRes = await fetch("/apis/Calendar/G", {
                 method : "PUT",
                 headers : {"Content-Type" : "application/json"},
                 body : JSON.stringify({ "data" : moveData })
@@ -176,25 +180,12 @@ Calendar.page.nextDay.map((nextday, i) => {
         .append(Calendar.page.main.monGridDiv.element, nextday.monCellDiv.element)
 })
 
-// Calendar.page.main.main.element.addEventListener("click", (e) => {
-//     // CalEvent.page.main.eventInputModal.element.
-//     if(e.target){
-//         CalEvent.page.main.eventInputModal.element.classList.add("hidden")
-//     }
-//     console.log(CalEvent.page.main.eventInputModal.element.classList.contains("hidden"))
-//     console.log(e.target)
-// })
-
 CalEvent
-    .append("main.eventModalBg", "main.eventModalMain", "main.eventModalOuter", "main.eventModalLogo", "main.eventModalLogoSvg")
+    .append("main.eventModalBg", "main.eventForm", "main.eventModalMain", "main.eventModalOuter", "main.eventModalLogo", "main.eventModalLogoSvg")
     .append("main.eventModalLogoSvg", "main.eventModalLogoPath1")
     .append("main.eventModalLogoSvg", "main.eventModalLogoPath2")
     .append("main.eventModalLogoSvg", "main.eventModalLogoPath3")
-    .append("main.eventModalLogo", "main.eventCloseBtn")//, "main.eventCloseSvg", "main.eventClosePath")
-    // .append("main.eventCloseSvg", "main.eventCloseLine1")
-    // .append("main.eventCloseSvg", "main.eventCloseLine2")
-    // .append("main.eventInputModal", "main.eventContentDiv")
-    // .append("main.eventContentDiv", "main.closeBtn", "main.closeSvg", "main.closePath")
+    .append("main.eventModalLogo", "main.eventCloseBtn", "main.eventCloseSvg", "main.eventClosePath")
     .append("main.eventModalOuter", "main.eventTitle")
     .append("main.eventModalOuter", "main.eventTitleLabel")
     .append("main.eventModalOuter", "main.eventTitleInput")
@@ -204,22 +195,71 @@ CalEvent
     .append("main.eventModalOuter", "main.eventEndInput")
     .append("main.eventModalOuter", "main.eventCategoryLabel")
     .append("main.eventModalOuter", "main.eventCategoryInput")
-    .append("main.eventModalOuter", "main.eventSubmitBtn")
-    .append("main.eventModalOuter", "main.eventCancleBtn")
+    .append("main.eventModalOuter", "main.eventBtnGroup")
+    .append("main.eventBtnGroup", "main.eventSubmitBtn")
+    .append("main.eventBtnGroup", "main.eventDelBtn")
+    .append("main.eventBtnGroup", "main.eventCancleBtn")
+    .append("main.eventModalOuter", "main.eventDelDiv")
+    .append("main.eventDelDiv", "main.eventDelLabel")
+    .append("main.eventDelDiv", "main.eventDelInput")
 
-// document.addEventListener("click", (e) => {
-//     if(!CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
-//         if(CalEvent.page.main.eventModalBg.element.classList.contains(e.target)){
-//             CalEvent.page.main.eventModalBg.element.classList.add("hidden")
-//             CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
-//         }
-//     }
-// })
+
 CalEvent.page.main.eventCloseBtn.element.addEventListener("click", (e) => {
+    e.preventDefault()
     CalEvent.page.main.eventModalBg.element.classList.add("hidden")
     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
+    clearEventForm()
 })
+CalEvent.page.main.eventCancleBtn.element.addEventListener("click", (e) => {
+    e.preventDefault()
+    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
+    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
+    clearEventForm()
+})
+const clearEventForm = () => {
+    CalEvent.page.main.eventTitle.element.innerText = "New Item"
+    CalEvent.page.main.eventTitleInput.element.value = ""
+    CalEvent.page.main.eventStartInput.element.value = ""
+    CalEvent.page.main.eventEndInput.element.value = ""
+    CalEvent.page.main.eventCategoryInput.element.value = ""
+}
+CalEvent.page.main.eventDelInput.element.addEventListener("change", (e) => {
+    if(e.target.checked){
+        CalEvent.page.main.eventSubmitBtn.element.classList.add("hidden")
+        CalEvent.page.main.eventDelBtn.element.classList.remove("hidden")
+    }else{
+        CalEvent.page.main.eventDelBtn.element.classList.add("hidden")
+        CalEvent.page.main.eventSubmitBtn.element.classList.remove("hidden")
+    }
+})
+CalEvent.page.main.eventDelBtn.element.addEventListener("click", (e) => {
+    e.preventDefault()
+    console.log("del")
+    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
+    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
+    clearEventForm()
+})
+CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) => {
+    e.preventDefault()
+    console.log("submit")
+    const title = CalEvent.page.main.eventTitleInput.element.value
+    const start = CalEvent.page.main.eventStartInput.element.value
+    const end = CalEvent.page.main.eventEndInput.element.value
+    const category = CalEvent.page.main.eventCategoryInput.element.value
+    const data = { id : "=row()", start, end, title, category}
 
+    const res = await fetch("/apis/Calendar/G", {
+        method : "POST",
+        headers : {"Content-Type" : "application/json"},
+        body : JSON.stringify({data})
+    })
+    const result = await res.json()
+    console.log(result)
+
+    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
+    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
+    clearEventForm()
+})
 Calendar.page.items.map((item, i) => {
 
     item.itemDiv.element.addEventListener("dragstart", (e) => {
@@ -287,18 +327,4 @@ Calendar.page.items.map((item, i) => {
         }
     }
 })
-
-
-
-    // day.monCellDiv.element.addEventListener("click", (e) => {
-    //     const rect = day.monCellDiv.element.getBoundingClientRect()
-    //     //modal위치가 전체창의 반 보다 커지면 위치를 이동 X,y 모두 적용해야 함
-    //     const cellX = rect.left + (rect.width/2)
-    //     const cellY = rect.top + (rect.height/2)
-    //     // console.log(cellX, cellY)
-    //     Calendar.page.main.eventInputModal.element.style.left = `${cellX}px`
-    //     Calendar.page.main.eventInputModal.element.style.top = `${cellY}px`
-    //     Calendar.page.main.eventInputModal.element.classList.toggle("hidden")
-    //             // console.log(Calendar.page.main.eventInputModal.element)
-    // })
 
