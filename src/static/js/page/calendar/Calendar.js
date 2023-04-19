@@ -1,9 +1,9 @@
 import calendarElTree from "./calElTree.js"
-import { SetPage, arrToObj } from "../../core/Creators.js"
+import { SetPage, makeTag, arrToObj } from "../../core/Creators.js"
 import { catColor } from "./calData.js"
 
 // apis get fetch
-const res = await fetch("/apis/Calendar/G")
+const res = await fetch("/apis/Calendar/F")
 const result = await res.json()
 let events = []
 const menu = result.datas.data.values[0]
@@ -13,19 +13,6 @@ result.datas.data.values.shift()
 result.datas.data.values.map((value) => {
 	events.push(arrToObj(menu, type, value))
 })
-
-//todos test
-// const todores = await fetch("/apis/Todos/D")
-// const todoresult = await todores.json()
-// let todos = []
-// const tmenu = todoresult.datas.data.values[0]
-// todoresult.datas.data.values.shift()
-// const ttype = todoresult.datas.data.values[0]
-// todoresult.datas.data.values.shift()
-// todoresult.datas.data.values.map((val) => {
-//     todos.push(arrToObj(tmenu, ttype, val))
-// })
-// console.table(todos)
 
 //url calendar?year=2023&month=03&day=01
 const queryString = window.location.search;
@@ -139,6 +126,9 @@ Calendar.page.days.map((day, i) => {
     day.monCellTitle.element.innerText = dayNum
     day.monCellTitle.element.addEventListener("click", (e) => {
         CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
+        CalEvent.page.main.eventDelDiv.element.classList.add("hidden")
+        CalEvent.page.main.eventStartInput.element.value = `${YEAR}-${MONTH}-${dayNum}`
+        CalEvent.page.main.eventEndInput.element.value = `${YEAR}-${MONTH}-${dayNum}`
     })
     //Drag
     day.monCellDiv.element.addEventListener("dragover", (e) => {e.preventDefault()})
@@ -153,10 +143,13 @@ Calendar.page.days.map((day, i) => {
             moveData.start.setDate(parseInt(dayNum)+1)
             moveData.end.setDate(parseInt(dayNum)+1)
             e.target.appendChild(dragged[0])
-            const putRes = await fetch("/apis/Calendar/G", {
+            events[dragged[2]].start = moveData.start
+            events[dragged[2]].end = moveData.end
+            const data = [moveData.id, moveData.start, moveData.end, moveData.title, moveData.category, moveData.memo]
+            const putRes = await fetch("/apis/Calendar/F", {
                 method : "PUT",
                 headers : {"Content-Type" : "application/json"},
-                body : JSON.stringify({ "data" : moveData })
+                body : JSON.stringify({data})
             })
             const putResult = await putRes.json()
             putResult.error && console.log(putResult.error)
@@ -187,6 +180,8 @@ CalEvent
     .append("main.eventModalLogoSvg", "main.eventModalLogoPath3")
     .append("main.eventModalLogo", "main.eventCloseBtn", "main.eventCloseSvg", "main.eventClosePath")
     .append("main.eventModalOuter", "main.eventTitle")
+    .append("main.eventModalOuter", "main.eventIdLabel")
+    .append("main.eventModalOuter", "main.eventIdInput")
     .append("main.eventModalOuter", "main.eventTitleLabel")
     .append("main.eventModalOuter", "main.eventTitleInput")
     .append("main.eventModalOuter", "main.eventStartLabel")
@@ -195,6 +190,8 @@ CalEvent
     .append("main.eventModalOuter", "main.eventEndInput")
     .append("main.eventModalOuter", "main.eventCategoryLabel")
     .append("main.eventModalOuter", "main.eventCategoryInput")
+    .append("main.eventModalOuter", "main.eventMemoLabel")
+    .append("main.eventModalOuter", "main.eventMemoInput")
     .append("main.eventModalOuter", "main.eventBtnGroup")
     .append("main.eventBtnGroup", "main.eventSubmitBtn")
     .append("main.eventBtnGroup", "main.eventDelBtn")
@@ -218,11 +215,17 @@ CalEvent.page.main.eventCancleBtn.element.addEventListener("click", (e) => {
 })
 const clearEventForm = () => {
     CalEvent.page.main.eventTitle.element.innerText = "New Item"
+    CalEvent.page.main.eventIdInput.element.value = ""
     CalEvent.page.main.eventTitleInput.element.value = ""
     CalEvent.page.main.eventStartInput.element.value = ""
     CalEvent.page.main.eventEndInput.element.value = ""
     CalEvent.page.main.eventCategoryInput.element.value = ""
+    CalEvent.page.main.eventMemoInput.element.value = ""
+    CalEvent.page.main.eventDelInput.element.checked = false
+    CalEvent.page.main.eventDelBtn.element.classList.add("hidden")
+    CalEvent.page.main.eventSubmitBtn.element.classList.remove("hidden")
 }
+
 CalEvent.page.main.eventDelInput.element.addEventListener("change", (e) => {
     if(e.target.checked){
         CalEvent.page.main.eventSubmitBtn.element.classList.add("hidden")
@@ -232,51 +235,109 @@ CalEvent.page.main.eventDelInput.element.addEventListener("change", (e) => {
         CalEvent.page.main.eventSubmitBtn.element.classList.remove("hidden")
     }
 })
-CalEvent.page.main.eventDelBtn.element.addEventListener("click", (e) => {
-    e.preventDefault()
-    console.log("del")
-    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
-    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
-    clearEventForm()
-})
+
+const openEventModal = (i) => {
+    CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
+    if(CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
+        CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", false)
+    }
+    CalEvent.page.main.eventDelDiv.element.classList.remove("hidden")
+    CalEvent.page.main.eventTitle.element.innerText = `${events[i].title}`
+
+    CalEvent.page.main.eventIdInput.element.value = `${events[i].id}`
+    CalEvent.page.main.eventTitleInput.element.value = `${events[i].title}`
+    CalEvent.page.main.eventStartInput.element.value = `${events[i].start}`
+    CalEvent.page.main.eventEndInput.element.value = `${events[i].end}`
+    CalEvent.page.main.eventCategoryInput.element.value = `${events[i].category}`
+    CalEvent.page.main.eventMemoInput.element.value = `${events[i].memo}`
+}
+
+
+
 CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) => {
     e.preventDefault()
-    console.log("submit")
+    // console.log("submit")
+    let id = CalEvent.page.main.eventIdInput.element.value
+    const status = id.length > 0 ? "PUT" : "POST"
     const title = CalEvent.page.main.eventTitleInput.element.value
-    const start = CalEvent.page.main.eventStartInput.element.value
-    const end = CalEvent.page.main.eventEndInput.element.value
+    const start = new Date(CalEvent.page.main.eventStartInput.element.value)
+    const end = new Date(CalEvent.page.main.eventEndInput.element.value)
     const category = CalEvent.page.main.eventCategoryInput.element.value
-    // const data = { id : "=row()", start, end, title, category}
-    const data = ["=row()", start, end, title, category]
-
-    const res = await fetch("/apis/Calendar/G", {
-        method : "POST",
+    const memo = CalEvent.page.main.eventMemoInput.element.value
+    const data = [id, start, end, title, category, memo]
+    
+    const res = await fetch("/apis/Calendar/F", {
+        method : status,
         headers : {"Content-Type" : "application/json"},
         body : JSON.stringify({data})
     })
-    const result = await res.json()
+    const {result} = await res.json()
+    const updateId = result.match(/\d+/g)
+    id = updateId[0]
+    events.push({ id, start, end, title, category, memo })
+    if(status === "POST"){
+        Calendar.page.items.push(makeTag(calendarElTree.calItemElTree))
+        const lastItem = Calendar.page.items[Calendar.page.items.length - 1]
+        lastItem.itemP.element.innerText = title
+        lastItem.itemCircle.element.classList.add(catColor[category])
+        lastItem.itemSpan.element.innerText = `${getFullNum(start.getHours())} : ${getFullNum(start.getMinutes())}`
+        lastItem.itemDiv.element.addEventListener("dragstart", (e) => {
+            dragged = [e.target, id, events.length - 1]
+        })
+        lastItem.itemDiv.element.addEventListener("click", (e) => {
+            openEventModal(events.length - 1)
+        })
+        Calendar
+                .append(lastItem.itemDiv.element, lastItem.itemCircle.element) // between 처리 예정
+                .append(lastItem.itemDiv.element, lastItem.itemP.element)
+                .append(lastItem.itemDiv.element, lastItem.itemSpan.element)
+                .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, lastItem.itemDiv.element)
+    }
+    
     console.log(result)
 
     CalEvent.page.main.eventModalBg.element.classList.add("hidden")
     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
     clearEventForm()
 })
-Calendar.page.items.map((item, i) => {
 
+CalEvent.page.main.eventDelBtn.element.addEventListener("click", async (e) => {
+    e.preventDefault()
+    const idv = CalEvent.page.main.eventIdInput.element.value
+    const delItem = events.findIndex( (ev) => ev.id === parseInt(idv))
+    console.log(idv, delItem)
+    const gid = 0
+    const res = await fetch(`/apis/Calendar/${gid}/${idv}`, {method : "DELETE"})
+    const result = await res.json()
+    console.log(result)
+
+    Calendar.page.items[delItem].itemDiv.element.remove()
+
+    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
+    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
+    clearEventForm()
+})
+
+Calendar.page.items.map((item, i) => {
     item.itemDiv.element.addEventListener("dragstart", (e) => {
-        dragged = [e.target, events[i].id]
+        dragged = [e.target, events[i].id, i]
     })
 
     item.itemDiv.element.addEventListener("click", (e)=>{
-        CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
-        if(CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
-            CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", false)
-        }
-        CalEvent.page.main.eventTitle.element.innerText = `${events[i].title}`
-        CalEvent.page.main.eventTitleInput.element.value = `${events[i].title}`
-        CalEvent.page.main.eventStartInput.element.value = `${events[i].start}`
-        CalEvent.page.main.eventEndInput.element.value = `${events[i].end}`
-        CalEvent.page.main.eventCategoryInput.element.value = `${events[i].category}`
+        openEventModal(i)
+        // CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
+        // if(CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
+        //     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", false)
+        // }
+        // CalEvent.page.main.eventDelDiv.element.classList.remove("hidden")
+        // CalEvent.page.main.eventTitle.element.innerText = `${events[i].title}`
+
+        // CalEvent.page.main.eventIdInput.element.value = `${events[i].id}`
+        // CalEvent.page.main.eventTitleInput.element.value = `${events[i].title}`
+        // CalEvent.page.main.eventStartInput.element.value = `${events[i].start}`
+        // CalEvent.page.main.eventEndInput.element.value = `${events[i].end}`
+        // CalEvent.page.main.eventCategoryInput.element.value = `${events[i].category}`
+        // CalEvent.page.main.eventMemoInput.element.value = `${events[i].memo}`
     })
 
     const startDate = events[i].start

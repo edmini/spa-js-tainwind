@@ -5,7 +5,6 @@ const { google } = require("googleapis")
 require('dotenv').config();
 
 module.exports = function handler () {
-
     const spreadsheetId = "1r48RUU8PlY0UdfspdZNImyOaI_z-_-ZCuxBoyJ2cQok"
     const connect = new google.auth.JWT(
         process.env.CLIENT_EMAIL,
@@ -18,30 +17,29 @@ module.exports = function handler () {
     })
     const googleSheets = google.sheets({ version : "v4", auth : connect })
 
-    router.use(bodyParser.json());
 
+    router.use(bodyParser.json());
     router.get('/:sheet/:end', async (req, res) => {
-        // console.log(req.params.sheet, req.params.end)
         const range = `${req.params.sheet}!A1:${req.params.end}`
-        let result = null
         try {
-            result = await googleSheets.spreadsheets.values.get({
+            const result = await googleSheets.spreadsheets.values.get({
                 spreadsheetId : spreadsheetId,
                 range : range,
             })
+            res.json({"datas" : result})
         } catch (err) {
-            console.log("GET DATA ERROR : ", err)
+            res.json({"error" : err})
         }
-        res.json({"datas" : result})
     })
 
     router.put("/:sheet/:end", async (req, res) =>{
-        let bodyData = []
-        Object.keys(req.body.data).forEach((d)=>{
-            bodyData.push(req.body.data[d])
-        })
-        const putRange = `${req.params.sheet}!A${bodyData[0]}:${req.params.end}${bodyData[0]}`
-        bodyData[0] = "=row()"
+        // let bodyData = []
+        // Object.keys(req.body.data).forEach((d)=>{
+        //     bodyData.push(req.body.data[d])
+        // })
+        const putRange = `${req.params.sheet}!A${req.body.data[0]}:${req.params.end}`
+        req.body.data[0] = "=row()"
+        console.log(req.body.data)
         const batchReq = {
             spreadsheetId : spreadsheetId,
             resource : {
@@ -49,7 +47,7 @@ module.exports = function handler () {
                 data : {
                     range : putRange,
                     majorDimension : "ROWS",
-                    values : [bodyData],
+                    values : [req.body.data],
                 }
             },
             auth : connect
@@ -64,15 +62,9 @@ module.exports = function handler () {
 
     router.post("/:sheet/:end", async (req, res) => {
         const range = `${req.params.sheet}!A1:${req.params.end}`
-        // console.log(req.body.data)
-        // let bodyData = []
-        // Object.keys(req.body.data).forEach((d) => {
-        //     bodyData.push(req.body.data[d])
-        // })
-
+        req.body.data[0] = "=row()"
         const values = [req.body.data]
         const resource = { values, }
-        // console.log(resource)
         try {
             const postRes = await googleSheets.spreadsheets.values.append({
                 spreadsheetId : spreadsheetId,
@@ -80,21 +72,22 @@ module.exports = function handler () {
                 valueInputOption : "USER_ENTERED",
                 resource : resource,
             })
-            res.json({"result" : "success"})
+            res.json({"result" : postRes.data.updates.updatedRange})
         } catch (err) {
-            res.json({"result" : err})
+            res.json({"error" : err})
         }
     })
 
-    router.delete("/", async (req, res) => {
-        const num = parseInt(req.body.id)
+    router.delete("/:sheet/:gid/:id", async (req, res) => {
+        const num = parseInt(req.params.id)
+        const gid = parseInt(req.params.gid)//gid Calendar : 0, Todos : 1275617879,
         const request = {
             spreadsheetId : spreadsheetId,
             resource : {
                 requests : [{
                     deleteDimension : {
                         range : {
-                            sheetId : 0,//gid
+                            sheetId : gid,
                             dimension : "ROWS",
                             startIndex : num - 1,
                             endIndex : num,
@@ -105,10 +98,11 @@ module.exports = function handler () {
             auth : connect
         }
         try {
-            const res = (await googleSheets.spreadsheets.batchUpdate(request)).data
-            res.json({"result" : res})
+            const result = (await googleSheets.spreadsheets.batchUpdate(request)).data
+            res.json({"result" : result})
         } catch (err) {
-            res.json({"result" : err})
+            console.log(err)
+            res.json({"error" : err})
         }
     })
 

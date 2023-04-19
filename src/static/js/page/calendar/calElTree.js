@@ -180,6 +180,19 @@ const calendarElTree = {
             classes : ["text-gray-800", "font-lg", "font-bold", "tracking-normal", "leading-tight", "mb-4"],
             text : "New Item"
         },
+        eventIdLabelEl : {
+            element : "label",
+            classes : ["hidden", "text-gray-800", "text-sm", "font-bold", "leading-tight", "tracking-normal"],
+            text : "Id",
+            attrs : {
+                for : "id"
+            }
+        },
+        eventIdInputEl : {
+            element : "input",
+            classes : ["hidden", "mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
+            id : "id"
+        },
         eventTitleLabelEl : {
             element : "label",
             classes : ["text-gray-800", "text-sm", "font-bold", "leading-tight", "tracking-normal"],
@@ -232,6 +245,19 @@ const calendarElTree = {
             classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
             id : "category"
         },
+        eventMemoLabelEl : {
+            element : "label",
+            classes : ["text-gray-800", "text-sm", "font-bold", "leading-tight", "tracking-normal"],
+            text : "Memo",
+            attrs : {
+                for : "memo"
+            }
+        },
+        eventMemoInputEl : {
+            element : "input",
+            classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
+            id : "memo"
+        },
         eventBtnGroupEl : {
             element : "div",
             classes : ["flex", "items-center", "justify-start", "w-full"]
@@ -253,7 +279,7 @@ const calendarElTree = {
         },
         eventDelDivEl : {
             element : "div",
-            classes : ["pt-3"]
+            classes : ["hidden", "pt-3"]
         },
         eventDelLabelEl : {
             element : "label",
