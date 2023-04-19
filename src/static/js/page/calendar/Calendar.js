@@ -1,18 +1,9 @@
 import calendarElTree from "./calElTree.js"
 import { SetPage, makeTag, arrToObj } from "../../core/Creators.js"
 import { catColor } from "./calData.js"
+import { delData, getData, postData, putData } from "./fetchData.js"
 
-// apis get fetch
-const res = await fetch("/apis/Calendar/F")
-const result = await res.json()
-let events = []
-const menu = result.datas.data.values[0]
-result.datas.data.values.shift()
-const type = result.datas.data.values[0]
-result.datas.data.values.shift()
-result.datas.data.values.map((value) => {
-	events.push(arrToObj(menu, type, value))
-})
+let events = await getData("/apis/Calendar/F")
 
 //url calendar?year=2023&month=03&day=01
 const queryString = window.location.search;
@@ -20,9 +11,6 @@ const urlParams = new URLSearchParams(queryString);
 const year = urlParams.get('year')
 const month = urlParams.get('month')
 const day = urlParams.get('day')
-
-//0~9 => 00~09
-const getFullNum = (time) => time < 10 ? `0${time}` : time
 
 //date
 let date = new Date()
@@ -34,6 +22,9 @@ if(year || month || day){
     date = new Date(`${y}-${m}-${d}`)
 }
 date.getTimezoneOffset()
+
+//0~9 => 00~09
+const getFullNum = (time) => time < 10 ? `0${time}` : time
 
 const TODAY = date.getDate()
 const MONTH = date.getMonth() + 1
@@ -48,7 +39,6 @@ events.find((event) => {(new Date(event.start)).getFullYear === YEAR})
 let dragged = null //drag item
 
 export const Calendar = new SetPage(calendarElTree.calMonthElTree)
-
 const CalEvent = new SetPage(calendarElTree.eventModalElTree)
 
 Calendar.page.main.title.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
@@ -146,13 +136,7 @@ Calendar.page.days.map((day, i) => {
             events[dragged[2]].start = moveData.start
             events[dragged[2]].end = moveData.end
             const data = [moveData.id, moveData.start, moveData.end, moveData.title, moveData.category, moveData.memo]
-            const putRes = await fetch("/apis/Calendar/F", {
-                method : "PUT",
-                headers : {"Content-Type" : "application/json"},
-                body : JSON.stringify({data})
-            })
-            const putResult = await putRes.json()
-            putResult.error && console.log(putResult.error)
+            putData("/apis/Calendar/F", data)
         }
     })
     Calendar
@@ -213,6 +197,15 @@ CalEvent.page.main.eventCancleBtn.element.addEventListener("click", (e) => {
     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
     clearEventForm()
 })
+document.addEventListener("keydown", (e) => {
+    if(e.key === "Escape"){
+        e.preventDefault()
+        CalEvent.page.main.eventModalBg.element.classList.add("hidden")
+        CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
+        clearEventForm()
+    }
+})
+
 const clearEventForm = () => {
     CalEvent.page.main.eventTitle.element.innerText = "New Item"
     CalEvent.page.main.eventIdInput.element.value = ""
@@ -243,7 +236,6 @@ const openEventModal = (i) => {
     }
     CalEvent.page.main.eventDelDiv.element.classList.remove("hidden")
     CalEvent.page.main.eventTitle.element.innerText = `${events[i].title}`
-
     CalEvent.page.main.eventIdInput.element.value = `${events[i].id}`
     CalEvent.page.main.eventTitleInput.element.value = `${events[i].title}`
     CalEvent.page.main.eventStartInput.element.value = `${events[i].start}`
@@ -251,7 +243,6 @@ const openEventModal = (i) => {
     CalEvent.page.main.eventCategoryInput.element.value = `${events[i].category}`
     CalEvent.page.main.eventMemoInput.element.value = `${events[i].memo}`
 }
-
 
 
 CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) => {
@@ -266,36 +257,41 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
     const memo = CalEvent.page.main.eventMemoInput.element.value
     const data = [id, start, end, title, category, memo]
     
-    const res = await fetch("/apis/Calendar/F", {
-        method : status,
-        headers : {"Content-Type" : "application/json"},
-        body : JSON.stringify({data})
-    })
-    const {result} = await res.json()
-    const updateId = result.match(/\d+/g)
+    let result
+    if(status === "PUT"){
+        result = await putData("/apis/Calendar/F", data)
+    }else if(status === "POST"){
+        result = await postData("/apis/Calendar/F", data)
+    }
+
+    const updateId = await result.match(/\d+/g)
     id = updateId[0]
     events.push({ id, start, end, title, category, memo })
+    let itemElement = null
     if(status === "POST"){
         Calendar.page.items.push(makeTag(calendarElTree.calItemElTree))
-        const lastItem = Calendar.page.items[Calendar.page.items.length - 1]
-        lastItem.itemP.element.innerText = title
-        lastItem.itemCircle.element.classList.add(catColor[category])
-        lastItem.itemSpan.element.innerText = `${getFullNum(start.getHours())} : ${getFullNum(start.getMinutes())}`
-        lastItem.itemDiv.element.addEventListener("dragstart", (e) => {
-            dragged = [e.target, id, events.length - 1]
-        })
-        lastItem.itemDiv.element.addEventListener("click", (e) => {
-            openEventModal(events.length - 1)
-        })
-        Calendar
-                .append(lastItem.itemDiv.element, lastItem.itemCircle.element) // between 처리 예정
-                .append(lastItem.itemDiv.element, lastItem.itemP.element)
-                .append(lastItem.itemDiv.element, lastItem.itemSpan.element)
-                .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, lastItem.itemDiv.element)
+        itemElement = Calendar.page.items[Calendar.page.items.length - 1]
     }
-    
-    console.log(result)
-
+    if(status === "PUT"){
+        const putNum = events.findIndex( (ev) => ev.id === parseInt(id))
+        itemElement = Calendar.page.items[putNum]
+    }
+    itemElement.itemP.element.innerText = title
+    itemElement.itemCircle.element.classList.add(catColor[category])
+    itemElement.itemSpan.element.innerText = `${getFullNum(start.getHours())} : ${getFullNum(start.getMinutes())}`
+    itemElement.itemDiv.element.addEventListener("dragstart", (e) => {
+        dragged = [e.target, id, events.length - 1]
+    })
+    itemElement.itemDiv.element.addEventListener("click", (e) => {
+        openEventModal(events.length - 1)
+    })
+    if(status === "POST"){
+        Calendar
+                .append(itemElement.itemDiv.element, itemElement.itemCircle.element) // between 처리 예정
+                .append(itemElement.itemDiv.element, itemElement.itemP.element)
+                .append(itemElement.itemDiv.element, itemElement.itemSpan.element)
+                .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, itemElement.itemDiv.element)
+    }
     CalEvent.page.main.eventModalBg.element.classList.add("hidden")
     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
     clearEventForm()
@@ -307,12 +303,8 @@ CalEvent.page.main.eventDelBtn.element.addEventListener("click", async (e) => {
     const delItem = events.findIndex( (ev) => ev.id === parseInt(idv))
     console.log(idv, delItem)
     const gid = 0
-    const res = await fetch(`/apis/Calendar/${gid}/${idv}`, {method : "DELETE"})
-    const result = await res.json()
-    console.log(result)
-
+    delData(`/apis/Calendar/${gid}/${idv}`)
     Calendar.page.items[delItem].itemDiv.element.remove()
-
     CalEvent.page.main.eventModalBg.element.classList.add("hidden")
     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
     clearEventForm()
@@ -325,19 +317,6 @@ Calendar.page.items.map((item, i) => {
 
     item.itemDiv.element.addEventListener("click", (e)=>{
         openEventModal(i)
-        // CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
-        // if(CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
-        //     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", false)
-        // }
-        // CalEvent.page.main.eventDelDiv.element.classList.remove("hidden")
-        // CalEvent.page.main.eventTitle.element.innerText = `${events[i].title}`
-
-        // CalEvent.page.main.eventIdInput.element.value = `${events[i].id}`
-        // CalEvent.page.main.eventTitleInput.element.value = `${events[i].title}`
-        // CalEvent.page.main.eventStartInput.element.value = `${events[i].start}`
-        // CalEvent.page.main.eventEndInput.element.value = `${events[i].end}`
-        // CalEvent.page.main.eventCategoryInput.element.value = `${events[i].category}`
-        // CalEvent.page.main.eventMemoInput.element.value = `${events[i].memo}`
     })
 
     const startDate = events[i].start

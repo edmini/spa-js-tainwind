@@ -54,7 +54,7 @@ module.exports = function handler () {
         }
         try {
             const putRes = (await googleSheets.spreadsheets.values.batchUpdate(batchReq)).data
-            res.json({"result" : "success"})
+            res.json({"result" : putRes.responses[0].updatedRange})
         } catch (err) {
             res.json({"error" : err})
         }
