@@ -190,13 +190,13 @@ CalEvent.page.main.eventCancleBtn.element.addEventListener("click", (e) => {
     e.preventDefault()
     closeModal()
 })
-document.addEventListener("keydown", (e) => {
-// CalEvent.page.main.eventModalBg.element.addEventListener("keydown", (e) => {
-    e.preventDefault()
-    if(e.key === "Escape"){
-        closeModal()
-    }
-})
+// document.addEventListener("keydown", (e) => {
+// // CalEvent.page.main.eventModalBg.element.addEventListener("keydown", (e) => {
+//     e.preventDefault()
+//     if(e.key === "Escape"){
+//         closeModal()
+//     }
+// })
 
 //Modal Form init
 const clearEventForm = () => {
