@@ -1,9 +1,11 @@
 import calendarElTree from "./calElTree.js"
-import { SetPage, makeTag, arrToObj } from "../../core/Creators.js"
+import { SetPage, makeTag } from "../../core/Creators.js"
 import { catColor } from "./calData.js"
 import { delData, getData, postData, putData } from "./fetchData.js"
 
-let events = await getData("/apis/Calendar/F")
+const apiURL = "/apis/Calendar/F"
+
+let events = await getData(apiURL)
 
 //url calendar?year=2023&month=03&day=01
 const queryString = window.location.search;
@@ -11,7 +13,6 @@ const urlParams = new URLSearchParams(queryString);
 const year = urlParams.get('year')
 const month = urlParams.get('month')
 const day = urlParams.get('day')
-
 //date
 let date = new Date()
 if(year || month || day){
@@ -22,9 +23,8 @@ if(year || month || day){
     date = new Date(`${y}-${m}-${d}`)
 }
 date.getTimezoneOffset()
-
 //0~9 => 00~09
-const getFullNum = (time) => time < 10 ? `0${time}` : time
+const getFullNum = (num) => num < 10 ? `0${num}` : num
 
 const TODAY = date.getDate()
 const MONTH = date.getMonth() + 1
@@ -41,7 +41,6 @@ let dragged = null //drag item
 export const Calendar = new SetPage(calendarElTree.calMonthElTree)
 const CalEvent = new SetPage(calendarElTree.eventModalElTree)
 
-Calendar.page.main.title.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
 Calendar
     .append("main.main", "main.monMain", "main.monOuterDiv", "main.titleDiv", "main.title")
     .append("main.monOuterDiv", "main.btnGroup")//"main.monOuterDiv", "main.monInnerDiv", 
@@ -50,23 +49,42 @@ Calendar
     .append("main.btnGroup", "main.nextBtn", "main.nextSvg", "main.nextPath")
     .append("main.monMain", "main.weekNameDiv")
     .append("main.monMain", "main.monGridDiv")
-Calendar
     .append(Calendar.page.main.main.element, CalEvent.page.main.eventModalBg.element)
 
-    Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
-    Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
-    Calendar.listElement("lastDay", STARTWEEK, calendarElTree.calMonCellElTree)
-    Calendar.listElement("nextDay", 42-(STARTWEEK+THISALLDAY), calendarElTree.calMonCellElTree)
-    Calendar.listElement("items", events.length, calendarElTree.calItemElTree)
+CalEvent
+    .append("main.eventModalBg", "main.eventForm", "main.eventModalMain", "main.eventModalOuter", "main.eventModalLogo", "main.eventModalLogoSvg")
+    .append("main.eventModalLogoSvg", "main.eventModalLogoPath1")
+    .append("main.eventModalLogoSvg", "main.eventModalLogoPath2")
+    .append("main.eventModalLogoSvg", "main.eventModalLogoPath3")
+    .append("main.eventModalLogo", "main.eventCloseBtn", "main.eventCloseSvg", "main.eventClosePath")
+    .append("main.eventModalOuter", "main.eventTitle")
+    .append("main.eventModalOuter", "main.eventIdLabel")
+    .append("main.eventModalOuter", "main.eventIdInput")
+    .append("main.eventModalOuter", "main.eventTitleLabel")
+    .append("main.eventModalOuter", "main.eventTitleInput")
+    .append("main.eventModalOuter", "main.eventStartLabel")
+    .append("main.eventModalOuter", "main.eventStartInput")
+    .append("main.eventModalOuter", "main.eventEndLabel")
+    .append("main.eventModalOuter", "main.eventEndInput")
+    .append("main.eventModalOuter", "main.eventCategoryLabel")
+    .append("main.eventModalOuter", "main.eventCategoryInput")
+    .append("main.eventModalOuter", "main.eventMemoLabel")
+    .append("main.eventModalOuter", "main.eventMemoInput")
+    .append("main.eventModalOuter", "main.eventBtnGroup")
+    .append("main.eventBtnGroup", "main.eventSubmitBtn")
+    .append("main.eventBtnGroup", "main.eventDelBtn")
+    .append("main.eventBtnGroup", "main.eventCancleBtn")
+    .append("main.eventModalOuter", "main.eventDelDiv")
+    .append("main.eventDelDiv", "main.eventDelLabel")
+    .append("main.eventDelDiv", "main.eventDelInput")
 
-    //Loading .....
-// Calendar.page.main.monMain.element.classList.add("opacity-20")
-// Calendar
-//     .append("main.main", "main.loadingDiv", "main.loadingSvg")
-//     .append("main.loadingSvg", "main.loadingPath1")
-//     .append("main.loadingSvg", "main.loadingPath2")
-//     .append("main.loadingSvg", "main.loadingSpan")
+Calendar.listElement("days", THISALLDAY, calendarElTree.calMonCellElTree)
+Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
+Calendar.listElement("lastDay", STARTWEEK, calendarElTree.calMonCellElTree)
+Calendar.listElement("nextDay", 42-(STARTWEEK+THISALLDAY), calendarElTree.calMonCellElTree)
+Calendar.listElement("items", events.length, calendarElTree.calItemElTree)
 
+Calendar.page.main.title.element.innerText = `${calendarElTree.monName[MONTH-1]} ${YEAR}`
 //이전, 현재, 다음 월 버튼
 let curYear = YEAR
 let curMon = MONTH
@@ -120,7 +138,7 @@ Calendar.page.days.map((day, i) => {
         CalEvent.page.main.eventStartInput.element.value = `${YEAR}-${MONTH}-${dayNum}`
         CalEvent.page.main.eventEndInput.element.value = `${YEAR}-${MONTH}-${dayNum}`
     })
-    //Drag
+    //Drag & Drop
     day.monCellDiv.element.addEventListener("dragover", (e) => {e.preventDefault()})
     day.monCellDiv.element.addEventListener("drop", async (e) => {
         e.preventDefault()
@@ -130,13 +148,13 @@ Calendar.page.days.map((day, i) => {
                 moveData.start.setMonth(MONTH-1)
                 moveData.end.setMonth(MONTH-1)
             }
-            moveData.start.setDate(parseInt(dayNum)+1)
-            moveData.end.setDate(parseInt(dayNum)+1)
+            moveData.start.setDate(parseInt(dayNum))
+            moveData.end.setDate(parseInt(dayNum))
             e.target.appendChild(dragged[0])
             events[dragged[2]].start = moveData.start
             events[dragged[2]].end = moveData.end
             const data = [moveData.id, moveData.start, moveData.end, moveData.title, moveData.category, moveData.memo]
-            putData("/apis/Calendar/F", data)
+            putData(apiURL, data)
         }
     })
     Calendar
@@ -144,6 +162,7 @@ Calendar.page.days.map((day, i) => {
         .append(Calendar.page.main.monGridDiv.element, day.monCellDiv.element)
 })
 
+//Next Month
 Calendar.page.nextDay.map((nextday, i) => {
     (NEXTMONWEEK + i + 1) % 7 === 1 && nextday.monCellTitle.element.classList.add("text-red-400");
     (NEXTMONWEEK + i + 1) % 7 === 0 && nextday.monCellTitle.element.classList.add("text-blue-400");
@@ -157,55 +176,29 @@ Calendar.page.nextDay.map((nextday, i) => {
         .append(Calendar.page.main.monGridDiv.element, nextday.monCellDiv.element)
 })
 
-CalEvent
-    .append("main.eventModalBg", "main.eventForm", "main.eventModalMain", "main.eventModalOuter", "main.eventModalLogo", "main.eventModalLogoSvg")
-    .append("main.eventModalLogoSvg", "main.eventModalLogoPath1")
-    .append("main.eventModalLogoSvg", "main.eventModalLogoPath2")
-    .append("main.eventModalLogoSvg", "main.eventModalLogoPath3")
-    .append("main.eventModalLogo", "main.eventCloseBtn", "main.eventCloseSvg", "main.eventClosePath")
-    .append("main.eventModalOuter", "main.eventTitle")
-    .append("main.eventModalOuter", "main.eventIdLabel")
-    .append("main.eventModalOuter", "main.eventIdInput")
-    .append("main.eventModalOuter", "main.eventTitleLabel")
-    .append("main.eventModalOuter", "main.eventTitleInput")
-    .append("main.eventModalOuter", "main.eventStartLabel")
-    .append("main.eventModalOuter", "main.eventStartInput")
-    .append("main.eventModalOuter", "main.eventEndLabel")
-    .append("main.eventModalOuter", "main.eventEndInput")
-    .append("main.eventModalOuter", "main.eventCategoryLabel")
-    .append("main.eventModalOuter", "main.eventCategoryInput")
-    .append("main.eventModalOuter", "main.eventMemoLabel")
-    .append("main.eventModalOuter", "main.eventMemoInput")
-    .append("main.eventModalOuter", "main.eventBtnGroup")
-    .append("main.eventBtnGroup", "main.eventSubmitBtn")
-    .append("main.eventBtnGroup", "main.eventDelBtn")
-    .append("main.eventBtnGroup", "main.eventCancleBtn")
-    .append("main.eventModalOuter", "main.eventDelDiv")
-    .append("main.eventDelDiv", "main.eventDelLabel")
-    .append("main.eventDelDiv", "main.eventDelInput")
-
-
-CalEvent.page.main.eventCloseBtn.element.addEventListener("click", (e) => {
-    e.preventDefault()
+// Modal Close Event
+const closeModal = () => {
     CalEvent.page.main.eventModalBg.element.classList.add("hidden")
     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
     clearEventForm()
+}
+CalEvent.page.main.eventCloseBtn.element.addEventListener("click", (e) => {
+    e.preventDefault()
+    closeModal()
 })
 CalEvent.page.main.eventCancleBtn.element.addEventListener("click", (e) => {
     e.preventDefault()
-    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
-    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
-    clearEventForm()
+    closeModal()
 })
 document.addEventListener("keydown", (e) => {
+// CalEvent.page.main.eventModalBg.element.addEventListener("keydown", (e) => {
+    e.preventDefault()
     if(e.key === "Escape"){
-        e.preventDefault()
-        CalEvent.page.main.eventModalBg.element.classList.add("hidden")
-        CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
-        clearEventForm()
+        closeModal()
     }
 })
 
+//Modal Form init
 const clearEventForm = () => {
     CalEvent.page.main.eventTitle.element.innerText = "New Item"
     CalEvent.page.main.eventIdInput.element.value = ""
@@ -219,6 +212,23 @@ const clearEventForm = () => {
     CalEvent.page.main.eventSubmitBtn.element.classList.remove("hidden")
 }
 
+//Event Modal open
+const openEventModal = (i) => {
+    CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
+    if(CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
+        CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", false)
+    }
+    CalEvent.page.main.eventDelDiv.element.classList.remove("hidden")
+    CalEvent.page.main.eventTitle.element.innerText = events[i].title
+    CalEvent.page.main.eventIdInput.element.value = events[i].id
+    CalEvent.page.main.eventTitleInput.element.value = events[i].title
+    CalEvent.page.main.eventStartInput.element.value = events[i].start
+    CalEvent.page.main.eventEndInput.element.value = events[i].end
+    CalEvent.page.main.eventCategoryInput.element.value = events[i].category
+    CalEvent.page.main.eventMemoInput.element.value = events[i].memo
+}
+
+//Delete switch -> button change
 CalEvent.page.main.eventDelInput.element.addEventListener("change", (e) => {
     if(e.target.checked){
         CalEvent.page.main.eventSubmitBtn.element.classList.add("hidden")
@@ -228,23 +238,19 @@ CalEvent.page.main.eventDelInput.element.addEventListener("change", (e) => {
         CalEvent.page.main.eventSubmitBtn.element.classList.remove("hidden")
     }
 })
+//Delete button event
+CalEvent.page.main.eventDelBtn.element.addEventListener("click", async (e) => {
+    e.preventDefault()
+    const idv = CalEvent.page.main.eventIdInput.element.value
+    const delItem = events.findIndex( (ev) => ev.id === parseInt(idv))
+    console.log(idv, delItem)
+    const gid = 0
+    delData(`/apis/Calendar/${gid}/${idv}`)
+    Calendar.page.items[delItem].itemDiv.element.remove()
+    closeModal()
+})
 
-const openEventModal = (i) => {
-    CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
-    if(CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
-        CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", false)
-    }
-    CalEvent.page.main.eventDelDiv.element.classList.remove("hidden")
-    CalEvent.page.main.eventTitle.element.innerText = `${events[i].title}`
-    CalEvent.page.main.eventIdInput.element.value = `${events[i].id}`
-    CalEvent.page.main.eventTitleInput.element.value = `${events[i].title}`
-    CalEvent.page.main.eventStartInput.element.value = `${events[i].start}`
-    CalEvent.page.main.eventEndInput.element.value = `${events[i].end}`
-    CalEvent.page.main.eventCategoryInput.element.value = `${events[i].category}`
-    CalEvent.page.main.eventMemoInput.element.value = `${events[i].memo}`
-}
-
-
+//Submit button event handler post or put
 CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) => {
     e.preventDefault()
     // console.log("submit")
@@ -259,14 +265,15 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
     
     let result
     if(status === "PUT"){
-        result = await putData("/apis/Calendar/F", data)
+        result = await putData(apiURL, data)
     }else if(status === "POST"){
-        result = await postData("/apis/Calendar/F", data)
+        result = await postData(apiURL, data)
     }
 
-    const updateId = await result.match(/\d+/g)
+    const updateId = await result.match(/\d+/g) // get update id SheetName!A12:G12 -> [12 : 12]
     id = updateId[0]
     events.push({ id, start, end, title, category, memo })
+
     let itemElement = null
     if(status === "POST"){
         Calendar.page.items.push(makeTag(calendarElTree.calItemElTree))
@@ -292,29 +299,16 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
                 .append(itemElement.itemDiv.element, itemElement.itemSpan.element)
                 .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, itemElement.itemDiv.element)
     }
-    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
-    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
-    clearEventForm()
+    closeModal()
 })
 
-CalEvent.page.main.eventDelBtn.element.addEventListener("click", async (e) => {
-    e.preventDefault()
-    const idv = CalEvent.page.main.eventIdInput.element.value
-    const delItem = events.findIndex( (ev) => ev.id === parseInt(idv))
-    console.log(idv, delItem)
-    const gid = 0
-    delData(`/apis/Calendar/${gid}/${idv}`)
-    Calendar.page.items[delItem].itemDiv.element.remove()
-    CalEvent.page.main.eventModalBg.element.classList.add("hidden")
-    CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
-    clearEventForm()
-})
-
+//day cell
 Calendar.page.items.map((item, i) => {
+    //gragged data
     item.itemDiv.element.addEventListener("dragstart", (e) => {
-        dragged = [e.target, events[i].id, i]
+        dragged = [e.target, events[i].id, i] //current element, eventsId, arrayIndex
     })
-
+    //item click event
     item.itemDiv.element.addEventListener("click", (e)=>{
         openEventModal(i)
     })
@@ -322,49 +316,34 @@ Calendar.page.items.map((item, i) => {
     const startDate = events[i].start
     const eventYear = startDate.getFullYear()
     const eventMonth = startDate.getMonth() + 1
-    const eventDay = startDate.getDate() - 1
+    const eventDay = startDate.getDate()
 
     item.itemP.element.innerText = events[i].title
     item.itemCircle.element.classList.add(catColor[events[i].category])
     item.itemSpan.element.innerText = `${getFullNum(startDate.getHours())} : ${getFullNum(startDate.getMinutes())}`
-    if(eventYear === YEAR && eventMonth === MONTH){
-        if(eventDay === 0){
-            Calendar
-                .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
-                .append(item.itemDiv.element, item.itemP.element)
-                .append(item.itemDiv.element, item.itemSpan.element)
-                .append(Calendar.page.lastDay[STARTWEEK-1].monCellDiv.element, item.itemDiv.element)
-        }else{
-            Calendar
-                .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
-                .append(item.itemDiv.element, item.itemP.element)
-                .append(item.itemDiv.element, item.itemSpan.element)
-                .append(Calendar.page.days[eventDay-1].monCellDiv.element, item.itemDiv.element)
-        }
-    }else if(eventYear === YEAR && eventMonth === MONTH - 1){
-        const thisEventDay = (eventDay - LASTALLDAY) + STARTWEEK // lastMonth
-        if(thisEventDay >= 0){
+
+    if(eventYear === YEAR && eventMonth === MONTH){ // this month
+        Calendar
+            .append(item.itemDiv.element, item.itemCircle.element)
+            .append(item.itemDiv.element, item.itemP.element)
+            .append(item.itemDiv.element, item.itemSpan.element)
+            .append(Calendar.page.days[eventDay-1].monCellDiv.element, item.itemDiv.element)
+    }else if(eventYear === YEAR && eventMonth === MONTH - 1){ // last Month
+        const thisEventDay = (eventDay - LASTALLDAY) + (STARTWEEK-1)
+        if(thisEventDay > 0){
             Calendar
                 .append(item.itemDiv.element, item.itemCircle.element)
                 .append(item.itemDiv.element, item.itemP.element)
                 .append(item.itemDiv.element, item.itemSpan.element)
-                .append(Calendar.page.lastDay[thisEventDay-1].monCellDiv.element, item.itemDiv.element)
+                .append(Calendar.page.lastDay[thisEventDay].monCellDiv.element, item.itemDiv.element)
         }
-    }else if(eventYear === YEAR && eventMonth === MONTH + 1){
-        if(eventDay < Calendar.page.nextDay.length){
-            if(eventDay === 0){
-                Calendar
-                    .append(item.itemDiv.element, item.itemCircle.element) // between 처리 예정
-                    .append(item.itemDiv.element, item.itemP.element)
-                    .append(item.itemDiv.element, item.itemSpan.element)
-                    .append(Calendar.page.days[THISALLDAY-1].monCellDiv.element, item.itemDiv.element)
-            }else{
-                Calendar
-                    .append(item.itemDiv.element, item.itemCircle.element)
-                    .append(item.itemDiv.element, item.itemP.element)
-                    .append(item.itemDiv.element, item.itemSpan.element)
-                    .append(Calendar.page.nextDay[eventDay-1].monCellDiv.element, item.itemDiv.element)
-            }
+    }else if(eventYear === YEAR && eventMonth === MONTH + 1){ // next Month
+        if(eventDay < Calendar.page.nextDay.length + 1){
+            Calendar
+                .append(item.itemDiv.element, item.itemCircle.element)
+                .append(item.itemDiv.element, item.itemP.element)
+                .append(item.itemDiv.element, item.itemSpan.element)
+                .append(Calendar.page.nextDay[eventDay-1].monCellDiv.element, item.itemDiv.element)
         }
     }
 })

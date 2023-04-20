@@ -15,6 +15,16 @@ export const getData = async (url) => {
     return events
 }
 
+export const postData = async (url, data) => {
+    const res = await fetch(url, {
+        method : "POST",
+        headers : {"Content-Type" : "application/json"},
+        body : JSON.stringify({data})
+    })
+    const {result} = await res.json()
+    return result
+}
+
 export const putData = async (url, data) => {
     const res = await fetch(url, {
         method : "PUT",
@@ -29,14 +39,4 @@ export const delData = async (url) => {
     const res = await fetch(url, {method : "DELETE"})
     const result = await res.json()
     console.log(result)
-}
-
-export const postData = async (url, data) => {
-    const res = await fetch(url, {
-        method : "POST",
-        headers : {"Content-Type" : "application/json"},
-        body : JSON.stringify({data})
-    })
-    const {result} = await res.json()
-    return result
 }

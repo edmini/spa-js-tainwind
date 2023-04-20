@@ -17,8 +17,8 @@ module.exports = function handler () {
     })
     const googleSheets = google.sheets({ version : "v4", auth : connect })
 
+    router.use(bodyParser.json())
 
-    router.use(bodyParser.json());
     router.get('/:sheet/:end', async (req, res) => {
         const range = `${req.params.sheet}!A1:${req.params.end}`
         try {
@@ -27,34 +27,6 @@ module.exports = function handler () {
                 range : range,
             })
             res.json({"datas" : result})
-        } catch (err) {
-            res.json({"error" : err})
-        }
-    })
-
-    router.put("/:sheet/:end", async (req, res) =>{
-        // let bodyData = []
-        // Object.keys(req.body.data).forEach((d)=>{
-        //     bodyData.push(req.body.data[d])
-        // })
-        const putRange = `${req.params.sheet}!A${req.body.data[0]}:${req.params.end}`
-        req.body.data[0] = "=row()"
-        console.log(req.body.data)
-        const batchReq = {
-            spreadsheetId : spreadsheetId,
-            resource : {
-                valueInputOption : "USER_ENTERED",
-                data : {
-                    range : putRange,
-                    majorDimension : "ROWS",
-                    values : [req.body.data],
-                }
-            },
-            auth : connect
-        }
-        try {
-            const putRes = (await googleSheets.spreadsheets.values.batchUpdate(batchReq)).data
-            res.json({"result" : putRes.responses[0].updatedRange})
         } catch (err) {
             res.json({"error" : err})
         }
@@ -73,6 +45,34 @@ module.exports = function handler () {
                 resource : resource,
             })
             res.json({"result" : postRes.data.updates.updatedRange})
+        } catch (err) {
+            res.json({"error" : err})
+        }
+    })
+
+    router.put("/:sheet/:end", async (req, res) =>{
+        // let bodyData = []
+        // Object.keys(req.body.data).forEach((d)=>{
+        //     bodyData.push(req.body.data[d])
+        // })
+        // console.log(req.body.data)
+        const putRange = `${req.params.sheet}!A${req.body.data[0]}:${req.params.end}`
+        req.body.data[0] = "=row()"
+        const batchReq = {
+            spreadsheetId : spreadsheetId,
+            resource : {
+                valueInputOption : "USER_ENTERED",
+                data : {
+                    range : putRange,
+                    majorDimension : "ROWS",
+                    values : [req.body.data],
+                }
+            },
+            auth : connect
+        }
+        try {
+            const putRes = (await googleSheets.spreadsheets.values.batchUpdate(batchReq)).data
+            res.json({"result" : putRes.responses[0].updatedRange})
         } catch (err) {
             res.json({"error" : err})
         }
