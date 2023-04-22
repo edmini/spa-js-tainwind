@@ -97,7 +97,7 @@ CalEvent
         const LNEXTMONWEEK = new Date(curYear, curMon, 1).getDay()
         const LLASTALLDAY = new Date(curYear, curMon-1, 0).getDate()
         const LTHISALLDAY = new Date(curYear, curMon, 0).getDate()
-        nextPrevBtn(curYear, curMon, TODAY, LSTARTWEEK, LNEXTMONWEEK, LLASTALLDAY, LTHISALLDAY)
+        nextPrevBtn(curYear, curMon, TODAY, LSTARTWEEK, LNEXTMONWEEK, LTHISALLDAY, LLASTALLDAY)
     })
     Calendar.page.main.todayBtn.element.addEventListener("click", () => {
         nextPrevBtn(YEAR, MONTH, TODAY, STARTWEEK, NEXTMONWEEK, THISALLDAY, LASTALLDAY)
@@ -114,7 +114,7 @@ CalEvent
         const NNEXTMONWEEK = new Date(curYear, curMon, 1).getDay()
         const NLASTALLDAY = new Date(curYear, curMon-1, 0).getDate()
         const NTHISALLDAY = new Date(curYear, curMon, 0).getDate()
-        nextPrevBtn(curYear, curMon, TODAY, NSTARTWEEK, NNEXTMONWEEK, NLASTALLDAY, NTHISALLDAY)
+        nextPrevBtn(curYear, curMon, TODAY, NSTARTWEEK, NNEXTMONWEEK, NTHISALLDAY, NLASTALLDAY)
     })
 
     Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
