@@ -10,33 +10,61 @@ const CalEvent = new SetPage(calendarElTree.eventModalElTree)
 const apiURL = "/apis/Calendar/F" // apis/SheetName/LastColumn
 let events = await getData(apiURL) // get Data from googleSheetApi
 
+let date = new Date()
+date.getTimezoneOffset()
+
+const YEAR = date.getFullYear()
+const MONTH = date.getMonth()+1
+const TODAY = date.getDate()
+
+let dateObj = {
+    tempMon : 0,
+    tempYear : 0,
+    year : null,
+    month : null,
+    today : null,
+    startWeek : null,
+    nextMonWeek : null,
+    lastAllDay : null,
+    thisAllDay : null,
+}
+
+const dateHandle = (currentYear, currentMon, status) => {
+    console.log(currentYear, currentMon, status)
+    dateObj.tempYear = dateObj.tempYear === currentYear ? currentYear : dateObj.tempYear
+    if(status === "up"){
+        dateObj.tempMon = dateObj.tempMon + 1
+        if((parseInt(currentMon) + dateObj.tempMon) === 13 ){
+            dateObj.tempYear = dateObj.tempYear + 1
+            dateObj.tempMon = (parseInt(currentMon) + dateObj.tempMon) < 13+parseInt(currentMon) ? (dateObj.tempMon+parseInt(currentMon))-(parseInt(currentMon)+12) : dateObj.tempMon + 1
+        }
+    }else if(status === "down"){
+        dateObj.tempMon = dateObj.tempMon - 1
+        if((parseInt(currentMon) + dateObj.tempMon) === 0 ){
+            dateObj.tempYear = dateObj.tempYear - 1
+            // dateObj.tempMon = (parseInt(currentMon)+dateObj.tempMon)-12
+            // dateObj.tempMon = (parseInt(currentMon) + dateObj.tempMon) < 13+parseInt(currentMon) ? (dateObj.tempMon+parseInt(currentMon))-(parseInt(currentMon)+12) : dateObj.tempMon + 1
+        }
+    }else{
+        dateObj.tempMon = 0
+        dateObj.tempYear = currentYear
+    }
+    // console.log(dateObj.tempMon)
+    const curDate = new Date(`${dateObj.tempYear}-${parseInt(currentMon)+dateObj.tempMon}-1`)
+    // console.log(curDate)
+    dateObj.year = curDate.getFullYear()
+    dateObj.month = curDate.getMonth() + 1
+    dateObj.today = curDate.getDate()
+    dateObj.startWeek = new Date(dateObj.year, dateObj.month - 1, 1).getDay()
+    dateObj.nextMonWeek = new Date(dateObj.year, dateObj.month, 1).getDay()
+    dateObj.lastAllDay = new Date(dateObj.year, dateObj.month - 1, 0).getDate()
+    dateObj.thisAllDay = new Date(dateObj.year, dateObj.month, 0).getDate()
+    // console.log(dateObj)
+}
+
 //0~9 => 00~09
 const getFullNum = (num) => num < 10 ? `0${num}` : num
 
-//url calendar?year=2023&month=03&day=01
-// const queryString = window.location.search;
-// const urlParams = new URLSearchParams(queryString);
-// const year = urlParams.get('year')
-// const month = urlParams.get('month')
-// const day = urlParams.get('day')
-//date
-let date = new Date()
-// if(year || month || day){
-//     let y, m, d = null
-//     year ? y = year : y = date.getFullYear()
-//     month ? m = month : m = date.getMonth()+1
-//     day ? d = day : d = date.getDate()
-//     date = new Date(`${y}-${m}-${d}`)
-// }
-date.getTimezoneOffset()
-
-const TODAY = date.getDate()
-const MONTH = date.getMonth() + 1
-const YEAR = date.getFullYear()
-const STARTWEEK = new Date(YEAR, MONTH-1, 1).getDay()
-const NEXTMONWEEK = new Date(YEAR, MONTH, 1).getDay()
-const LASTALLDAY = new Date(YEAR, MONTH-1, 0).getDate()
-const THISALLDAY = new Date(YEAR, MONTH, 0).getDate()
 //현재 년도 이벤트만!!
 events.find((event) => {(new Date(event.start)).getFullYear === YEAR})
 
@@ -77,81 +105,17 @@ CalEvent
     .append("main.eventDelDiv", "main.eventDelLabel")
     .append("main.eventDelDiv", "main.eventDelInput")
 
-
-    //이전, 현재, 다음 월 버튼
-    let curYear = YEAR
-    let curMon = MONTH
-    // let pcurYear, pcurMon = null
-    let ptmp = 0
-    let ntmp = 0
-    let pTempYear, nTempYear = YEAR
-    // let curDay = ((new Date()).getDate())
-    // nextPrevBtn(YEAR, MONTH, TODAY, STARTWEEK, NEXTMONWEEK, THISALLDAY, LASTALLDAY)
-
     Calendar.page.main.prevBtn.element.addEventListener("click", () => {
-        if(ntmp > 0){
-            ntmp = ntmp - 1
-            ptmp = -ntmp
-        }else{
-            ptmp = (ptmp-MONTH) === 12 ?  1 :  ptmp + 1
-        }
-        let pTempMon = 0
-        if((MONTH - ptmp)%12 === 0){
-            pTempMon = 12
-            pTempYear = pTempYear - 1
-        }else if(pTempYear !== YEAR){
-            pTempMon = (12 + MONTH)-ptmp
-        }else {
-            pTempMon = MONTH - ptmp
-        }
-        let pdate = new Date(`${pTempYear}-${pTempMon}-${TODAY}`)
-        pdate.getTimezoneOffset()
-        const LMONTH = pdate.getMonth() + 1
-        const LYEAR = pdate.getFullYear()
-        let pcurYear = LYEAR
-        let pcurMon = LMONTH
-        const LSTARTWEEK = new Date(pcurYear, pcurMon-1, 1).getDay()
-        const LNEXTMONWEEK = new Date(pcurYear, pcurMon, 1).getDay()
-        const LLASTALLDAY = new Date(pcurYear, pcurMon-1, 0).getDate()
-        const LTHISALLDAY = new Date(pcurYear, pcurMon, 0).getDate()
-        nextPrevBtn(pcurYear, pcurMon, TODAY, LSTARTWEEK, LNEXTMONWEEK, LTHISALLDAY, LLASTALLDAY)
-        
+        dateHandle(YEAR, MONTH, "down")
+        nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
     })
     Calendar.page.main.todayBtn.element.addEventListener("click", () => {
-        nextPrevBtn(YEAR, MONTH, TODAY, STARTWEEK, NEXTMONWEEK, THISALLDAY, LASTALLDAY)
-        ptmp = 0
-        ntmp = 0
-        pTempYear = YEAR
+        dateHandle(YEAR, MONTH, "today")
+        nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
     })
     Calendar.page.main.nextBtn.element.addEventListener("click", () => {
-        if(ptmp > 0){
-            ptmp = ptmp - 1
-            ntmp = -ptmp
-        }else{
-            ntmp = (ntmp-MONTH) === 12 ?  1 :  ntmp + 1
-        }
-        let nTempMon = 0
-        if((MONTH - ntmp)%12 === 0){
-            nTempMon = 1
-            nTempYear = nTempYear + 1
-        }else if(nTempYear !== YEAR){
-            nTempMon = (12 + MONTH)-ntmp
-        }else {
-            nTempMon = MONTH - ntmp
-        }
-        let ndate = new Date(`${nTempYear}-${nTempMon}-${TODAY}`)
-        ndate.getTimezoneOffset()
-        const NMONTH = ndate.getMonth() + 1
-        const NYEAR = ndate.getFullYear()
-        let ncurYear = NYEAR
-        let ncurMon = NMONTH
-        // MONTH === 12 ? (ncurYear = ncurYear + 1, ncurMon = 1) : ncurMon = ncurMon + tmp
-        const NSTARTWEEK = new Date(ncurYear, ncurMon-1, 1).getDay()
-        const NNEXTMONWEEK = new Date(ncurYear, ncurMon, 1).getDay()
-        const NLASTALLDAY = new Date(ncurYear, ncurMon-1, 0).getDate()
-        const NTHISALLDAY = new Date(ncurYear, ncurMon, 0).getDate()
-        nextPrevBtn(ncurYear, ncurMon, TODAY, NSTARTWEEK, NNEXTMONWEEK, NTHISALLDAY, NLASTALLDAY)
-        
+        dateHandle(YEAR, MONTH, "up")
+        nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
     })
 
     Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
@@ -168,8 +132,7 @@ CalEvent
     
 
 const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, lastAllDay) => {
-    // console.log(year, month, today, starWeek, nextMonWeek, thisAllDay, lastAllDay)
-
+    console.log(year, month, today, starWeek, nextMonWeek, thisAllDay, lastAllDay)
     Calendar.page.days = null
     Calendar.page.lastDay = null
     Calendar.page.nextDay = null
