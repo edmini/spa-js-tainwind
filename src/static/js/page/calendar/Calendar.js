@@ -30,8 +30,8 @@ let dateObj = {
 }
 
 const dateHandle = (currentYear, currentMon, status) => {
-    console.log(currentYear, currentMon, status)
     dateObj.tempYear = dateObj.tempYear === currentYear ? currentYear : dateObj.tempYear
+    let calcMon = 0
     if(status === "up"){
         dateObj.tempMon = dateObj.tempMon + 1
         if((parseInt(currentMon) + dateObj.tempMon) === 13 ){
@@ -42,16 +42,14 @@ const dateHandle = (currentYear, currentMon, status) => {
         dateObj.tempMon = dateObj.tempMon - 1
         if((parseInt(currentMon) + dateObj.tempMon) === 0 ){
             dateObj.tempYear = dateObj.tempYear - 1
-            // dateObj.tempMon = (parseInt(currentMon)+dateObj.tempMon)-12
-            // dateObj.tempMon = (parseInt(currentMon) + dateObj.tempMon) < 13+parseInt(currentMon) ? (dateObj.tempMon+parseInt(currentMon))-(parseInt(currentMon)+12) : dateObj.tempMon + 1
+            dateObj.tempMon = 12 + dateObj.tempMon
         }
     }else{
         dateObj.tempMon = 0
         dateObj.tempYear = currentYear
     }
-    // console.log(dateObj.tempMon)
-    const curDate = new Date(`${dateObj.tempYear}-${parseInt(currentMon)+dateObj.tempMon}-1`)
-    // console.log(curDate)
+    calcMon = parseInt(currentMon) + dateObj.tempMon
+    const curDate = new Date(`${dateObj.tempYear}-${calcMon}-${TODAY}`)
     dateObj.year = curDate.getFullYear()
     dateObj.month = curDate.getMonth() + 1
     dateObj.today = curDate.getDate()
@@ -59,7 +57,6 @@ const dateHandle = (currentYear, currentMon, status) => {
     dateObj.nextMonWeek = new Date(dateObj.year, dateObj.month, 1).getDay()
     dateObj.lastAllDay = new Date(dateObj.year, dateObj.month - 1, 0).getDate()
     dateObj.thisAllDay = new Date(dateObj.year, dateObj.month, 0).getDate()
-    // console.log(dateObj)
 }
 
 //0~9 => 00~09
@@ -132,7 +129,6 @@ CalEvent
     
 
 const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, lastAllDay) => {
-    console.log(year, month, today, starWeek, nextMonWeek, thisAllDay, lastAllDay)
     Calendar.page.days = null
     Calendar.page.lastDay = null
     Calendar.page.nextDay = null
