@@ -352,8 +352,8 @@ const calendarElTree = {
     },
     calItemElTree : {
         itemDivEl : {
-            element : "button",
-            classes : ["flex", "justify-between", "text-xs", "-m-1", "mb-3", "mx-1", "px-2"],
+            element : "div",
+            classes : ["flex", "justify-between", "text-xs", "-m-1", "mb-3", "mx-1", "px-2", "cursor-pointer"],
             attrs : {
                 "data-modal-target" : "eventModal",
                 "data-modal-toggle" : "eventModal",

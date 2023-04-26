@@ -168,7 +168,7 @@ document.addEventListener("keydown", (e) => {
 })
 //Event Modal open
 const openEventModal = (i) => {
-    CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
+    CalEvent.page.main.eventModalBg.element.classList.remove("hidden")
     if(CalEvent.page.main.eventModalBg.element.getAttribute("aria-hidden")){
         CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", false)
     }
@@ -185,8 +185,9 @@ const openEventModal = (i) => {
 //Submit button event handler post or put
 CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) => {
     e.preventDefault()
-    // console.log("submit")
 
+    let eventNum = 0
+    let itemElement = null
     let id = CalEvent.page.main.eventIdInput.element.value
     const title = CalEvent.page.main.eventTitleInput.element.value
     const start = new Date(CalEvent.page.main.eventStartInput.element.value)
@@ -206,11 +207,11 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
     const updateId = await result.match(/\d+/g) // get update id SheetName!A12:G12 -> [12 : 12]
     id = updateId[0]
     
-    let itemElement = null
     if(status === "POST"){
         events.push({ id, start, end, title, category, memo })
         Calendar.page.items.push(makeTag(calendarElTree.calItemElTree))
         itemElement = Calendar.page.items[Calendar.page.items.length - 1]
+        eventNum = evnets.length - 1
     }
     if(status === "PUT"){
         const putNum = events.findIndex( (ev) => ev.id === parseInt(id))
@@ -218,17 +219,19 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
         events[putNum].end = end
         events[putNum].title = title
         events[putNum].category = category
-        events[putNum].meo = memo
+        events[putNum].memo = memo
+        eventNum = putNum
         itemElement = Calendar.page.items[putNum]
     }
     itemElement.itemP.element.innerText = title
     itemElement.itemCircle.element.classList.add(catColor[category])
     itemElement.itemSpan.element.innerText = `${getFullNum(start.getHours())} : ${getFullNum(start.getMinutes())}`
+    
     itemElement.itemDiv.element.addEventListener("dragstart", (e) => {
-        dragged = [e.target, id, events.length - 1]
+        dragged = [e.target, id, eventNum]
     })
     itemElement.itemDiv.element.addEventListener("click", (e) => {
-        openEventModal(events.length - 1)
+        openEventModal(eventNum)
     })
     if(status === "POST"){
         Calendar
@@ -344,7 +347,6 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
             CalEvent.page.main.eventSubmitBtn.element.classList.remove("hidden")
         }
     })
-
 
     //day cell
     Calendar.page.items.map((item, i) => {
