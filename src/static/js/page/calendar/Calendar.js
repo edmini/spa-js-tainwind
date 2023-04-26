@@ -149,6 +149,7 @@ const clearEventForm = () => {
 
 // Modal Close Event (x button, cancle button, esc key down)
 const closeModal = () => {
+    console.log("close modal")
     CalEvent.page.main.eventModalBg.element.classList.add("hidden")
     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
     clearEventForm()
@@ -181,6 +182,60 @@ const openEventModal = (i) => {
     CalEvent.page.main.eventCategoryInput.element.value = events[i].category
     CalEvent.page.main.eventMemoInput.element.value = events[i].memo
 }
+
+//Submit button event handler post or put
+CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) => {
+    e.preventDefault()
+    // console.log("submit")
+
+    let id = CalEvent.page.main.eventIdInput.element.value
+    const title = CalEvent.page.main.eventTitleInput.element.value
+    const start = new Date(CalEvent.page.main.eventStartInput.element.value)
+    const end = new Date(CalEvent.page.main.eventEndInput.element.value)
+    const category = CalEvent.page.main.eventCategoryInput.element.value
+    const memo = CalEvent.page.main.eventMemoInput.element.value
+    const data = [id, start, end, title, category, memo]
+    const status = id.length > 0 ? "PUT" : "POST"
+    console.log("id : ", id.length)
+    let result = null
+    if(status === "PUT"){
+        result = await putData(apiURL, data)
+    }else if(status === "POST"){
+        result = await postData(apiURL, data)
+    }
+
+    const updateId = await result.match(/\d+/g) // get update id SheetName!A12:G12 -> [12 : 12]
+    id = updateId[0]
+    
+    let itemElement = null
+    if(status === "POST"){
+        events.push({ id, start, end, title, category, memo })
+        Calendar.page.items.push(makeTag(calendarElTree.calItemElTree))
+        itemElement = Calendar.page.items[Calendar.page.items.length - 1]
+    }
+    if(status === "PUT"){
+        const putNum = events.findIndex( (ev) => ev.id === parseInt(id))
+        itemElement = Calendar.page.items[putNum]
+    }
+    itemElement.itemP.element.innerText = title
+    itemElement.itemCircle.element.classList.add(catColor[category])
+    itemElement.itemSpan.element.innerText = `${getFullNum(start.getHours())} : ${getFullNum(start.getMinutes())}`
+    itemElement.itemDiv.element.addEventListener("dragstart", (e) => {
+        dragged = [e.target, id, events.length - 1]
+    })
+    itemElement.itemDiv.element.addEventListener("click", (e) => {
+        openEventModal(events.length - 1)
+    })
+    if(status === "POST"){
+        Calendar
+                .append(itemElement.itemDiv.element, itemElement.itemCircle.element) // between 처리 예정
+                .append(itemElement.itemDiv.element, itemElement.itemP.element)
+                .append(itemElement.itemDiv.element, itemElement.itemSpan.element)
+                .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, itemElement.itemDiv.element)
+    }
+    console.log("status : ", status)
+    closeModal() // close and clear
+})
 
 
 const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, lastAllDay) => {
@@ -286,57 +341,7 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
         closeModal()
     })
     
-    //Submit button event handler post or put
-    CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) => {
-        e.preventDefault()
-        // console.log("submit")
-        let id = CalEvent.page.main.eventIdInput.element.value
-        const title = CalEvent.page.main.eventTitleInput.element.value
-        const start = new Date(CalEvent.page.main.eventStartInput.element.value)
-        const end = new Date(CalEvent.page.main.eventEndInput.element.value)
-        const category = CalEvent.page.main.eventCategoryInput.element.value
-        const memo = CalEvent.page.main.eventMemoInput.element.value
-        const data = [id, start, end, title, category, memo]
-        const status = id.length > 0 ? "PUT" : "POST"
-        
-        let result = null
-        if(status === "PUT"){
-            result = await putData(apiURL, data)
-        }else if(status === "POST"){
-            result = await postData(apiURL, data)
-        }
-    
-        const updateId = await result.match(/\d+/g) // get update id SheetName!A12:G12 -> [12 : 12]
-        id = updateId[0]
-        events.push({ id, start, end, title, category, memo })
-    
-        let itemElement = null
-        if(status === "POST"){
-            Calendar.page.items.push(makeTag(calendarElTree.calItemElTree))
-            itemElement = Calendar.page.items[Calendar.page.items.length - 1]
-        }
-        if(status === "PUT"){
-            const putNum = events.findIndex( (ev) => ev.id === parseInt(id))
-            itemElement = Calendar.page.items[putNum]
-        }
-        itemElement.itemP.element.innerText = title
-        itemElement.itemCircle.element.classList.add(catColor[category])
-        itemElement.itemSpan.element.innerText = `${getFullNum(start.getHours())} : ${getFullNum(start.getMinutes())}`
-        itemElement.itemDiv.element.addEventListener("dragstart", (e) => {
-            dragged = [e.target, id, events.length - 1]
-        })
-        itemElement.itemDiv.element.addEventListener("click", (e) => {
-            openEventModal(events.length - 1)
-        })
-        if(status === "POST"){
-            Calendar
-                    .append(itemElement.itemDiv.element, itemElement.itemCircle.element) // between 처리 예정
-                    .append(itemElement.itemDiv.element, itemElement.itemP.element)
-                    .append(itemElement.itemDiv.element, itemElement.itemSpan.element)
-                    .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, itemElement.itemDiv.element)
-        }
-        closeModal()
-    })
+
     
     //day cell
     Calendar.page.items.map((item, i) => {
