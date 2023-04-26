@@ -149,7 +149,6 @@ const clearEventForm = () => {
 
 // Modal Close Event (x button, cancle button, esc key down)
 const closeModal = () => {
-    console.log("close modal")
     CalEvent.page.main.eventModalBg.element.classList.add("hidden")
     CalEvent.page.main.eventModalBg.element.setAttribute("aria-hidden", true)
     clearEventForm()
@@ -196,7 +195,7 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
     const memo = CalEvent.page.main.eventMemoInput.element.value
     const data = [id, start, end, title, category, memo]
     const status = id.length > 0 ? "PUT" : "POST"
-    console.log("id : ", id.length)
+
     let result = null
     if(status === "PUT"){
         result = await putData(apiURL, data)
@@ -215,6 +214,11 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
     }
     if(status === "PUT"){
         const putNum = events.findIndex( (ev) => ev.id === parseInt(id))
+        events[putNum].start = start
+        events[putNum].end = end
+        events[putNum].title = title
+        events[putNum].category = category
+        events[putNum].meo = memo
         itemElement = Calendar.page.items[putNum]
     }
     itemElement.itemP.element.innerText = title
@@ -228,15 +232,26 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
     })
     if(status === "POST"){
         Calendar
-                .append(itemElement.itemDiv.element, itemElement.itemCircle.element) // between 처리 예정
-                .append(itemElement.itemDiv.element, itemElement.itemP.element)
-                .append(itemElement.itemDiv.element, itemElement.itemSpan.element)
-                .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, itemElement.itemDiv.element)
+            .append(itemElement.itemDiv.element, itemElement.itemCircle.element) // between 처리 예정
+            .append(itemElement.itemDiv.element, itemElement.itemP.element)
+            .append(itemElement.itemDiv.element, itemElement.itemSpan.element)
+            .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, itemElement.itemDiv.element)
     }
-    console.log("status : ", status)
+
     closeModal() // close and clear
 })
 
+//Delete button event
+CalEvent.page.main.eventDelBtn.element.addEventListener("click", async (e) => {
+    e.preventDefault()
+    const idv = CalEvent.page.main.eventIdInput.element.value
+    const delItem = events.findIndex( (ev) => ev.id === parseInt(idv))
+    Calendar.page.items[delItem].itemDiv.element.remove()
+    // console.log(idv, delItem)
+    const gid = 0
+    delData(`/apis/Calendar/${gid}/${idv}`)
+    closeModal()
+})
 
 const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, lastAllDay) => {
     clearEventForm()
@@ -329,20 +344,8 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
             CalEvent.page.main.eventSubmitBtn.element.classList.remove("hidden")
         }
     })
-    //Delete button event
-    CalEvent.page.main.eventDelBtn.element.addEventListener("click", async (e) => {
-        e.preventDefault()
-        const idv = CalEvent.page.main.eventIdInput.element.value
-        const delItem = events.findIndex( (ev) => ev.id === parseInt(idv))
-        console.log(idv, delItem)
-        const gid = 0
-        delData(`/apis/Calendar/${gid}/${idv}`)
-        Calendar.page.items[delItem].itemDiv.element.remove()
-        closeModal()
-    })
-    
 
-    
+
     //day cell
     Calendar.page.items.map((item, i) => {
         //gragged data
