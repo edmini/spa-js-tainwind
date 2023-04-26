@@ -33,7 +33,7 @@ let dateObj = {
 }
 
 // prev next button handle date
-const dateHandle = (currentYear, currentMon, status) => {
+export const dateHandle = (currentYear, currentMon, status) => {
     dateObj.tempYear = dateObj.tempYear === currentYear ? currentYear : dateObj.tempYear
     let calcMon = 0
     if(status === "up"){
@@ -61,6 +61,7 @@ const dateHandle = (currentYear, currentMon, status) => {
     dateObj.nextMonWeek = new Date(dateObj.year, dateObj.month, 1).getDay()
     dateObj.lastAllDay = new Date(dateObj.year, dateObj.month - 1, 0).getDate()
     dateObj.thisAllDay = new Date(dateObj.year, dateObj.month, 0).getDate()
+    nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 }
 
 //0~9 => 00~09
@@ -109,17 +110,17 @@ CalEvent
 // prev btn click
 Calendar.page.main.prevBtn.element.addEventListener("click", () => {
     dateHandle(YEAR, MONTH, "down")
-    nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
+    // nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 })
 // today btn click
 Calendar.page.main.todayBtn.element.addEventListener("click", () => {
     dateHandle(YEAR, MONTH, "today")
-    nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
+    // nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 })
 // next btn click
 Calendar.page.main.nextBtn.element.addEventListener("click", () => {
     dateHandle(YEAR, MONTH, "up")
-    nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
+    // nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 })
 
 // Week Name List

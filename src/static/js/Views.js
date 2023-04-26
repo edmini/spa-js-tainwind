@@ -1,3 +1,7 @@
+const date = new Date()
+const YEAR = date.getFullYear()
+const MONTH = date.getMonth()+1
+const TODAY = date.getDate()
 
 const views = {
 
@@ -22,7 +26,8 @@ const views = {
 			const { CalMobile } = await import("./page/calendar/CalMobile.js")
 			resutlEl = CalMobile
 		}else{
-			const { Calendar } = await import("./page/calendar/Calendar.js")
+			const { Calendar, dateHandle } = await import("./page/calendar/Calendar.js")
+			dateHandle(YEAR, MONTH, TODAY)
 			resutlEl = Calendar
 		}
 		return resutlEl.page.main.main
