@@ -1,5 +1,5 @@
 import calendarElTree from "./calElTree.js"
-import { SetPage, makeTag } from "../../core/Creators.js"
+import { SetPage, makeTag, Create } from "../../core/Creators.js"
 import { catColor } from "./calData.js"
 import { delData, getData, postData, putData } from "./fetchData.js"
 
@@ -8,7 +8,7 @@ export const Calendar = new SetPage(calendarElTree.calMonthElTree)
 const CalEvent = new SetPage(calendarElTree.eventModalElTree)
 Calendar.listElement("weekName", 7, calendarElTree.calWeekTitleElTree)
 
-let dragged = null
+let dragged = null // dragstart data variable
 
 const apiURL = "/apis/Calendar/F" // apis/SheetName/LastColumn
 let events = await getData(apiURL) // get Data from googleSheetApi
@@ -106,6 +106,18 @@ CalEvent
     .append("main.eventModalOuter", "main.eventDelDiv")
     .append("main.eventDelDiv", "main.eventDelLabel")
     .append("main.eventDelDiv", "main.eventDelInput")
+
+// Event Modal Category select box options
+let catOpt = []
+const catItem = Object.keys(catColor)
+catItem.map((item) => {
+    catOpt.push({value : item, opt : new Create(calendarElTree.eventModalElTree.eventCategoryOptionEl)})
+})
+catOpt.map((cat) => {
+    cat.opt.element.innerText = cat.value
+    cat.opt.element.value = cat.value
+    CalEvent.append(CalEvent.page.main.eventCategoryInput.element, cat.opt.element)
+})
 
 // prev btn click
 Calendar.page.main.prevBtn.element.addEventListener("click", () => {
@@ -291,6 +303,8 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
         day.monCellTitle.element.addEventListener("click", (e) => {
             CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
             CalEvent.page.main.eventDelDiv.element.classList.add("hidden")
+            // CalEvent.page.main.eventStartInput.element.setAttribute("datepicker", '')
+            // CalEvent.page.main.eventStartInput.element.setAttribute("data-date", `${year}-${month}-${dayNum}`)
             CalEvent.page.main.eventStartInput.element.value = `${year}-${month}-${dayNum}`
             CalEvent.page.main.eventEndInput.element.value = `${year}-${month}-${dayNum}`
         })

@@ -217,7 +217,11 @@ const calendarElTree = {
         eventStartInputEl : {
             element : "input",
             classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
-            id : "start"
+            id : "start",
+            attrs : {
+                type : "text",
+                // datepicker  : true,
+            }
         },
         eventEndLabelEl : {
             element : "label",
@@ -241,9 +245,12 @@ const calendarElTree = {
             }
         },
         eventCategoryInputEl : {
-            element : "input",
+            element : "select",
             classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
             id : "category"
+        },
+        eventCategoryOptionEl : {
+            element : "option"
         },
         eventMemoLabelEl : {
             element : "label",
