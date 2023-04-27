@@ -13,6 +13,9 @@ let dragged = null
 const apiURL = "/apis/Calendar/F" // apis/SheetName/LastColumn
 let events = await getData(apiURL) // get Data from googleSheetApi
 
+//0~9 => 00~09
+const getFullNum = (num) => num < 10 ? `0${num}` : num
+
 let date = new Date()
 date.getTimezoneOffset()
 
@@ -40,7 +43,7 @@ export const dateHandle = (currentYear, currentMon, status) => {
         dateObj.tempMon = dateObj.tempMon + 1
         if((parseInt(currentMon) + dateObj.tempMon) === 13 ){
             dateObj.tempYear = dateObj.tempYear + 1
-            dateObj.tempMon = (parseInt(currentMon) + dateObj.tempMon) < 13+parseInt(currentMon) ? (dateObj.tempMon+parseInt(currentMon))-(parseInt(currentMon)+12) : dateObj.tempMon + 1
+            dateObj.tempMon = (parseInt(currentMon) + dateObj.tempMon) < 13 + parseInt(currentMon) ? (dateObj.tempMon + parseInt(currentMon)) - (parseInt(currentMon) + 12) : dateObj.tempMon + 1
         }
     }else if(status === "down"){
         dateObj.tempMon = dateObj.tempMon - 1
@@ -63,9 +66,6 @@ export const dateHandle = (currentYear, currentMon, status) => {
     dateObj.thisAllDay = new Date(dateObj.year, dateObj.month, 0).getDate()
     nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 }
-
-//0~9 => 00~09
-const getFullNum = (num) => num < 10 ? `0${num}` : num
 
 //현재 년도 이벤트만!!
 events.find((event) => {(new Date(event.start)).getFullYear === YEAR})
@@ -110,17 +110,14 @@ CalEvent
 // prev btn click
 Calendar.page.main.prevBtn.element.addEventListener("click", () => {
     dateHandle(YEAR, MONTH, "down")
-    // nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 })
 // today btn click
 Calendar.page.main.todayBtn.element.addEventListener("click", () => {
     dateHandle(YEAR, MONTH, "today")
-    // nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 })
 // next btn click
 Calendar.page.main.nextBtn.element.addEventListener("click", () => {
     dateHandle(YEAR, MONTH, "up")
-    // nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 })
 
 // Week Name List
@@ -206,40 +203,38 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
 
     const updateId = await result.match(/\d+/g) // get update id SheetName!A12:G12 -> [12 : 12]
     id = updateId[0]
-    
+
     if(status === "POST"){
         events.push({ id, start, end, title, category, memo })
         Calendar.page.items.push(makeTag(calendarElTree.calItemElTree))
         itemElement = Calendar.page.items[Calendar.page.items.length - 1]
-        eventNum = evnets.length - 1
+        eventNum = events.length - 1
     }
     if(status === "PUT"){
-        const putNum = events.findIndex( (ev) => ev.id === parseInt(id))
-        events[putNum].start = start
-        events[putNum].end = end
-        events[putNum].title = title
-        events[putNum].category = category
-        events[putNum].memo = memo
-        eventNum = putNum
-        itemElement = Calendar.page.items[putNum]
+        eventNum = events.findIndex( (ev) => ev.id === parseInt(id))
+        events[eventNum].title = title
+        events[eventNum].start = start
+        events[eventNum].end = end
+        events[eventNum].category = category
+        events[eventNum].memo = memo
+        itemElement = Calendar.page.items[eventNum]
+        itemElement.itemDiv.element.innerHTML = "" // 기존 내용 초기화
     }
     itemElement.itemP.element.innerText = title
     itemElement.itemCircle.element.classList.add(catColor[category])
     itemElement.itemSpan.element.innerText = `${getFullNum(start.getHours())} : ${getFullNum(start.getMinutes())}`
-    
+
     itemElement.itemDiv.element.addEventListener("dragstart", (e) => {
         dragged = [e.target, id, eventNum]
     })
     itemElement.itemDiv.element.addEventListener("click", (e) => {
         openEventModal(eventNum)
     })
-    if(status === "POST"){
-        Calendar
-            .append(itemElement.itemDiv.element, itemElement.itemCircle.element) // between 처리 예정
-            .append(itemElement.itemDiv.element, itemElement.itemP.element)
-            .append(itemElement.itemDiv.element, itemElement.itemSpan.element)
-            .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, itemElement.itemDiv.element)
-    }
+    Calendar
+        .append(itemElement.itemDiv.element, itemElement.itemCircle.element)
+        .append(itemElement.itemDiv.element, itemElement.itemP.element)
+        .append(itemElement.itemDiv.element, itemElement.itemSpan.element)
+        .append(Calendar.page.days[parseInt(start.getDate())-1].monCellDiv.element, itemElement.itemDiv.element)
 
     closeModal() // close and clear
 })
@@ -258,6 +253,9 @@ CalEvent.page.main.eventDelBtn.element.addEventListener("click", async (e) => {
 
 const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, lastAllDay) => {
     clearEventForm()
+
+    Calendar.page.main.title.element.innerText = `${calendarElTree.monName[month-1]} ${year}` // caledar title
+
     Calendar.page.days = null
     Calendar.page.lastDay = null
     Calendar.page.nextDay = null
@@ -268,8 +266,6 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
     Calendar.listElement("lastDay", starWeek, calendarElTree.calMonCellElTree)
     Calendar.listElement("nextDay", 42-(starWeek+thisAllDay), calendarElTree.calMonCellElTree)
     Calendar.listElement("items", events.length, calendarElTree.calItemElTree)
-
-    Calendar.page.main.title.element.innerText = `${calendarElTree.monName[month-1]} ${year}`
 
     // Last Month
     let lastday = lastAllDay - starWeek + 1
@@ -284,7 +280,7 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
             .append(last.monCellDiv.element, last.monCellTitle.element)
             .append(Calendar.page.main.monGridDiv.element, last.monCellDiv.element)
     })
-    
+
     // Calendar day cell
     Calendar.page.days.map((day, i) => {
         (starWeek + i + 1) % 7 === 1 && day.monCellTitle.element.classList.add("text-red-500");
@@ -321,22 +317,21 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
             .append(day.monCellDiv.element, day.monCellTitle.element)
             .append(Calendar.page.main.monGridDiv.element, day.monCellDiv.element)
     })
-    
+
     //Next Month
     Calendar.page.nextDay.map((nextday, i) => {
         (nextMonWeek + i + 1) % 7 === 1 && nextday.monCellTitle.element.classList.add("text-red-400");
         (nextMonWeek + i + 1) % 7 === 0 && nextday.monCellTitle.element.classList.add("text-blue-400");
-        
         nextday.monCellDiv.element.classList.remove("bg-white", "text-gray-800")
         nextday.monCellDiv.element.classList.add("bg-gray-100", "text-gray-500")
+
         const dayNum = getFullNum(i+1)
         nextday.monCellTitle.element.innerText = dayNum
         Calendar
             .append(nextday.monCellDiv.element, nextday.monCellTitle.element)
             .append(Calendar.page.main.monGridDiv.element, nextday.monCellDiv.element)
     })
-    
-    
+
     //Delete switch -> button change
     CalEvent.page.main.eventDelInput.element.addEventListener("change", (e) => {
         if(e.target.checked){
@@ -350,6 +345,12 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
 
     //day cell
     Calendar.page.items.map((item, i) => {
+
+        const startDate = events[i].start
+        const eventYear = startDate.getFullYear()
+        const eventMonth = startDate.getMonth() + 1
+        const eventDay = startDate.getDate()
+
         //gragged data
         item.itemDiv.element.addEventListener("dragstart", (e) => {
             dragged = [e.target, events[i].id, i] //current element, eventsId, arrayIndex
@@ -358,18 +359,12 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
         item.itemDiv.element.addEventListener("click", (e)=>{
             openEventModal(i)
         })
-    
-        const startDate = events[i].start
-        const eventYear = startDate.getFullYear()
-        const eventMonth = startDate.getMonth() + 1
-        const eventDay = startDate.getDate()
-    
+
         item.itemP.element.innerText = events[i].title
         item.itemCircle.element.classList.add(catColor[events[i].category])
         item.itemSpan.element.innerText = `${getFullNum(startDate.getHours())} : ${getFullNum(startDate.getMinutes())}`
 
         if(eventYear === year && eventMonth === month){ // this month
-
             Calendar
                 .append(item.itemDiv.element, item.itemCircle.element)
                 .append(item.itemDiv.element, item.itemP.element)
@@ -394,6 +389,5 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
             }
         }
     })
-    
 }
 
