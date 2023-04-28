@@ -219,8 +219,7 @@ const calendarElTree = {
             classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
             id : "start",
             attrs : {
-                type : "text",
-                // datepicker  : true,
+                type : "datetime-local",
             }
         },
         eventEndLabelEl : {
@@ -234,7 +233,10 @@ const calendarElTree = {
         eventEndInputEl : {
             element : "input",
             classes : ["mb-5", "mt-2", "text-gray-600", "focus:outline-none", "focus:border", "focus:border-indigo-700", "font-normal", "w-full", "h-10", "flex", "items-center", "pl-3", "text-sm", "border-gray-300", "rounded", "border"],
-            id : "end"
+            id : "end",
+            attrs : {
+                type : "datetime-local"
+            }
         },
         eventCategoryLabelEl : {
             element : "label",
@@ -353,14 +355,14 @@ const calendarElTree = {
         },
         monCellTitleEl : {
             element : "h1",
-            classes : ["m-1.5", "p-1.5", "rounded-full", "w-7", "text-xs", "font-bold", "cursor-pointer"],
+            classes : ["mx-1.5", "mt-1", "p-1.5", "rounded-full", "w-7", "text-xs", "font-bold", "cursor-pointer"],
             text : ""
         }
     },
     calItemElTree : {
         itemDivEl : {
             element : "div",
-            classes : ["flex", "justify-between", "text-xs", "-m-1", "mb-3", "mx-1", "px-2", "cursor-pointer"],
+            classes : ["flex", "justify-between", "text-xs", "my-0.5", "mx-1", "px-2", "cursor-pointer"],
             attrs : {
                 "data-modal-target" : "eventModal",
                 "data-modal-toggle" : "eventModal",
@@ -369,7 +371,7 @@ const calendarElTree = {
         },
         itemCircleEl : {
             element : "span",
-            classes : ["w-3", "h-3", "rounded-full"]
+            classes : ["w-3", "h-3", "rounded-full", "mr-1", "mt-0.5"]
         },
         itemPEl : {
             element : "p",
@@ -378,7 +380,7 @@ const calendarElTree = {
         },
         itemSpanEl : {
             element : "span",
-            classes : ["hidden", "lg:block"],
+            classes : ["hidden", "lg:block", "ml-auto", "truncate", "w-10"],
             text : ""
         },
     },

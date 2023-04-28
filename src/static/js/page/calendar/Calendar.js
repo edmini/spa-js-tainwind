@@ -12,9 +12,9 @@ let dragged = null // dragstart data variable
 
 const apiURL = "/apis/Calendar/F" // apis/SheetName/LastColumn
 let events = await getData(apiURL) // get Data from googleSheetApi
-
-//0~9 => 00~09
-const getFullNum = (num) => num < 10 ? `0${num}` : num
+const capitalize = word => word.charAt(0).toUpperCase() + word.slice(1) // first letter UpperCase
+const keys = Object.keys(events[0]) // events Key
+const getFullNum = (num) => num < 10 ? `0${num}` : num//0~9 => 00~09
 
 let date = new Date()
 date.getTimezoneOffset()
@@ -22,6 +22,10 @@ date.getTimezoneOffset()
 const YEAR = date.getFullYear()
 const MONTH = date.getMonth()+1
 const TODAY = date.getDate()
+const TIME_ZONE = 9 * 60 * 60 * 1000
+
+//현재 년도 이벤트만!!
+events.find((event) => {(new Date(event.start)).getFullYear === YEAR})
 
 let dateObj = {
     tempMon : 0,
@@ -39,13 +43,13 @@ let dateObj = {
 export const dateHandle = (currentYear, currentMon, status) => {
     dateObj.tempYear = dateObj.tempYear === currentYear ? currentYear : dateObj.tempYear
     let calcMon = 0
-    if(status === "up"){
+    if(status === "next"){
         dateObj.tempMon = dateObj.tempMon + 1
         if((parseInt(currentMon) + dateObj.tempMon) === 13 ){
             dateObj.tempYear = dateObj.tempYear + 1
             dateObj.tempMon = (parseInt(currentMon) + dateObj.tempMon) < 13 + parseInt(currentMon) ? (dateObj.tempMon + parseInt(currentMon)) - (parseInt(currentMon) + 12) : dateObj.tempMon + 1
         }
-    }else if(status === "down"){
+    }else if(status === "prev"){
         dateObj.tempMon = dateObj.tempMon - 1
         if((parseInt(currentMon) + dateObj.tempMon) === 0 ){
             dateObj.tempYear = dateObj.tempYear - 1
@@ -66,9 +70,6 @@ export const dateHandle = (currentYear, currentMon, status) => {
     dateObj.thisAllDay = new Date(dateObj.year, dateObj.month, 0).getDate()
     nextPrevBtn(dateObj.year, dateObj.month, TODAY, dateObj.startWeek, dateObj.nextMonWeek, dateObj.thisAllDay, dateObj.lastAllDay)
 }
-
-//현재 년도 이벤트만!!
-events.find((event) => {(new Date(event.start)).getFullYear === YEAR})
 
 Calendar
     .append("main.main", "main.monMain", "main.monOuterDiv", "main.titleDiv", "main.title")
@@ -121,7 +122,7 @@ catOpt.map((cat) => {
 
 // prev btn click
 Calendar.page.main.prevBtn.element.addEventListener("click", () => {
-    dateHandle(YEAR, MONTH, "down")
+    dateHandle(YEAR, MONTH, "prev")
 })
 // today btn click
 Calendar.page.main.todayBtn.element.addEventListener("click", () => {
@@ -129,7 +130,7 @@ Calendar.page.main.todayBtn.element.addEventListener("click", () => {
 })
 // next btn click
 Calendar.page.main.nextBtn.element.addEventListener("click", () => {
-    dateHandle(YEAR, MONTH, "up")
+    dateHandle(YEAR, MONTH, "next")
 })
 
 // Week Name List
@@ -145,12 +146,10 @@ Calendar.page.weekName.map((week, i) => {
 //Modal Form init
 const clearEventForm = () => {
     CalEvent.page.main.eventTitle.element.innerText = "New Item"
-    CalEvent.page.main.eventIdInput.element.value = ""
-    CalEvent.page.main.eventTitleInput.element.value = ""
-    CalEvent.page.main.eventStartInput.element.value = ""
-    CalEvent.page.main.eventEndInput.element.value = ""
-    CalEvent.page.main.eventCategoryInput.element.value = ""
-    CalEvent.page.main.eventMemoInput.element.value = ""
+    keys.map((key) => {
+        CalEvent.page.main[`event${capitalize(key)}Input`].element.value = ""
+        CalEvent.page.main[`event${capitalize(key)}Input`].element.classList.remove("border-rose-600")
+    })
     CalEvent.page.main.eventDelInput.element.checked = false
     CalEvent.page.main.eventDelBtn.element.classList.add("hidden")
     CalEvent.page.main.eventSubmitBtn.element.classList.remove("hidden")
@@ -175,6 +174,19 @@ document.addEventListener("keydown", (e) => {
         closeModal()
     }
 })
+
+// event require check
+keys.map((key) => {
+    CalEvent.page.main[`event${capitalize(key)}Input`].element.addEventListener("focusout", (e) => {
+        if((e.target.value).trim() === ""){
+            e.target.value = ""
+            e.target.classList.add("border-rose-600")
+        }else{
+            e.target.classList.remove("border-rose-600")
+        }
+    })
+})
+
 //Event Modal open
 const openEventModal = (i) => {
     CalEvent.page.main.eventModalBg.element.classList.remove("hidden")
@@ -183,12 +195,17 @@ const openEventModal = (i) => {
     }
     CalEvent.page.main.eventDelDiv.element.classList.remove("hidden")
     CalEvent.page.main.eventTitle.element.innerText = events[i].title
-    CalEvent.page.main.eventIdInput.element.value = events[i].id
-    CalEvent.page.main.eventTitleInput.element.value = events[i].title
-    CalEvent.page.main.eventStartInput.element.value = events[i].start
-    CalEvent.page.main.eventEndInput.element.value = events[i].end
-    CalEvent.page.main.eventCategoryInput.element.value = events[i].category
-    CalEvent.page.main.eventMemoInput.element.value = events[i].memo
+    const startKo = new Date(events[i].start.getTime() + TIME_ZONE).toISOString().replace(' ', 'T').slice(0, -5)
+    const endKo = new Date(events[i].start.getTime() + TIME_ZONE).toISOString().replace(' ', 'T').slice(0, -5)
+    keys.map((key) => {
+        if(key === "start"){
+            CalEvent.page.main[`event${capitalize(key)}Input`].element.value = startKo
+        }else if(key === "end"){
+            CalEvent.page.main[`event${capitalize(key)}Input`].element.value = endKo
+        }else{
+            CalEvent.page.main[`event${capitalize(key)}Input`].element.value = events[i][key]
+        }
+    })
 }
 
 //Submit button event handler post or put
@@ -204,8 +221,9 @@ CalEvent.page.main.eventSubmitBtn.element.addEventListener("click", async (e) =>
     const category = CalEvent.page.main.eventCategoryInput.element.value
     const memo = CalEvent.page.main.eventMemoInput.element.value
     const data = [id, start, end, title, category, memo]
-    const status = id.length > 0 ? "PUT" : "POST"
+    // console.log(new Date(start.getTime() + TIME_ZONE).toISOString().replace(' ', 'T').slice(0, -5))
 
+    const status = id.length > 0 ? "PUT" : "POST"
     let result = null
     if(status === "PUT"){
         result = await putData(apiURL, data)
@@ -303,10 +321,9 @@ const nextPrevBtn = (year, month, today, starWeek, nextMonWeek, thisAllDay, last
         day.monCellTitle.element.addEventListener("click", (e) => {
             CalEvent.page.main.eventModalBg.element.classList.toggle("hidden")
             CalEvent.page.main.eventDelDiv.element.classList.add("hidden")
-            // CalEvent.page.main.eventStartInput.element.setAttribute("datepicker", '')
-            // CalEvent.page.main.eventStartInput.element.setAttribute("data-date", `${year}-${month}-${dayNum}`)
-            CalEvent.page.main.eventStartInput.element.value = `${year}-${month}-${dayNum}`
-            CalEvent.page.main.eventEndInput.element.value = `${year}-${month}-${dayNum}`
+            const selectCurDate = new Date(`${year}-${month}-${dayNum}`)
+            CalEvent.page.main.eventStartInput.element.value = new Date(selectCurDate.getTime() + TIME_ZONE).toISOString().replace(' ', 'T').slice(0, -5)
+            CalEvent.page.main.eventEndInput.element.value = new Date(selectCurDate.getTime() + TIME_ZONE + 3600000).toISOString().replace(' ', 'T').slice(0, -5)
         })
         //Drag & Drop
         day.monCellDiv.element.addEventListener("dragover", (e) => {e.preventDefault()})
