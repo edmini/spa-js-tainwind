@@ -61,3 +61,21 @@ Home.append("main.container", "main.title", "main.link")
 * append(paren, ...child) 동작
     * paren.appendChild.child[0]
     * child[0].appendChild.child[1] 순서대로 앞 element에 뒤 element가 appendChild로 지정됨
+
+3. GoogleApis 연결을 위한 .env 파일
+
+```
+TYPE=service_account
+PROJECT_ID=project-id
+PRIVATE_KEY_ID=privatekey
+PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nPrivate_Key....................\n-----END PRIVATE KEY-----\n
+CLIENT_EMAIL=client_email@project-id.iam.gserviceaccount.com
+CLIENT_ID=client_id
+AUTH_URI=https://accounts.google.com/o/oauth2/auth
+TOKEN_URI=https://oauth2.googleapis.com/token
+AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
+CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/gsheet-service-account-id%40eds-gsheet-project-id.iam.gserviceaccount.com
+```
+
+TYPE, PROJECT_ID, PRIVATE_KEY_ID, PRIVATE_KEY, CLIENT_EMAIL, CLIENT_ID 를 각각 입력
+CLIENT_EMAIL 을 사용할 구글시트 파일 -> 공유 -> 공유 이메일에 해당 메일 입력
